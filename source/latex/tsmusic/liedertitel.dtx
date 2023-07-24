@@ -1,0 +1,1524 @@
+% \iffalse meta-comment
+% vim: textwidth=75
+%<*internal>
+\iffalse
+%</internal>
+%<*readme>
+liedertitel
+==========
+
+           |
+----------:| -----------------------------------------------------------------
+liedertitel:| Some definitions that improve typesetting of songs
+    Author:| Tobias Schlemmer <keinstein@users.sf.net>
+    E-mail:| keinstein@users.sf.net
+   License:| Released under the LaTeX Project Public License v1
+       See:| http://www.latex-project.org/lppl.txt
+
+
+Short description:
+
+This package contains some macros thet help to arrange songs on pages.
+%</readme>
+%<*internal>
+\fi
+\def\nameofplainTeX{plain}
+\ifx\fmtname\nameofplainTeX\else
+  \expandafter\begingroup
+\fi
+%</internal>
+%<*install>
+\input docstrip.tex
+\preamble
+ Copyright ℂ 2022 Tobias Schlemmer
+ 
+ This program is provided under the terms of the
+ LaTeX Project Public License distributed from CTAN
+ archives in directory macros/latex/base/lppl.txt.
+
+ This work is "maintained" (as per LPPL maintenance status) by
+ Tobias Schlemmer <keinstein@users.sf.net>.
+
+ This work consists of the files
+   liedertitel.dtx and
+   liedertitel.ins
+
+ and the derived file
+   liedertitel.sty.
+
+\endpreamble
+
+\askforoverwritefalse
+\usedir{tex/latex/tsmusic}
+
+% \askforoverwritefalse
+\generate{\file{liedertitel.sty}{\from{liedertitel.dtx}{package}}}
+
+%</install>
+%<*internal>
+\usedir{source/latex/tsmusic}
+\generate{
+  \file{\jobname.ins}{\from{\jobname.dtx}{install}}
+}
+\nopreamble\nopostamble
+\usedir{doc/latex/tsmusic}
+\generate{
+  \file{README-liedertitel.txt}{\from{\jobname.dtx}{readme}}
+}
+%</internal>
+%<*install>
+\usedir{makeindex/tsmusic}
+\generate{\file{liedertitel.ist}{\from{liedertitel.dtx}{makeindex}}}
+%</install>
+%<*internal>
+\ifx\fmtname\nameofplainTeX
+  \expandafter\endbatchfile
+\else
+  \expandafter\endgroup
+\fi
+%</internal>
+%<install>\endbatchfile
+% \fi
+% \CheckSum{1636}
+% \iffalse
+%
+% ======================================================================
+% liedertitel.dtx 
+% Copyright (C) 2005 Tobias Schlemmer
+%
+% This file is a package to typeset songs a little bit more automatically
+%
+% This file can be redistributed and/or modified under the terms
+% of the LaTeX Project Public License Version 1.2 or later distributed 
+% together with this file. See LEGAL.TXT
+% ======================================================================
+%<*package>
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%</package>
+% \fi
+% \iffalse
+%<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+%<*dtx> 
+\ProvidesFile{liedertitel.dtx}
+%</dtx>
+%<driver> \ProvidesFile{liedertitel.drv}
+%<*dtx> 
+%<*driver>
+[2005/02/12 v0.1 liedertitel
+%</driver>
+%</dtx>
+%<dtx> documented source]
+%<*driver>
+ typeset song titles in song books]
+ \RequirePackage{scrlfile}%
+ \ReplaceClass{article}{report}%
+ \documentclass[10pt,a4paper]{ltxdoc}
+ \usepackage{dtxdescribe}
+ \usepackage{liedertitel}
+%\usepackage{array,tabularx}
+%\DisableCrossrefs
+\EnableCrossrefs
+\CodelineIndex
+%\OnlyDescription
+\RecordChanges
+\begin{document} 
+\DocInput{liedertitel.dtx}
+\end{document}
+%</driver>
+% \fi
+% \GetFileInfo{liedertitel.dtx}
+% \title{The \texorpdfstring{|liedertitel.sty|}{liedertitel.sty} Package.\thanks{This file has version \fileversion{} dated
+% \filedate.}}
+% \author{Tobias Schlemmer}
+% \maketitle
+% \makeatletter
+% \DoNotIndex{\!, \', \(, \), \,, \-, \., \:, \;, \?, \`}
+% \DoNotIndex{\@ifundefined, \@onlypreamble, \@tempb, \@tempcnta,
+% \@tempcntb, \@tfor}
+% \DoNotIndex{\A, \a, \addtocounter, \advance, \and, \AtBeginDocument}
+% \DoNotIndex{\bfseries, \B, \b, \boolean}
+% \DoNotIndex{\C, \c, \char, \csname, \CurrentOption}
+% \DoNotIndex{\D, \d, \DeclareOption, \def, \define@key, \divide, \do}
+% \DoNotIndex{\E, \e, \else, \endcsname, \endinput, \equal,
+% \expandafter}
+% \DoNotIndex{\F, \f, \fi, \font, \fontdimen, \fontencoding,
+% \fontfamily, \fontshape, \fontseries, \footnotesize, \f@encoding,
+% \f@shape, \f@series, \f@family}
+% \DoNotIndex{\G, \g, \gdef, \global}
+% \DoNotIndex{\H, \h, \hbox, \Huge, \huge}
+% \DoNotIndex{\I, \i, \ifcase, \IfFileExists, \InputIfFileExists,
+% \ifnum, \ifthenelse, \ifx, \input, \itshape}
+% \DoNotIndex{\J, \j}
+% \DoNotIndex{\K, \k, \KV@errx}
+% \DoNotIndex{\L, \l, \LARGE, \Large, \large, \let, \loop, \lpcode}
+% \DoNotIndex{\M, \m, \mdseries, \MessageBreak, \multiply}
+% \DoNotIndex{\N, \n, \NeedsTeXFormat, \newcommand, \newcounter,
+% \newboolean, \newif, \normalsize}
+% \DoNotIndex{\O, \o, \or}
+% \DoNotIndex{\P, \p, \PackageError, \PackageInfo, \PackageWarning,
+% \pdfoutput, \pdftexrevision, \pdftexversion, \ProcessOptions,
+% \protect,, \protected@edef, \protected@xdef, \pdfprotrudechars, \ProvidesPackage}
+% \DoNotIndex{\Q, \q, \quotedblbase}
+% \DoNotIndex{\R, \r, \relax, \renewcommand, \repeat, \RequirePackage,
+% \rmfamily, \rpcode}
+% \DoNotIndex{\S, \s, \scriptsize, \scshape, \selectfont, \setboolean,
+% \setbox, \setcounter, \setkeys, \sffamily, \slshape, \small, \space,
+% \stepcounter, \string}
+% \DoNotIndex{\T, \t, \textquotedblleft, \tiny}
+% \DoNotIndex{\U, \u, \undefined, \upshape, \usepackage}
+% \DoNotIndex{\V, \v, \value}
+% \DoNotIndex{\W, \w, \wd}
+% \DoNotIndex{\X, \x, \Y, \y, \Z, \z, \z@}
+% \makeatother
+% \abstract{This package was written to provide the ``normal''
+% \LaTeXe{} user an easy way to typeset song books. In particular it
+% meens that it provides some macros for titling songs, alphabetical
+% tables of contents and some additional settings}
+% \tableofcontents{}
+% \changes{1.0}{2005/02/12}{First usable Version with incomplete Documentation}
+% \section{Introduction}
+% As the abstract stated this package exists to provide a simple user
+% interface to typeset song books. It is more an example than a fully
+% customisable package. However, patches that add hooks for
+% customisation, bug fixes, compatibility and new features are welcome
+% at \url{https://github.com/keinstein/tsmusic}.
+%
+% \subsection{A bit of History}
+% Why did I write this package, so you can use it now? 
+% Well, I wanted to typeset a song book, but I also wanted to have an
+% alphabetical index of the songs. On the other hand I wanted several
+% chapters with their own minitocs. And last but not least I disliked
+% the formatting of the table of contents.
+%
+% \subsection{Provided Features}
+% This package provides fast access to thes songs in a living song
+% book. That means a song book to which regularly or irregularly
+% material is added.
+%
+% This includes:
+% \begin{itemize}
+% \item Organising Songs: Each song is a section and songs are
+% organised in chapters. If the document class supports it, chapters
+% can be devided into parts.
+% \item Song numbers: Every song gets a number. Typically it looks
+% like “H-42” where “H” denotes the chapter and “42” denotes the song
+% number within the chapter. The first song in each chapter gets
+% number “1”. So Numbers in chapter “C” are not changed when a song is
+% added to chapter “B”.
+% \item Song headings. Macros are provided for song title, composer,
+%   poet, a reference to another song book.
+% \item Multi-dimensional indexing. Typical indices of a song book
+% contain the song title, the first line of the song text, the
+% composer, the poet, the performing group, the topic of the
+% song. Only one of thes dimension can be used for the arrangement of
+% the songs inside the song book. This package is basesd on chapters
+% and song numbers. The preferred interpretation of chapters is
+% “topic”. Typical topics include
+% \begin{itemize}
+% \item love songs,
+% \item drinking songs,
+% \item religios songs,
+% \item student songs,
+% \item folk songs,
+% \item political songs,
+% \item childrens songs,
+% \item \ldots\ .
+% \end{itemize}
+% The song number can be roughly understood as the chronological order
+% of  adding the songs to the song book.
+% \item Fast finding of a songs. Imagine a group of people sitting
+% with a guitar around a camp fire and someone suggests a
+% song. People usually don't want to wait ages until it starts. So an
+% efficient way should be provided so that the songs can be easily
+% found. Looking at the outer part of a page is much faster than
+% looking at the inner part. Therefore song numbers are typeset always
+% on the outer part of the page. This means right on uneven pages and
+% left on even ones. This allows to thumb scan for the right song
+% number both forward (i.e. on odd pages) and backward (i.e. on even
+% pages).
+%
+% Contents and indices are block-centered in order to keep the line
+% lengths short, while poviding tabular contents. This is non
+% unproblemantic in general. However song books often have bock
+% centered verses. The margin is usually only used for the score and
+% headings. Block centered verses breack this margin, so that it is
+% not as strong as in typical text books. So it is consistent to use
+% also centered blocks of text for the different indices.
+% \item Reliably finding a song. Sometimes people remember the song
+% title, sometimes the starting of a song, sometimes the beginning of
+% the refain and sometimes something else. The alphabetical song index
+% is organised to allow all these searches. The song title is always
+% added to the index. Additionally other strings can be added, by
+% adding or abbusing the macro |\liedanfang|.
+%
+% For topical search eaach chapter provides a minitoc of the songs it
+% contains.
+% \item Chapter based page numbers. Adding a song in the middle of a
+% book usually changes many page numbers. In order to reduce the
+% confusion, page numbers are always relative to the current chapter.
+% \end{itemize}
+%
+% This package provides a small set of macros and does some
+% settings. At first it provides an environment |tsliedindex| for
+% helping to format the alphabetical table of contents. This is used
+% in combination with the also distributed file |makeindex.ist|.
+%
+%
+% \section{Using this package.}
+%
+% First you have to invoke it with a |\usepackage{liedertitel}| in
+% the preamble of your document. 
+%
+% \subsection{Requirements}
+%
+% This package need just some package, which should be part of every
+% \LaTeXe{} distribution not too old: |minitoc.sty| for help with
+% minitocs, |titletoc.sty| for formatting of tables of contents,
+% |makeidx.sty| for the alphabetical index of songs and |scrpage2.sty|
+% for some additional page formatting. If they are not installed, get
+% them from |CTAN|. For the two lilypond related functions you need
+% also |lilypond.sty| which is availlable at the same homepage as this data.
+%
+% \subsection{Writing songs.}
+% The song book I have in mind has two layers of headings: Song
+% sections and Song titles. So I introduced the macros |\titel| and
+% |\abschnitt|.
+%
+% \DescribeMacro{\titel}\oarg{short title}\marg{title}\oarg{sort order}
+% |\titel| provides a song heading, which will be mentioned
+% in the alphabetical index. It takes the same arguments as |\section|
+% plus one optional parameter at the end, which provides the
+% alphabetical position in the aphabetical TOC.
+%
+% The song number is usually printed on the side of the outer
+% margin. So opening as song by number should be as fast as possible.
+%
+% \DescribeMacro{\abschnitt}\oarg{sort title}\marg{title}
+% The macro |\abschnitt| provides just an enhanced 
+% |\chapter| macro which shows the corresponding minitocs and resets
+% the |tsrelpage| counter. The arguments of this macro are the same
+% as for the corresponding sectioning macro.
+%
+% \DescribeMacro{\liedautor}\marg{song poet}
+% \DescribeMacro{\liedkomponist}\marg{song composer}
+% \DescribeMacro{\liedautorundkomponist}\marg{song writer}
+% \DescribeMacro{\nachweis}
+% For titeling songs beside |\tite| there are some macros
+% like those for making document titles: |\liedautor| defines the poet
+% of the song, |\liedkomponist| the composer |\liedautorundkomponist|
+% the author and composer. All those macros take one mandatory
+% argument. This data is typeset using the |\nachweis| macro. 
+% \DescribeMacro{\liedfile}\\
+% \DescribeMacro{\lilypondfile}
+% |\liedfile| calls this macro and |\lilypondfile|. Look at that macro
+% for parameters.
+%
+% \DescribeMacro{\liedanfang}\oarg{sort order}\marg{song beginning}
+% Sometimes the first line of a song is differernt from the song
+% title. But searching for songs in TOCs may depend on what you know
+% about the song: the title or the beginning. If you want the
+% beginning also occur in the toc, try the macro |\liedanfang|,
+% please. It takes an mandatory Argument (the beginning as it would be
+% printed) and an optional one, which will be used for sorting of
+% alphabetical TOCs.
+%
+% \DescribeMacro{\tocliedanfang}\oarg{sort order}\marg{song
+% beginning}
+% Tis macro acts similar as |\liedanfang| except that the song
+% beginning is added to the main table of contents.
+%
+%
+% \DescribeMacro{\ifanfangtoidx} This conditinal defines whether the
+% song beginning should be added to to the alphabetical
+% index. Default: |true|.
+%
+% \DescribeMacro{\ifanfangtotoc} This conditional defines whether the
+% song beginning should be added to the main contents. Default:
+% |true|. The macro |\tocliedanfang| sets this conditional to true,
+% calls |\liedanfang| and sets it to |false| afterwards, unconditionally.
+%
+% \DescribeMacro{\includekapitel}\marg{path}
+% A further macro is |\includekapitel| which adds the given path to
+% the input path for LilyPond and \LaTeX\ and includes the file with
+% the same name inside the Path.
+%
+% Using this package some settings are done: Chapters are numbered
+% with capital letters, between chaper and section number there is
+% inserted a spatium. Pages are numberd in the form ii-3 where ii is
+% the roman representation of the chapter and 3 is the page inside the
+% chapter. For that feature the counter |tsrelpage| is used. The
+% original Page number is usable as the counter |page|.
+%
+% In the table of contents chapters are marked with centered bold
+% captions, but no page numbers. Sections aka songs in normal roman
+% face. Page numbers are linked to the corresponding pages if used in
+% combination with the |hyperref| package.
+% 
+% At the beginning |\makeindex| is called and at the end of the
+% document there will be added |\cleardoublepage|.
+%
+% \DescribeMacro{\liedaltesbuch}\oarg{book title}
+% \DescribeMacro{\alteliednummer}\oarg{song or page number}
+% The macro |\liedaltesbuch| is used to typeset the old location of a song
+% in a new environment. This is the book title. It will not be reset
+% by |\nachweis|.
+% \subsection{Customising the Package}
+%
+% \subsection{Other Commands and Options}
+%
+% \section{Examples}
+% \begin{dtxexample}{Song commands}
+%   \abschnitt{Song book chapter}
+%   \titel{Song Title}%
+%   \liedanfang{This is the first line of the song}
+%   \liedaltenummer{78}
+%   \liedautor{Song Author}
+%   \liedkomponist{Song Composer}
+%   \nachweis
+%   \titel{Song Title2}%
+%   \liedanfang{This is the first line of the second song}
+%   \liedaltenummer{42}
+%   \liedautor{Song Poet}
+%   \liedkomponist{A Band}
+%   \nachweis
+% \end{dtxexample}
+%
+% \begin{dtxexample}{Song contents}
+% \renewcommand{\indexname}{Alphabetisches\texorpdfstring{\protect\\}{
+% }Inhaltsverzeichnis}
+% \printliedindex
+% \end{dtxexample}
+%
+% \hrule
+% vorher
+% \begin{tsliedindex}
+%   \hrule
+%   innen
+%   \hrule
+% \end{tsliedindex}
+% \hrule nachher
+%
+% \section{Bugs and Caveats}
+%
+% Hopefully there're no bugs left, but only features |;->|. 
+%
+% \section{Contributing}
+%
+% Though it is only developed regarding to my needs almost any
+% contribution is welcome. 
+%
+% \section{Acknowledgements}
+%
+% \StopEventually{}
+% \abschnitt{The Code}
+% \section{The Code Itself}
+% 
+% First some remarks: the documentation may be inaccurate in some
+% places, so look at the code and it'll be very likely that the
+% documentation is incomplete.
+%
+% The main attention writing this code
+% was turned on creating a good human readable code. So I decided to
+% use as much \LaTeXe{} control sequences as possible and as less
+% \TeX{} commands as needed. This may slow down the code, but I don't
+% think that's really important.
+%
+% \subsection{The Package}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% First the requirement of \LaTeXe{} and the
+% declaration of the package.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}[1994/12/01]
+\ProvidesPackage{liedertitel}[2005/02/12 v0.1 Titelei für
+Liederbücher]
+%    \end{macrocode}
+%
+% First we define some Options.
+%
+% Beginnings of Songs to TOC?
+%
+%    \begin{macrocode}
+\newif\ifanfangtotoc
+\anfangtotocfalse
+\DeclareOption{anfangtotoc}{\anfangtotoctrue}
+\DeclareOption{noanfangtotoc}{\anfangtotocfalse}
+%    \end{macrocode}
+%
+% Beginnings of Songs to alphabetical TOC?
+%
+%    \begin{macrocode}
+\newif\ifanfangtoidx
+\anfangtoidxtrue
+\DeclareOption{noanfangtoidx}{\anfangtoidxfalse}
+\DeclareOption{anfangtoidx}{\anfangtoidxtrue}
+%    \end{macrocode}
+%
+% Processing options.
+%
+%    \begin{macrocode}
+\ProcessOptions\relax
+%    \end{macrocode}
+%
+% We need some packages.
+%
+%    \begin{macrocode}
+\RequirePackage{minitoc}
+%\RequirePackage{titletoc}
+%\RequirePackage[pausing]{longtable}%
+\RequirePackage{makeidx}
+\RequirePackage[splitindex]{imakeidx}
+%    \end{macrocode}
+%
+% \subsection{Helper macros}
+%
+% nix means nothnig
+%
+% \begin{macro}{\nix}
+%    \begin{macrocode}
+\newcommand{\nix}[1]{}% 
+\let\nix\@gobble%
+%    \end{macrocode}
+% \end{macro}
+%
+% We need |\texorpdfstring| in combination with the |hyperref|
+% package. So we provide it here.
+% 
+%    \begin{macrocode}
+\AtBeginDocument{\@ifundefined{texorpdfstring}{\let\texorpdfstring\@firstoftwo}{}}
+%    \end{macrocode}
+%
+% A special version of |\hyperpage| for using inside TOCs, where page
+% numbers are given with some leading spaces.
+%
+% \begin{macro}{\ts@hyperpage}
+%    \begin{macrocode}
+\newcommand\ts@hyperpage[1][\thecontentspage]{%
+  \edef\@tempa{page.\@firstofone #1}
+  \hyperlink{\@tempa}{%i-3}{a}%{
+    \contentspage[#1]}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{TOCs}
+%
+% Some ideas for preprocessing TOCs, to get nice width parameter
+% settings.
+%
+% \begin{macro}{\c@ts@toc@chapter}
+% \begin{macro}{\c@ts@toc@section}
+%    \begin{macrocode}
+\newcounter{ts@toc@chapter}
+\newcounter{ts@toc@section}[ts@toc@chapter]
+\edef\ts@toc@widowlines{3}
+\edef\ts@toc@clublines{3}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\ts@measure@toc}
+% Mesure the TOC entries
+% (opt. parameter \#1: if 0 then no page in calculation).
+%
+%    \begin{macrocode}
+\def\ts@toc@numberline#1\,#2\ts@end@toc@numberline{#1\hfill #2\enspace\enspace}
+\newcommand*\ts@measure@toc[2][1]{%
+  \begingroup
+  \@tempdima=0pt
+  \@tempdimb=0pt
+  \@tempdimc=0pt
+  \xdef\ts@toc@sectionwidth{0pt}%
+  \xdef\ts@toc@labelwidth{0pt}%
+  \xdef\ts@toc@pagewidth{0pt}%
+  \def\ts@tempa{0pt}%
+  \setcounter{ts@toc@chapter}0
+  \setcounter{ts@toc@section}0
+  \def\l@section##1##2{%
+    \stepcounter{ts@toc@section}%
+    \def\numberline####1{%
+      \setbox\@tempboxa\hbox{%
+        \ts@toc@section@lab@font \expandafter\ts@toc@numberline####1\ts@end@toc@numberline
+      }%
+      \ifnum\wd\@tempboxa>\@tempdima\relax
+        \@tempdima\wd\@tempboxa\relax
+      \fi
+      \xdef\ts@tempa{\the\@tempdima}%
+    }%
+    \setbox\@tempboxb\hbox{\ts@toc@section@tit@font ##1}%
+    \ifnum\wd\@tempboxb>\@tempdimb\relax
+      \@tempdimb\wd\@tempboxb\relax
+    \fi
+    \@tempdima\ts@tempa\relax
+    \setbox\@tempboxb\hbox{\ts@toc@section@num@font ##2\enspace}%
+    \ifnum\wd\@tempboxb>\@tempdimc\relax
+      \@tempdimc\wd\@tempboxb\relax
+    \fi
+    \xdef\ts@toc@sectionwidth{\the\@tempdima}%
+    \xdef\ts@toc@labelwidth{\the\@tempdimb}%
+    \xdef\ts@toc@pagewidth{\the\@tempdimc}%
+  }%
+  \def\l@chapter##1##2{%
+    \expandafter\xdef%
+    \csname ts@toc@max@sect@\romannumeral\c@ts@toc@chapter\endcsname{%
+        \the\c@ts@toc@section}%
+    \stepcounter{ts@toc@chapter}%
+    \def\numberline####1{\ts@toc@chapter@lab@font ####1\enspace}%
+    \setbox\@tempboxb\hbox{\ts@toc@chapter@tit@font ##1}%
+    \xdef\ts@toc@sectionwidth{\the\@tempdima}%
+    \xdef\ts@toc@labelwidth{\the\@tempdimb}%
+    \xdef\ts@toc@pagewidth{\the\@tempdimc}%
+  }%
+  \def\l@part##1##2{\ignorespaces}%
+  \let\l@subsection\l@section
+  \let\leavevmode\relax
+  \@input{#2}%ö
+  \ifnum#1=0\relax
+    \xdef\ts@toc@pagewidth{0pt}%
+  \fi
+  \expandafter\xdef%
+  \csname ts@toc@max@sect@\romannumeral\c@ts@toc@chapter\endcsname{%
+      \the\c@ts@toc@section}%
+  \xdef\ts@toc@max@chap{\the\c@ts@toc@chapter}%
+%  \xdef\ts@toc@sectionwidth{\the\@tempdima}%
+%  \xdef\ts@toc@labelwidth{\the\@tempdimb}%
+%  \xdef\ts@toc@pagewidth{\the\@tempdimc}%
+  \@tempdima\ts@toc@sectionwidth\relax
+  \@tempdimb\ts@toc@labelwidth\relax
+  \@tempdimc\ts@toc@pagewidth\relax
+  \typeout{Masze:
+  \the\@tempdima\space-\space\the\@tempdimb\space-\space\the\@tempdimc}%
+  \advance\@tempdimb\@tempdima\relax
+  \advance\@tempdimb\@tempdimc\relax
+  \xdef\ts@toc@linewidth{\the\@tempdimb}%
+%  \typeout{\the\textwidth  \the\linewidth}%
+  \ifnum\@tempdimb>\linewidth\relax
+    \@tempdimb\linewidth\relax
+    \advance\@tempdimb-\ts@toc@sectionwidth\relax
+    \advance\@tempdimb-\ts@toc@pagewidth\relax
+    \xdef\ts@toc@labelwidth{\the\@tempdimb}%
+    \xdef\ts@toc@margin{0pt}%
+    \global\let\ts@toc@tot@leftmargin\ts@toc@sectionwidth
+    \global\let\ts@toc@tot@rightmargin\ts@toc@pagewidth
+  \else  
+    \@tempdima\linewidth\relax
+    \advance\@tempdima-\@tempdimb\relax
+    \divide\@tempdima by 2\relax
+    \xdef\ts@toc@margin{\the\@tempdima}%
+    \advance\@tempdima\ts@toc@sectionwidth\relax
+    \xdef\ts@toc@tot@leftmargin{\the\@tempdima}%
+    \@tempdima\ts@toc@margin\relax
+    \advance\@tempdima \ts@toc@pagewidth\relax
+    \xdef\ts@toc@tot@rightmargin{\the\@tempdima}%
+  \fi
+  \endgroup
+}%
+\newcommand\ts@set@toc@margins{
+  \widowpenalties 6  \@M \@M \@highpenalty \@medpenalty \@lowpenalty 0
+  \clubpenalties 6 \@M \@M  \@highpenalty \@medpenalty \@lowpenalty 0
+  \rightskip \ts@toc@tot@rightmargin plus 1fil\relax
+  \leftskip \ts@toc@tot@leftmargin plus 1fil\relax
+  \parindent \z@ \relax\@afterindenttrue
+  \parskip \z@\relax
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ts@def@toc@sections}
+% Define the sectioning macros for tocs
+%
+%    \begin{macrocode}
+\def\ts@toc@numberline#1\,#2\ts@end@toc@numberline{#1\hfill #2\enspace\enspace}
+\newcommand*\ts@def@toc@sections{\ignorespaces
+  \@ifundefined{chapter}{}{%
+    \setcounter{ts@toc@chapter}0\relax
+  }
+  \setcounter{ts@toc@section}0\relax
+  \def\l@part##1##2{\par}%
+  \def\l@xpart##1##2{\par}%
+  \def\l@chapter##1##2{\ignorespaces%
+    %\ts@set@toc@margins
+    \par%
+    \@ifundefined{chapter}{}{\stepcounter{ts@toc@chapter}}%
+    \def\numberline####1{{\ts@toc@chapter@lab@font ####1\enspace}}%
+    \bigskip\pagebreak[3]%
+    \centerline{%
+      \parbox{\ts@toc@linewidth}{%
+        \centering%
+        \ts@toc@chapter@tit@font ##1%\\*[0.25em]%
+      }%
+    }\nobreak%
+    {%
+      \interlinepenalty\@M
+      % \nobreak
+      \vskip0.5\baselineskip
+      % \nobreak
+    }%
+    %\ts@set@toc@margins
+    {%
+      \interlinepenalty\@M
+      \leavevmode
+    }%
+    \raggedbottom%
+    \ignorespaces
+  }%
+  \def\l@section##1##2{%
+    \ifnum 1>\c@tocdepth \else
+      {%
+        \ifvmode\leavevmode\fi
+        \vadjust{\nobreak\vskip0.2em plus 0.2pt\relax\nobreak}%
+        \global\stepcounter{ts@toc@section}%
+        \def\@pnumwidth{0pt}%
+        \def\numberline####1{%
+          \makebox[0pt][r]{%
+            \parbox[t]{\ts@toc@sectionwidth}{%
+              \ts@toc@section@lab@font
+              \expandafter\ts@toc@numberline####1\ts@end@toc@numberline
+            }%
+          }%
+        }%
+        \parbox{\ts@toc@labelwidth}{
+          \ts@toc@section@tit@font ##1\nobreak
+          \leaders\hbox{$\m@th
+            \mkern \@dotsep mu\hbox{.}\mkern \@dotsep
+            mu$}\hfill
+          \nobreak
+          \makebox[0pt][l]{%
+            \hb@xt@\ts@toc@pagewidth{\hfil\ts@toc@section@num@font\normalcolor
+              \hyperpage{##2}%
+            }%
+          }%
+        }%\nobreak
+        % \expandafter\@tempcnta%
+        % \csname ts@toc@max@sect@\romannumeral\c@ts@toc@chapter\endcsname\relax
+        % \advance\@tempcnta-\c@ts@toc@section\relax
+        \par
+      }%
+    \fi
+    \ignorespaces
+  }%
+  \let\l@subsection\l@section
+  \let\chapterbegin\relax
+  \ignorespaces
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% Format of chapter entry
+%
+%    \begin{macrocode}
+\def\ts@toc@chapter@lab@font{\normalfont\large\bfseries}
+\def\ts@toc@chapter@tit@font{\normalfont\large\bfseries}
+%    \end{macrocode}
+%
+% Format of section entry
+%
+%    \begin{macrocode}
+\def\ts@toc@section@lab@font{\normalfont\normalsize}
+\def\ts@toc@section@tit@font{\normalfont\normalsize}
+\def\ts@toc@section@num@font{\normalfont\normalsize}
+%    \end{macrocode}
+%
+% \subsubsection{chronological TOC}
+%
+% \begin{macro}{\ts@tableofcontents}
+% \begin{macro}{\tableofcontents}
+%    \begin{macrocode}
+% \def\tableofcontents{%
+%   \begingroup
+%   \ts@measure@toc{\jobname.toc}%
+%   \pdfbookmark[0]{Inhalt}{inhalt}%
+%     \widowpenalties 6  \@M \@M \@highpenalty \@medpenalty \@lowpenalty 0
+%     \clubpenalties 6 \@M \@M  \@highpenalty \@medpenalty \@lowpenalty 0
+%     \if@twocolumn
+%       \@restonecoltrue\onecolumn
+%     \else
+%       \@restonecolfalse
+%     \fi
+%     \@ifundefined{chapter}{%
+%       \section*{{\centering\contentsname}
+%         \@mkboth{\contentsname}{\contentsname}}%
+%     }{%      
+%       \chapter*{{\centering\contentsname}
+%         \@mkboth{\contentsname}{\contentsname}}%
+%     }%
+%     % \if@tocleft\before@starttoc{toc}\fi%
+%     \makeatletter\raggedbottom
+%     \ts@def@toc@sections
+%     \ts@set@toc@margins
+%     \input{\jobname.toc}%
+%     \par%
+%     \if@filesw
+%       \expandafter\newwrite\csname tf@toc\endcsname
+%       \immediate\openout \csname tf@toc\endcsname \jobname.toc\relax
+%     \fi
+%     \@nobreakfalse
+%     \if@tocleft\after@starttoc{toc}\fi%
+%     \if@restonecol\twocolumn\fi
+%     \endgroup
+%   \endgroup
+% }
+\let\ts@tableofcontents\tableofcontents
+\def\ts@tableofcontents@par{\par}
+\def\tableofcontents{%
+  \begingroup%a
+    \ts@begin@liedindex{\jobname.toc}%
+    \pdfbookmark[0]{\contentsname}{inhalt}%
+     \if@twocolumn
+       \@restonecoltrue\onecolumn
+     \else
+       \@restonecolfalse
+     \fi
+    \@ifundefined{chapter}{%
+      \section*{\centering\contentsname}%
+      \@mkboth{\contentsname}{\contentsname}%
+    }{%      
+      \chapter*{\centering\contentsname}%
+      \@mkboth{\contentsname}{\contentsname}%
+    }%
+    % \if@tocleft\before@starttoc{toc}\fi%
+    \raggedbottom
+    \ts@set@toc@margins
+    \@starttoc{toc}%
+    \ts@tableofcontents@par% mask the paragraph to make hypdoc happy
+    \@ifundefined{if@tocleft}{}{%
+      \if@tocleft\after@starttoc{toc}\fi%
+    }%
+    \if@restonecol\twocolumn\fi
+   \endgroup%
+ }
+%\let\tableofcontents\ts@tableofcontents
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \subsubsection{Stuff for alphabetical TOC} 
+%
+% \begin{environment}{tsliedindex}
+%    \begin{macrocode}
+\newcommand\ts@begin@liedindex[1]{
+  \begingroup
+  \renewenvironment{tsliedindex}{}{}%
+  \ts@measure@toc{#1}%
+  \endgroup
+  \ts@def@toc@sections
+  \ts@set@toc@margins
+  \@lowpenalty 0
+}
+\newenvironment{tsliedindex}
+{%
+  \ts@begin@liedindex{\jobname-liedtitles.ind}%
+  \par
+  \pdfbookmark[0]{\indexname}{alphinhalt}%
+  \@ifundefined{chapter}{%
+    \section*{\centering\indexname}\@mkboth{\indexname}{\indexname}%
+  }{%
+    \chapter*{\centering\indexname}\@mkboth{\indexname}{\indexname}%
+  }%
+  \ts@set@toc@margins
+}
+{\par\clearpage}
+\makeindex[name=liedtitles,options=-s liedertitel,intoc=true,columns=1]
+\newcommand\printliedindex{%
+  \printindex[liedtitles]%
+}
+%    \end{macrocode}
+% \end{environment}
+%
+% \subsubsection{Mini TOCs}
+%
+% For some errors in combination with hyperpage linking, we define
+% change the behaviour of some macros here.
+%
+% \begin{macro}{\ts@minitoc}
+% my special |\minitoc|
+%
+%    \begin{macrocode}
+\newcommand\ts@minitoc{%
+  \begingroup
+    \if@twocolumn
+      \@restonecoltrue\onecolumn
+    \else
+      \@restonecolfalse
+    \fi
+    \if@mtc@longext@
+      \def\@tocfile{\jobname.mtc\The@mtc}%  % UNIX
+    \else
+      \def\@tocfile{\jobname.M\The@mtc}%    % MS-DOS
+    \fi
+    \def\ts@toc@numberline##1\,##2\ts@end@toc@numberline{\hfill
+      ##2\enspace\enspace}%
+    \makeatletter
+    \ts@measure@toc[0]{\@tocfile}%
+    \ts@def@toc@sections
+    \ts@set@toc@margins
+    \par
+    {%
+      \interlinepenalty\@M
+      \leavevmode
+    }%
+    \ignorespaces
+    \def\ts@mtc@numberline##1\,##2\ts@end@mtc@numberline{\hfill ##2\enspace\enspace}%
+    \def\l@section##1##2{%
+      {%
+        \ifvmode
+          \leavevmode
+        \fi
+        %\ts@set@toc@margins
+        {\vadjust{\nobreak\vskip0.2em plus 0.2pt\relax\nobreak}}%
+        \def\@pnumwidth{0pt}%
+                                %      \vskip0.2em \@plus.2\p@
+        \def\numberline####1{%
+           \makebox[0pt][r]{%
+             \parbox[t]{\ts@toc@sectionwidth}{%
+               \ts@toc@section@lab@font
+               \expandafter\ts@mtc@numberline####1\ts@end@mtc@numberline
+             }%
+           }%
+         }
+        \parbox{\ts@toc@labelwidth}{%
+          {%
+            \ts@toc@section@tit@font%
+             ##1%
+          }\hfill%
+        }%
+      }%
+      \ignorespaces
+    }%
+    \let\l@subsection\l@section
+    \ignorespaces\makeatletter
+    \@input{\@tocfile}
+    \par
+  \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\MTC@WriteContentsline}
+% Rewrite the following macro to deal with some problems with page
+% linking.
+%
+% TODO: Ich sehe nicht, wo das nicht funktioniert
+%
+%    \begin{macrocode}
+\iffalse
+\show\MTC@contentsline 
+\def\MTC@contentsline#1#2#3#4{% %%HO/BJ: 4 instead of 3 parameters
+  \gdef\themtc{\arabic{mtc}}% %%HO: space removed
+  \expandafter\ifx\csname #1\endcsname\chapter
+    \stepcounter{mtc}% % the mtc counter simulates the chapter counter
+    \if@mtc@longext@
+      % \if@longextensions%
+      \mtcPackageInfo [I0033]{minitoc}{Writing\space \jobname .mtc\themtc \@gobble }%     % UNIX
+      \def\mtcname{\jobname.mtc\themtc}%              % UNIX
+    \else
+      \mtcPackageInfo [I0033]{minitoc}{Writing\space \jobname .M\themtc \@gobble }%       % MS-DOS
+      \def\mtcname{\jobname.M\themtc}%                % MS-DOS
+    \fi
+    \immediate\closeout\tf@mtc % close current .mtcN .mtc->.M on MS-DOS
+    \immediate\openout\tf@mtc=\mtcname % open next .mtcN (.mtc->.M if MS-DOS)
+  \fi
+  \mtc@toks{\noexpand \leavevmode #2}%
+% extracts and writes info for sections, etc.
+  \expandafter\ifx\csname #1\endcsname\section
+    \MTC@WriteContentsline{#1}{mtcS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\coffee
+    \MTC@WriteCoffeeline{#1}{#3}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\subsection
+    \MTC@WriteContentsline{#1}{mtcSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\subsubsection
+    \MTC@WriteContentsline{#1}{mtcSSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\paragraph
+    \MTC@WriteContentsline{#1}{mtcP}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\subparagraph
+    \MTC@WriteContentsline{#1}{mtcSP}{#3}{#4}%
+  \fi
+% Added v25: \starchapter and co.
+% extracts and writes info for sections, etc.
+  \expandafter\ifx\csname #1\endcsname\starchapter
+    \stepcounter{mtc}% % the mtc counter simulates the chapter counter
+    \if@mtc@longext@
+      \mtcPackageInfo [I0033]{minitoc}{Writing\space \jobname .mtc\themtc \@gobble }%     % UNIX
+      \def\mtcname{\jobname.mtc\themtc}%              % UNIX
+    \else
+      \mtcPackageInfo [I0033]{minitoc}{Writing\space \jobname .M\themtc \@gobble }%       % MS-DOS
+      \def\mtcname{\jobname.M\themtc}%                % MS-DOS
+    \fi
+    \immediate\closeout\tf@mtc % close current .mtcN .mtc->.M on MS-DOS
+    \immediate\openout\tf@mtc=\mtcname % open next .mtcN (.mtc->.M if MS-DOS)
+  \fi
+% extracts and writes info for sections, etc.
+  \expandafter\ifx\csname #1\endcsname\starsection
+    \MTC@WriteContentsline{#1}{mtcS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsubsection
+    \MTC@WriteContentsline{#1}{mtcSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsubsubsection
+    \MTC@WriteContentsline{#1}{mtcSSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starparagraph
+    \MTC@WriteContentsline{#1}{mtcP}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsubparagraph
+    \MTC@WriteContentsline{#1}{mtcSP}{#3}{#4}%
+  \fi
+}
+\show\MTC@WriteContentsline
+\def\MTC@WriteContentsline#1#2#3#4{%
+  % #1: #1 of \MTC@contentsline
+  % #2: font shorthand ==> \csname #2font\endcsname
+  % #3: #3 of \MTC@contentsline
+  % #4: #4 of \MTC@contentsline
+  \def\mtc@param{#4}%
+  \immediate\write\tf@mtc{%
+    {%
+ %     \string\reset@font
+ %     \expandafter\string\csname #2font\endcsname
+ \string\mtc@string
+      \string\contentsline{#1}%
+      {\the\mtc@toks}%
+      {%
+%        \string\reset@font
+%        \expandafter\string\csname #2font\endcsname
+        \space #3%
+      }%
+      \ifx\mtc@dot\mtc@param
+      \else
+        {#4}% %%HO/BJ: #4 is hyperlink
+      \fi
+    }%
+  }%
+}
+\fi
+\def\MTC@contentsline#1#2#3#4{%
+  \gdef\themtc{\arabic{mtc}}%
+  \expandafter\ifx\csname #1\endcsname\chapter
+    \stepcounter{mtc}%
+    \if@mtc@longext@%
+      \mtcPackageInfo[I0033]{minitoc}%
+         {Writing\space\jobname.mtc\themtc\@gobble}%
+      \def\mtcname{\jobname.mtc\themtc}%
+    \else
+      \mtcPackageInfo[I0033]{minitoc}%
+         {Writing\space\jobname.M\themtc\@gobble}%
+      \def\mtcname{\jobname.M\themtc}%
+    \fi
+    \immediate\closeout\tf@mtc
+    \immediate\openout\tf@mtc=\mtcname
+  \fi
+  \expandafter\ifx\csname #1\endcsname\appendix
+    \stepcounter{mtc}%
+    \if@mtc@longext@%
+      \mtcPackageInfo[I0033]{minitoc}%
+         {Writing\space\jobname.mtc\themtc\@gobble}%
+      \def\mtcname{\jobname.mtc\themtc}%
+    \else
+      \mtcPackageInfo[I0033]{minitoc}%
+         {Writing\space\jobname.M\themtc\@gobble}%
+      \def\mtcname{\jobname.M\themtc}%
+    \fi
+    \immediate\closeout\tf@mtc
+    \immediate\openout\tf@mtc=\mtcname
+  \fi
+  \mtc@toks{#2}%
+  \expandafter\ifx\csname #1\endcsname\section
+    \MTC@WriteContentsline{#1}{mtcS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\subsection
+    \MTC@WriteContentsline{#1}{mtcSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\subsubsection
+    \MTC@WriteContentsline{#1}{mtcSSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\paragraph
+    \MTC@WriteContentsline{#1}{mtcP}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\subparagraph
+    \MTC@WriteContentsline{#1}{mtcSP}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\coffee
+    \MTC@WriteCoffeeline{#1}{#3}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starchapter
+    \stepcounter{mtc}%
+    \if@mtc@longext@
+      \mtcPackageInfo[I0033]{minitoc}%
+         {Writing\space\jobname.mtc\themtc\@gobble}%
+      \def\mtcname{\jobname.mtc\themtc}%
+    \else
+      \mtcPackageInfo[I0033]{minitoc}%
+         {Writing\space\jobname.M\themtc\@gobble}%
+      \def\mtcname{\jobname.M\themtc}%
+    \fi
+    \immediate\closeout\tf@mtc
+    \immediate\openout\tf@mtc=\mtcname
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsection
+    \MTC@WriteContentsline{#1}{mtcS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsubsection
+    \MTC@WriteContentsline{#1}{mtcSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsubsubsection
+    \MTC@WriteContentsline{#1}{mtcSSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starparagraph
+    \MTC@WriteContentsline{#1}{mtcP}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsubparagraph
+    \MTC@WriteContentsline{#1}{mtcSP}{#3}{#4}%
+  \fi
+}
+\def\MTC@WriteContentsline#1#2#3#4{%
+  \def\mtc@param{#4}%
+  \immediate\write\tf@mtc{%
+    \string\contentsline{#1}%
+    {\the\mtc@toks}%
+    {#3}%
+    \ifx\mtc@dot\mtc@param
+    \else
+      {#4}%
+    \fi
+  }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% Initialization of minitocs.
+%
+%    \begin{macrocode}
+\dominitoc
+%    \end{macrocode}
+%
+% \subsection{Sectioning}
+%
+% \begin{macro}{\titel}
+% \begin{macro}{\tit@l}
+% \begin{macro}{\@titel}
+% \begin{macro}{\@@titel}
+% Song titles. For the various forms we define the corresponding
+% macros.
+%
+%    \begin{macrocode}
+\newcommand\tsnewsectionlabel[2]{%
+  \expandafter\xdef\csname ts@sect@page@#1\endcsname{#2}%
+}
+\newcommand\titel{\@dblarg{\@titel}}
+%\def\titel{\@ifnextchar[\@titel\tit@l}
+\newcommand{\@titel}[2][]{%
+  \@ifnextchar[{\@@titel[{#1}]{#2}}{\@@titel[{#1}]{#2}[{#1}]}%]
+}
+\newcommand\theonlypage{\the\c@page}
+\newcommand\@@titel{}
+\def\ts@hangsection#1#2{%
+%  #1%
+  \noindent
+   \setbox\@tempboxa\hbox{#1}%
+   \ifnum#2<0\relax
+%     \@tempcnta#2\relax
+%     \hangindent-\wd\@tempboxa\relax\hangafter-\@tempcnta\relax
+     \rightskip\wd\@tempboxa\relax
+     \leftskip0pt plus 1fil\relax
+     \@tempdima\linewidth\relax
+     \makebox[0pt][l]{\hb@xt@\linewidth{\hfill\box\@tempboxa}}\hfill%
+   \else
+     \leftskip\wd\@tempboxa\relax
+     \rightskip0pt plus 1fil\relax
+%     \hangindent\wd\@tempboxa\relax\hangafter#2\relax
+     \makebox[0pt][r]{\box\@tempboxa}%
+   \fi
+}
+
+\def\@@titel[#1]#2[#3]{%
+  \pagebreak[3]\par
+%   \refstepcounter{section}%
+%  \show\@seccntformat
+  \let\ts@sectcntformat\@seccntformat 
+  \let\@seccntformat\@gobble%
+%  \show\@seccntformat
+       \section[#1]{%
+   \expandafter\expandafter\expandafter\ifodd \expandafter0%
+     \csname
+     ts@sect@page@\the\c@chapter-\the\c@section\endcsname\relax
+%     \def\@seccntformat#1{\typeout{seccntformat \string#1}}
+%%      \@startsection {section}{1}{0pt}%
+%%        {3.5ex \@plus 1ex \@minus .2ex}%
+%%        {2.3ex \@plus .2ex}%
+%%        {\normalfont \Large \bfseries }%
+\raggedleft\ts@hangsection{\hskip\ts@sectionskip\relax\thesection}{-3}#2%   \show\@seccntformat
+%}%
+%     \section{#1}
+   \else
+%%      \@startsection {section}{1}{\z@ }%
+%%        {3.5ex \@plus 1ex \@minus .2ex}%
+%%        {2.3ex \@plus .2ex}%
+%%        {\normalfont \Large \bfseries }%
+%       \section[#1]{
+\raggedright\ts@hangsection{\thesection\hskip\ts@sectionskip\relax}{3}#2%   \show\@seccntformat
+\fi
+}%
+%   \fi
+   \let\@seccntformat\ts@sectcntformat
+%   \sectionmark{#1}
+%   \xdef \@currentHref {section.\the\c@chapter.\the\c@section}%
+%   \Hy@raisedlink {\hyper@anchorstart {\@currentHref }\hyper@anchorend }%
+%   \addcontentsline{toc}{section}{\protect\numberline{\thesection}#1}
+%   \show\section
+   \index[liedtitles]{#3@\protect\contentsline{section}{%
+       \protect\numberline{\thesection}#1}{\thepage}{\@currentHref}|nix}%
+   \nopagebreak%
+   \@bsphack
+     \protected@write\@auxout{\let\theonlypage\relax}{%
+       \string\tsnewsectionlabel{\the\c@chapter-\the\c@section}{\theonlypage}}%
+   \@esphack
+}
+\def\ts@sectionskip{2ex}
+%\newcommand\tit@l[1]{\@titel[{#1}]{#1}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\liedanfang}
+% \begin{macro}{\tocliedanfang}
+% Song beginnings.
+%
+%    \begin{macrocode}
+\newcommand\liedanfang{}
+\def\liedanfang{\@ifnextchar[\lied@nfang\lied@nf@ng}%]
+\newcommand{\lied@nf@ng}[1]{%
+  \lied@nfang[#1]{#1}
+}
+\newcommand\lied@nfang{}
+\def\lied@nfang[#1]#2{%
+  \ifanfangtoidx
+    \index[liedtitles]{#1@\protect\contentsline{section}{%
+        \protect\numberline{\thesection}#2}{\thepage}{\@currentHref}|nix}%
+  \fi
+  \ifanfangtotoc
+    \addcontentsline{toc}{section}{\protect\numberline{\thesection}#2}%
+  \fi
+  \lied@after@anfang
+}
+\newcommand\lied@after@anfang{}
+\newcommand\lied@after@anfang@totoc{%
+  \anfangtotocfalse
+  \let\lied@after@anfang\relax
+}
+\newcommand\tocliedanfang{
+  \anfangtotoctrue
+  \let\lied@after@anfang\lied@after@anfang@totoc
+  \liedanfang
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\abschnitt}
+% \begin{macro}{\@bschnitt}
+% \begin{macro}{\@abschnitt}
+% For the different forms we get different macros. It is necessary to
+% set |\ts@save@sectionpage| and to reset tsrelpage.
+%
+%    \begin{macrocode}
+\newcommand{\abschnitt}{}
+\def\abschnitt{
+  \raggedbottom
+  \@ifnextchar[\@bschnitt\@abschnitt%
+}%]
+\long\def\@bschnitt[#1]#2{%
+%  \chapter[#1]{#2}
+   \refstepcounter{chapter}%
+   \stepcounter{mtc}%
+   \chapter*{\centering\chaptername\ \thechapter.\\ #2}%
+   \chaptermark{#1}%
+   \addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}#1}%
+   \@tempcnta=\c@page\relax
+   \advance\@tempcnta-1\relax
+   \xdef\ts@save@sectionpage{\the\@tempcnta}%
+   \setcounter{tsrelpage}1
+   \@ifundefined{minitoc}{}{%
+     %\minitoc
+     \ts@minitoc
+   }%
+  \cleardoublepage
+}
+\long\def\@abschnitt#1{%
+  \@bschnitt[{#1}]{#1}%
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\includekapitel}
+% Include one chapter and set the input path.
+% 
+%    \begin{macrocode}
+\newcommand*\includekapitel[1]{
+  \def\input@path{{#1/}}
+  \setlilypondinputpath{{#1/}}
+  \include{#1}
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Song writers and so on}
+%
+% \begin{macro}{\ts@nw@textname}
+% \begin{macro}{\ts@nw@melodiename}
+% \begin{macro}{\ts@nw@textundmelodiename}
+% The |...name| macros are used for possible customization. These are
+% the printed names of the fields.
+%
+%    \begin{macrocode}
+\newcommand\ts@nw@textname{Text: }
+\newcommand\ts@nw@melodiename{Melodie: }
+\newcommand\ts@nw@textundmelodiename{Text und Melodie: }
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\ts@nw@text}
+% \begin{macro}{\ts@nw@melodie}
+% \begin{macro}{\ts@nw@textundmelodie}
+% The following macros are used to store the fields with the names of
+% the componists and poets.
+%
+%    \begin{macrocode}
+\newcommand\ts@nw@text{}
+\let\ts@nw@text\@empty
+\newcommand\ts@nw@melodie{}
+\let\ts@nw@melodie\@empty
+\newcommand\ts@nw@textundmelodie{}
+\let\ts@nw@textundmelodie\@empty
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\liedautor}
+% \begin{macro}{\liedkomponist}
+% \begin{macro}{\liedautorundkomponist}
+% The following macros set the corresponding fields of the song.
+%
+%    \begin{macrocode}
+\newcommand\liedautor[1]{\edef\ts@nw@text{#1}}
+\newcommand\liedkomponist[1]{\edef\ts@nw@melodie{#1}}
+\newcommand\liedautorundkomponist[1]{\edef\ts@nw@textundmelodie{#1}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\liedaltesbuch}
+% The macro |\liedaltesbuch| is used to typeset the old location of a song
+% in a new environment. This is the book title. It will not be reset
+% by |\nachweis|.
+%
+%     \begin{macrocode}
+\newcommand\liedaltesbuch[1]{%
+  \def\ts@nw@altbuch{#1}%
+}
+\let\ts@nw@altbuch\@empty%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\alteliednummer}
+%
+%     \begin{macrocode}
+\newcommand\liedaltenummer[1]{%
+  \edef\ts@nw@altnummer{#1}
+}
+\let\ts@nw@altnummer\@empty
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\nachweis}
+% The macro |\nachweis| is used to typeset the above described text fields
+%
+%    \begin{macrocode}
+\newcommand\nachweis{%
+  {\footnotesize\selectfont\parskip0pt\parindent0pt%
+    \ifx\ts@nw@altnummer\@empty%
+    \else
+      \@@line{%
+        \hfill\ts@nw@altbuch: \ts@nw@altnummer%
+      }\nopagebreak
+    \fi
+    \ifx\ts@nw@textundmelodie\@empty%
+    \else%
+      \@@line{%
+        \hfill\ts@nw@textundmelodiename\ts@nw@textundmelodie%
+      }\nopagebreak%
+    \fi%
+    \ifcase 0%
+      \ifx\ts@nw@text\@empty\else 1\fi%
+      \ifx\ts@ne@melodie\@empty\else 1\fi%
+    \relax
+    \else
+      \settowidth\@tempdima{\ts@nw@textname\ts@nw@text}%
+      \settowidth\@tempdimb{\ts@nw@melodiename\ts@nw@melodie}%
+      \@tempdimc\@tempdima
+      \advance\@tempdimc\@tempdimb%
+      \advance\@tempdimc 1em%
+      \ifnum\@tempdimc<\linewidth\relax
+        \@@line{
+          \ifx\ts@nw@text\@empty%
+          \else%
+            \settowidth\@tempdima{\ts@nw@text}%
+            \ts@nw@textname\parbox[t]{\@tempdima}{\ts@nw@text}%
+          \fi%
+          \hfill%
+          \ifx\ts@nw@melodie\@empty%
+          \else%
+            \settowidth\@tempdima{\ts@nw@melodie}%
+            \ts@nw@melodiename\parbox[t]\@tempdima\ts@nw@melodie
+          \fi%
+        }%
+      \else%
+        \begin{raggedleft}%
+        \ifx\ts@nw@text\@empty%
+        \else\ts@nw@textname\ts@nw@text\\*%
+        \fi%
+        \ifx\ts@nw@melodie\@empty%
+        \else\ts@nw@melodiename\ts@nw@melodie\\*%
+        \fi%
+        \end{raggedleft}%
+      \fi%
+    \fi%
+    \nopagebreak\medskip\nopagebreak%
+  }%
+  \let\ts@nw@text\@empty%
+  \let\ts@nw@melodie\@empty%
+  \let\ts@nw@textundmelodie\@empty%
+  \let\ts@nw@altnummer\@empty%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\liedfile}
+% The macro |\liedfile| is used in combination with |lilypond.sty| to
+% typeset song writer information in combination with the lilypond score.
+%
+%     \begin{macrocode}
+\newcommand\liedfile{}
+\def\liedfile{%
+  \nachweis\lilypondfile
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Settings}
+%
+% Clear double page at the end of the document.
+%
+%    \begin{macrocode}
+\AtEndDocument{\cleardoublepage}
+%    \end{macrocode}
+%
+% \subsubsection{Page settings and counters}
+%
+%    \begin{macrocode}
+\parindent0pt
+%\setcounter{LTchunksize}{150}
+\pagestyle{empty}
+\@ifundefined{@tempboxb}{\newbox\@tempboxb}{}%
+\@ifundefined{chapter}{}{%
+  \newcounter{tsrelpage}
+  \@addtoreset{tsrelpage}{chapter}
+  \renewcommand{\thechapter}{\Alph{chapter}}
+  \renewcommand{\thesection}{\thechapter\texorpdfstring{\,}{ }\arabic{section}}
+  \renewcommand{\thepage}{%
+    \roman{chapter}-\thetsrelpage%
+  }
+  \AtBeginDvi{%
+    \global\setcounter{tsrelpage}{\value{page}}%
+  }
+%    \end{macrocode}
+%
+% set |tsrelpage| to the actual value at every new page.
+%
+% \begin{macro}{\ts@outputpage}
+% \begin{macro}{\@outputpage}
+%    \begin{macrocode}
+  \global\let\ts@outputpage\@outputpage
+  \gdef\@outputpage{%
+    \ts@outputpage%
+    \global\c@tsrelpage\the\c@page\relax%
+    \global\advance\c@tsrelpage-\ts@save@sectionpage\relax%
+  }%
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%  |\ts@save@sectionpage| is used to store the difference between page
+%  counter and page in chapter.
+%
+% \begin{macro}{\ts@save@sectionpage}
+%    \begin{macrocode}
+\xdef\ts@save@sectionpage{0}
+%    \end{macrocode}
+% \end{macro}
+%
+% \Finale
+% \PrintIndex
+% \PrintChanges
+%</package>
+%<*makeindex>
+%    \begin{macrocode}
+preamble
+"\\begin{tsliedindex}"
+postamble
+"\\end{tsliedindex}"
+
+group_skip ""
+
+delim_0 ""
+delim_1 ""
+delim_2 ""
+quote '+'
+headings_flag 1
+heading_prefix "\n\\contentsline {chapter}{\\numberline {"
+heading_suffix "}}{}{}"
+item_0 "\n"
+item_1 "\n"
+item_2 "\n"
+item_01 "\n"
+item_x1 "\n"
+item_12 "\n"
+item_x2 "\n"
+%    \end{macrocode}
+%</makeindex>
+% \endinput
+% Local Variables:
+% mode: doctex
+% TeX-master: t
+% End:

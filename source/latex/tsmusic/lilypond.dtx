@@ -1,0 +1,733 @@
+% \iffalse meta-comment
+% vim: textwidth=75
+%<*internal>
+\iffalse
+%</internal>
+%<*readme>
+tslilypond
+==========
+
+           |
+----------:| -----------------------------------------------------------------
+  lilypond:| lilypond-book implemneted in LaTeX
+    Author:| Tobias Schlemmer <keinstein@users.sf.net>
+    E-mail:| keinstein@users.sf.net
+   License:| Released under the LaTeX Project Public License v1
+       See:| http://www.latex-project.org/lppl.txt
+
+
+Short description:
+
+This package contains some macros thet help to arrange songs on pages.
+%</readme>
+%<*internal>
+\fi
+\def\nameofplainTeX{plain}
+\ifx\fmtname\nameofplainTeX\else
+  \expandafter\begingroup
+\fi
+%</internal>
+%<*install>
+\input docstrip.tex
+\preamble
+ Copyright ℂ 2022 Tobias Schlemmer
+ 
+ This program is provided under the terms of the
+ LaTeX Project Public License distributed from CTAN
+ archives in directory macros/latex/base/lppl.txt.
+
+ This work is "maintained" (as per LPPL maintenance status) by
+ Tobias Schlemmer <keinstein@users.sf.net>.
+
+ This work consists of the files
+   tslilypond.dtx and
+   tslilypond.ins
+
+ and the derived file
+   tslilypond.sty.
+
+\endpreamble
+
+\askforoverwritefalse
+\usedir{tex/latex/tsmusic}
+
+% \askforoverwritefalse
+\generate{\file{tslilypond.sty}{\from{lilypond.dtx}{package}}}
+
+\usedir{doc/latex/tsmusic}
+\generate{\file{steiger.ly}{\from{lilypond.dtx}{steiger}}}
+
+%</install>
+%<*internal>
+\usedir{source/latex/tsmusic}
+\generate{
+  \file{\jobname.ins}{\from{\jobname.dtx}{install}}
+}
+%</internal>
+%<*install>
+\nopreamble\nopostamble
+\usedir{doc/latex/tsmusic}
+\generate{\file{steiger.ly}{\from{lilypond.dtx}{steiger}}}
+%</install>
+%<*internal>
+\usedir{doc/latex/tsmusic}
+\generate{
+  \file{README-tslilypond.txt}{\from{\jobname.dtx}{readme}}
+}
+\ifx\fmtname\nameofplainTeX
+  \expandafter\endbatchfile
+\else
+  \expandafter\endgroup
+\fi
+%</internal>
+%<install>\endbatchfile
+% \fi
+% \CheckSum{263}
+% \iffalse
+%
+% ======================================================================
+% lilypond.dtx 
+% Copyright (C) 2005 Tobias Schlemmer
+%
+% This file is a package to typeset songs using LilyPond. It is
+% intended to provide the same functionality as lilypond-book.
+%
+% This file can be redistributed and/or modified under the terms
+% of the LaTeX Project Public License Version 1.2 or later distributed 
+% together with this file. See LEGAL.TXT
+% ======================================================================
+%<*package>
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%</package>
+% \fi
+% \iffalse
+%<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+%<*dtx> 
+\ProvidesFile{lilypond.dtx}
+%</dtx>
+%<driver> \ProvidesFile{lilypond.drv}
+%<*dtx> 
+%<*driver>
+[2005/02/12 v0.1 lilypond
+%</driver>
+%</dtx>
+%<dtx> documented source]
+%<*driver>
+ bundle]
+\documentclass[10pt,a4paper]{ltxdoc}
+\usepackage[a4paper,BCOR20mm,DIV12]{typearea}
+\usepackage{dtxdescribe}
+\usepackage{tslilypond}
+%\usepackage[activate=normal]{pdfcprot}
+%\usepackage{array,tabularx}
+%\DisableCrossrefs
+\EnableCrossrefs
+\CodelineIndex
+%\OnlyDescription
+\RecordChanges
+\makeatletter
+\@ifundefined{KOMAScript}{%
+  \DeclareRobustCommand{\KOMAScript}{\textsf{K\kern.05em O\kern.05em%
+      M\kern.05em A\kern.1em-\kern.1em Script}}}{}
+\makeatother
+\begin{document}
+  \DocInput{lilypond.dtx}
+\end{document}
+%</driver>
+% \fi
+% 
+% \GetFileInfo{lilypond.dtx}
+% \makeatletter
+% \let\cn\cs
+% \DoNotIndex{\!, \', \(, \), \,, \-, \., \:, \;, \?, \`}
+% \DoNotIndex{\@ifundefined, \@onlypreamble, \@tempb, \@tempcnta,
+% \@tempcntb, \@tfor}
+% \DoNotIndex{\A, \a, \addtocounter, \advance, \and, \AtBeginDocument}
+% \DoNotIndex{\bfseries, \B, \b, \boolean}
+% \DoNotIndex{\C, \c, \char, \csname, \CurrentOption}
+% \DoNotIndex{\D, \d, \DeclareOption, \def, \define@key, \divide, \do}
+% \DoNotIndex{\E, \e, \else, \endcsname, \endinput, \equal,
+% \expandafter}
+% \DoNotIndex{\F, \f, \fi, \font, \fontdimen, \fontencoding,
+% \fontfamily, \fontshape, \fontseries, \footnotesize, \f@encoding,
+% \f@shape, \f@series, \f@family}
+% \DoNotIndex{\G, \g, \gdef, \global}
+% \DoNotIndex{\H, \h, \hbox, \Huge, \huge}
+% \DoNotIndex{\I, \i, \ifcase, \IfFileExists, \InputIfFileExists,
+% \ifnum, \ifthenelse, \ifx, \input, \itshape}
+% \DoNotIndex{\J, \j}
+% \DoNotIndex{\K, \k, \KV@errx}
+% \DoNotIndex{\L, \l, \LARGE, \Large, \large, \let, \loop, \lpcode}
+% \DoNotIndex{\M, \m, \mdseries, \MessageBreak, \multiply}
+% \DoNotIndex{\N, \n, \NeedsTeXFormat, \newcommand, \newcounter,
+% \newboolean, \newif, \normalsize}
+% \DoNotIndex{\O, \o, \or}
+% \DoNotIndex{\P, \p, \PackageError, \PackageInfo, \PackageWarning,
+% \pdfoutput, \pdftexrevision, \pdftexversion, \ProcessOptions,
+% \protect,, \protected@edef, \protected@xdef, \pdfprotrudechars, \ProvidesPackage}
+% \DoNotIndex{\Q, \q, \quotedblbase}
+% \DoNotIndex{\R, \r, \relax, \renewcommand, \repeat, \RequirePackage,
+% \rmfamily, \rpcode}
+% \DoNotIndex{\S, \s, \scriptsize, \scshape, \selectfont, \setboolean,
+% \setbox, \setcounter, \setkeys, \sffamily, \slshape, \small, \space,
+% \stepcounter, \string}
+% \DoNotIndex{\T, \t, \textquotedblleft, \tiny}
+% \DoNotIndex{\U, \u, \undefined, \upshape, \usepackage}
+% \DoNotIndex{\V, \v, \value}
+% \DoNotIndex{\W, \w, \wd}
+% \DoNotIndex{\X, \x, \Y, \y, \Z, \z, \z@}
+% \makeatother
+% \title{The \texttt{lilypond.sty} Package.\thanks{This file has version \fileversion{} dated
+% \filedate.}}
+% \author{Tobias Schlemmer}
+% \maketitle
+%
+% \abstract{This package is intended to provide the same functionality
+% as the lilypond-book program does. Due to the different design it
+% has \emph{other} limitations than lilypond-book, e.\,g. this package
+% passes the real |\linewidth| to lilypond and can in that way not so
+% easily be fooled.}
+% \tableofcontents{}
+% \changes{0.1}{2005/02/12}{First usable Version with incomplete Documentation}
+% \section{Introduction}
+% As the abstract stated this package exists to provide the
+% functionality, which was provided by the |lilypond-book| program.
+%
+% \subsection{A bit of History}
+% The idea to write this package arose long ago. At that time lilypond
+% was not able to typeset properly any accented letter using common
+% input encodings. On the other hand |lilypond-book| provides a nearly
+% one-pass way to typeset documents containing notes. This nice
+% feature I wanted to keep, but give LilyPond also a nice chance to
+% use \TeX\ for computations and to use its actual font e.\,g. as
+% lyric fonts. But beside the font problems I think |lilypond-book| is
+% too easy to fool, since \TeX\ is a very complicated language.
+%
+% But unfortunately I didn't find any time to write the package. And
+% the LilyPond maintainers refused to follow my suggestions. So I
+% stopped using LilyPond for my favorite project, a song
+% book. Actually I stopped writing it at all. From time to time I
+% looked at the project, but my font problems weren't solved. Only at
+% the beginning of 2005, I realized the version 2.4.2 with the new
+% font selection scheme. So I started the project again to collect all
+% my song files in one document and with the help of my \LaTeX\
+% knowledge I wrote this package.
+%
+% It is planned to try to replace all \TeX\ modi of
+% |lilypond-book|. But I started at first with \LaTeX\ because there
+% are more helper macros availlable and because I use it for my
+% personal conversation.
+%
+% \subsection{Provided Features}
+%
+% At the moment the package is very incomplete. Unfortunately my
+% LilyPond documentation does not contain the |lilypond-book|
+% docs. And I didn't have the time to implement everything, which I
+% could have used up to now. 
+%
+% At the moment the package provides a macro to insert an external
+% lilypond score.
+%
+% The documentation may be incomplete so go on reading this document
+% and look at the source if there are other useful macros for you, please.
+%
+% \section{Using this package.}
+%
+% First you have to invoke it with |\usepackage{tslilypond}| in
+% the preamble of your document. 
+%
+% \subsection{Requirements}
+%
+% At the moment this package doesn't need any further \LaTeX\
+% packages. But for the scores you need at least the |.tex| file of
+% your LilyPond files and the corresponding |.tex| and font files of
+% the LilyPond distribution to typeset your document. For automatic
+% typesetting of normal |.ly| files you need at least LilyPond to be
+% installed and a \TeX\ program with enabled |\write18| shell
+% escapes. The current implementation also uses |md5sum| for checking
+% if LilyPond has to be started again.
+%
+% \subsection{Using scores in your document}
+%
+% \DescribeMacro{\lilypondfile}
+% If you have external LilyPond sources you can write
+% |\lilypondfile[args]{file.ly}| at any point in your document. This
+% macro will create a file named |file.lini| which includes your
+% |file.ly|. The intention of this additional file is to pass some
+% useful settings to LilyPond. These include setting score and music
+% handlers, require dumping score extents, setting |hsize|, |vsize|,
+% |linewidth|, |raggedbottom|, |topmargin| and |leftmargin|. The
+% latter two are set to 0 to not compromise the \TeX\ formatting.
+%
+% \begin{dtxexample}{Including LilyPond files}
+%   Steiger:
+%
+%   \hrule
+%   \lilypondfile{steiger}
+%   \hrule
+% \end{dtxexample}
+%
+% \subsection{Customising the Package}
+%
+% \DescribeMacro{\lilypondcommandline}
+% It is likely that this package refuses to call LilyPond for you. For
+% this case the package has defined a macro |\ly@prog|, which provides
+% the LilyPond command line. It can be set using
+% |\lilypondcommandline|. At the moment you have to use the three
+% macro parameters |#1|, |#2| and |#3| for the LilyPond source file,
+% the filename of the output file without extension and the lini file.
+% The standard command line is:
+% \begin{verbatim}
+% lilypond-snapshot-bin -I`pwd` --output=#2 --tex #3
+% \end{verbatim}
+%
+% \DescribeMacro{\setlilypondinputpath}\DescribeMacro{\appendtolilypondinputpath}
+% \DescribeMacro{\prependtolilypondinputpath}
+% Another problem arises, if the file cannot be found by LilyPond or
+% the \TeX\ program. Then you can try to set the search path for
+% LilyPond source files. The path can be set using
+% |\setlilypondinputpath|, which takes the new input path as
+% argument. The path is a colon separated list of directories. If you
+% want to append or to prepend another directory, just use
+% |\appendtolilypondinputpath| or |\prependtolilypondinputpath|. These
+% macros can also deal with multiple colon seperated directories.
+%
+% \subsection{Other Commands and Options}
+%
+% see source.
+%
+% \section{Bugs and Caveats}
+%
+% Unfortunately I don't know if it is possible to acces the \TeX\
+% search path directly. So files on that path, which are not in the
+% current directory can not be proper included by LilyPond. There are
+% several solutions possible: 
+% \begin{itemize}
+% \item Try to set the include path for LilyPond
+% directly.
+% \item Move the file outside the \TeX\ input path. Or change that
+% path so that \TeX\ doesn't find this file.
+% \item Give the full or relative path of the file according to the
+% current working directory to the macro.
+% \end{itemize}
+%
+% Hopefully there're no further bugs left, but only features |;->|. 
+%
+% \section{Contributing}
+%
+% Though it is only developed regarding to my needs almost any
+% contribution is welcome. Just drop me a message: |keinstein_junior@gmx.net|.
+%
+% \section{Acknowledgements}
+%
+% \StopEventually{}
+% \appendix
+% \section{The Code Itself}
+% 
+% First some remarks: the documentation may be inaccurate in some
+% places, so look at the code and it'll be very likely that the
+% documentation is incomplete.
+%
+% \subsection{The Package}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% First the requirement of \LaTeXe{} and the
+% declaration of the package.
+%    \begin{macrocode}
+\ProvidesPackage{tslilypond}[2003/10/17 v0.1 lilypond-book-technology
+from within latex (cs)]
+%    \end{macrocode}
+%
+% We need \cs{includegraphics}.
+%
+%
+%    \begin{macrocode}
+\RequirePackage{graphics}
+%    \end{macrocode}
+% \begin{macro}{\ly@ini@file}
+% File descriptor for writing |.lini| files.
+%
+%    \begin{macrocode}
+\newwrite\ly@ini@file
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Changes according to \texttt{lilyponddefs.sty}}
+%
+% \begin{macro}{\ly@lilypond@start}
+% \begin{macro}{\lilypondstart}
+% Redefine |\lilypondpagebreak| to typeset my own pagebreaks. 
+% Redefine |\interscoreline| for my needs. Set input encoding and
+% redefine |\lilypondfontencoding| which is not proper detected from
+% LilyPond 2.4.2.
+%
+%    \begin{macrocode}
+\let\ly@lilypond@start\lilypondstart
+\def\lilypondstart{
+  \ly@lilypond@start
+  \def\interscoreline{%
+    \nopagebreak[3]\par%
+    \nopagebreak[3]%
+    \vskip\lilypondpaperinterscoreline\lilypondpaperunit%
+    \nopagebreak[3]%
+  }
+  \def\lilypondpagebreak{\par}
+  \expandafter\inputencoding{\lilypondpaperinputencoding}
+  \let\lilypondfontencoding\fontencoding
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\ly@lilypond@end}
+% \begin{macro}{\lilypondend}
+% After the score we insert some vertical space.
+%
+%    \begin{macrocode}
+\let\ly@lilypond@end\lilypondend
+\def\lilypondend{%
+  \ly@lilypond@end%
+  \vskip\afterlilypondskip%
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \subsection{Helper macros}
+%
+% \begin{macro}{\ly@remove@ext@cmpa}
+% Here we provide a macro containing only the extension for
+% comparison with .ly extension
+%
+%    \begin{macrocode}
+\def\ly@remove@ext@cmpa{ly}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\ly@percent}
+% \begin{macro}{\ly@dollar}
+% Percent sign as text for writing into the |.lini| file
+% 
+%    \begin{macrocode}
+{\catcode`\%=11\gdef\ly@percent{%}}
+{\catcode`\$=11\gdef\ly@dollar{$}}%$
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% 
+% \begin{macro}{\ly@lilypondfile@split@ext}
+% needed to split the last part of the filename to remove only the
+% extension of multi dotted files and paths.
+%
+%    \begin{macrocode}
+\def\ly@lilypondfile@split@ext#1{
+  \filename@parse{#1}%
+  \edef\ly@file@name{\ly@file@name.\filename@base}%
+  \ifx\ly@remove@ext@cmpa\filename@ext
+  \else
+  \@ifundefined{filename@ext}{}{\ly@lilypondfile@split@ext\filename@ext}%
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ly@strip@pt}
+% \begin{macro}{\ly@rem@pt}
+% Macros to strip the pt from some lengths. We need it to use LilyPond
+% syntax in our |.lini| file.
+%
+%    \begin{macrocode}
+\begingroup
+  \catcode`P=12
+  \catcode`T=12
+  \lowercase{
+    \def\x{\def\ly@rem@pt##1.##2PT{##1.##2}}}
+\expandafter\endgroup\x
+\def\ly@strip@pt{\expandafter\ly@rem@pt \the}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% 
+% \begin{macro}{\ly@strip@space}
+% Strip spaces from argument
+%
+%    \begin{macrocode}
+\def\ly@strip@space#1 {{#1}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Customization commands}
+%
+% \begin{macro}{\lilypondcommandline}
+% \begin{macro}{\ly@prog}
+% The commandline for LilyPond.
+%
+%    \begin{macrocode}
+\newcommand\lilypondcommandline[1]{%
+  \def\ly@prog{#1}%
+}
+\lilypondcommandline{%
+  %/usr/bin/lilypond --formats=ps  -I
+  %"/home/tobias/uni/Documents/latex/pakete/tsmusic/doc/latex/tsmusic"
+  %-daux-files  -dseparate-page-formats=eps  --verbose
+  %-dread-file-list -dno-strip-output-dir
+  %"/home/tobias/uni/Documents/latex/pakete/tsmusic/doc/latex/tsmusic/snippet-names-daa4e3fbc9d2c3936a049546f8518073.ly"
+  %lilypond -I`pwd` --output=\lilypondoutput\space --tex \lilypondtex
+  lilypond -I`pwd` -daux-files  -dseparate-page-formats=pdf  --verbose
+  %-dread-file-list
+  -dno-strip-output-dir \lilypondtex
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\lilypondscript}
+% \begin{macro}{\ly@script}
+% The complete shell command for lilypond..
+%
+%    \begin{macrocode}
+\newcommand\lilypondscript[1]{%
+  \def\ly@script{#1}%
+}
+\def\ly@script{%
+  export lyfile="\ly@file@lysource" ; 
+  if ! md5sum -c \ly@dollar lyfile.md5 ;
+  then   \ly@prog &&
+  md5sum \ly@dollar lyfile \ly@dollar {lyfile\ly@percent.ly}.tex  \ly@file@name.lini >\ly@dollar lyfile.md5 ;
+  fi
+}%{$lyfile}; echo '{${lyfile\ly@percent.ly}}{\ly@file@name.lini}'
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\ly@input@path}
+% \begin{macro}{\appendtolilypondinputpath}
+% \begin{macro}{\prependtolilypondinputpath}
+% \begin{macro}{\setlilypondinputpath}
+% Setting the input path for LilyPond files.
+%
+%    \begin{macrocode}
+\let\ly@input@path\@empty
+\def\appendtolilypondinputpath#1{%
+  \expandafter\edef\expandafter\ly@input@path\expandafter{\ly@input@path:#1}%
+}
+\def\prependtolilypondinputpath#1{%
+  \expandafter\edef\expandafter\ly@input@path\expandafter{\expandafter#1\expandafter:\ly@input@path}%
+}  
+\def\setlilypondinputpath#1{%
+  \edef\ly@input@path{#1}%
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\afterlilypondskip}
+% Skip after a LilyPond score.
+%    \begin{macrocode}
+\newcommand\afterlilypondskip{\baselineskip}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{The \texttt{lilypond-book} macros}
+%
+% \begin{macro}{\lilypondfile}
+% \begin{macro}{\ly@lilypondfile@}
+% \begin{macro}{\ly@lilypondfile@b}
+% |\lilypondfile| from lilypond-book
+% load a lilypond file into parser
+%
+%    \begin{macrocode}
+\def\lilypondfile{\ignorespaces%
+%    \end{macrocode}
+% decide, if optional parameters are used
+%    \begin{macrocode}
+  \@ifnextchar[\ly@lilypondfile@\ly@lilypondfile@b%]
+}
+%    \end{macrocode}
+%
+% with optional parameters
+%
+%    \begin{macrocode}
+\def\ly@lilypond@writelisp#1{%
+  \string##( #1 )^^J%
+}%
+\def\ly@writelength#1#2{%
+  #1\space=\space\ly@strip@pt#2 \space \string\pt^^J%
+}
+\def\ly@writebool#1#2{%
+  #1\space=\space\string##\string###2^^J%
+}
+\def\ly@file@lypreamble{lilypond-book-preamble.ly}
+\long\def\ly@lilypondfile@writefile#1#2{%
+  \immediate\openout\ly@ini@file=#1
+  \immediate\write\ly@ini@file{%
+    % \ly@lilypond@writelisp{set! toplevel-score-handler ly:parser-print-score}%
+    % \ly@lilypond@writelisp{set! toplevel-music-handler (lambda (p m)
+    % (ly:parser-print-score p (ly:music-scorify m p)))}%
+    \string\include\space "\ly@file@lypreamble"^^J%
+    #2^^J%
+    \string\include\space "\ly@file@lysource"^^J%
+  }%  
+}
+\def\ly@lilypondfile@[#1]#2{%
+  \begingroup
+  \def\lilypondlyfile{\ly@dollar lyfile}%
+  \def\lilypondoutput{\ly@dollar {lyfile\ly@percent.ly}}%
+  \def\lilypondtex{\ly@file@name.lini}%
+  \let\input@path\ly@input@path
+  \@iffileonpath{#2}{}{%
+    \@iffileonpath{#2.ly}{}
+    {\edef\@filef@und{#2.ly }}%
+  }%
+  \expandafter\expandafter\expandafter\filename@parse\expandafter\ly@strip@space\@filef@und
+  \edef\ly@file@lysource{%
+    \filename@area\filename@base\@ifundefined{filename@ext}{}{.\filename@ext}%
+  }
+  \edef\ly@file@name{\filename@area\filename@base}%
+  \ifx\ly@remove@ext@cmpa\filename@ext
+  \else
+  \ly@lilypondfile@split@ext\filename@ext
+  \fi
+  {%
+    \edef\ly@quoted@source{"\ly@file@lysource"}%
+    \@tempdima0pt\relax
+    \ly@lilypondfile@writefile\lilypondtex{%
+      \ly@lilypond@writelisp{set-global-staff-size 18}%
+      \string\paper \string{ ^^J%
+        \ly@lilypond@writelisp{define dump-extents \string##t}%
+        \ly@writelength{paper-height}\textheight
+        \ly@writelength{paper-width}\linewidth
+        \ly@writelength{line-width}\linewidth
+        \ly@writelength{top-margin}\@tempdima
+        \ly@writelength{bottom-margin}\@tempdima
+        \ly@writelength{left-margin}\@tempdima
+        \ly@writelength{right-margin}\@tempdima
+        %
+        \ly@writebool{ragged-bottom}t%
+        \ly@writebool{ragged-last-bottom}t%
+        \ly@writebool{ragged-right}f%
+        \ly@writebool{ragged-last}f%
+        \ly@writebool{two-sided}f% managed by LaTeX
+        %
+        \ly@writebool{annotate-spacing}t%
+        %
+        % \ly@writelength{hsize}\paperwidth
+        % \string\pt\space\ly@percent\space\the\paperwidth^^J\space\space
+        % \ly@writelength{vsize}\paperheight
+        % \ly@writelength{betweensystempadding}\paperheight
+        % \ly@writelength{topmargin}\@tempdima
+        % \ly@writelength{leftmargin}\@tempdima
+        \ly@writelength{horizontal-shift}\@tempdima
+        \ly@writelength{short-indent}\@tempdima
+        \ly@writelength{indent}\@tempdima        
+        \string} ^^J%
+    }%
+    \immediate\closeout\ly@ini@file
+  }%
+  \immediate\write18{\ly@script}%
+  \noindent
+  \let\ly@includegraphics\includegraphics
+  \def\includegraphics##1{%
+    \typeout{including `##1'}%
+    \fboxsep0pt
+    \fbox{\ly@includegraphics{##1}}%
+  }%
+  \InputIfFileExists{\ly@file@name-systems.tex}{}{%
+    \PackageWarning{lilypond}{%
+      could not load \ly@file@name.tex\MessageBreak
+      perhaps you didn't specify  ``--shell-escape'' or \MessageBreak
+      used multiple dots in filenames%
+    }%
+  }%
+  \endgroup
+}
+%    \end{macrocode}
+%
+% without optional parameters
+%
+%    \begin{macrocode}
+\def\ly@lilypondfile@b#1{
+  \ly@lilypondfile@[]{#1}
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \Finale
+% \PrintIndex
+% \PrintChanges
+%</package>
+%<*steiger>
+%    \begin{macrocode}
+\version "2.4.0"
+\include "deutsch.ly"
+
+\header {
+        title = "Der Steiger"
+        composer = "Freiberger Bergliederbüchlein, 1705"
+}
+
+melody =  \relative g' {
+        \key g \major
+        g2 fis4 a  g2 r2  h2 a4 c 
+        h2 r4 g8 a  h4 h h  a8[ h] 
+        c4 a8 a a4 a8 h  c4 e e  d8[ c] 
+        d4 h8 h h4 a  g2 a  h4( e d) c  
+        h2 a | g1
+        \bar "|."
+}
+
+text = \lyricmode {
+      \set stanza = "1."
+      Glück "auf!" Glück "auf!" Der Stei -- ger kommt. Und er hat sein hel -- les _
+      Licht bei der Nacht, und er hat sein hel -- les _  Licht bei der Nacht
+      schon an -- ge -- zündt __ schon an -- ge -- zündt.
+}
+
+accompaniment = \chordmode {
+        g2 d2 g1 g2 d2 g1 g1 d1 d1:7 g2. d4 g2 d2 g2. c4 g2 d g1}
+
+\score { 
+        \simultaneous {
+          \context ChordNames \accompaniment
+             \context Staff = "mel" {
+	       \time 4/4
+	       \context Voice="melodie" {
+		 <<
+		   \melody 
+		   \addlyrics \text
+		 >>
+	       }
+	     }
+        }
+        \layout { }
+        \midi {
+	  \tempo 4 = 120 
+	}
+}
+%    \end{macrocode}
+%</steiger>
+% Local Variables:
+% mode: doctex
+% TeX-master: t
+% End:

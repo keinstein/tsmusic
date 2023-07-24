@@ -1,0 +1,858 @@
+% \iffalse meta-comment
+% vim: textwidth=75
+%<*internal>
+\iffalse
+%</internal>
+%<*readme>
+liederdefs
+==========
+
+           |
+----------:| -----------------------------------------------------------------
+liederdefs:| Some definitions that improve typesetting of songs
+    Author:| Tobias Schlemmer <keinstein@users.sf.net>
+    E-mail:| keinstein@users.sf.net
+   License:| Released under the LaTeX Project Public License v1
+       See:| http://www.latex-project.org/lppl.txt
+
+
+Short description:
+
+This package contains some macros thet help to arrange songs on pages.
+%</readme>
+%<*internal>
+\fi
+\def\nameofplainTeX{plain}
+\ifx\fmtname\nameofplainTeX\else
+  \expandafter\begingroup
+\fi
+%</internal>
+%<*install>
+\input docstrip.tex
+\preamble
+ Copyright ℂ 2022 Tobias Schlemmer
+
+ This program is provided under the terms of the
+ LaTeX Project Public License distributed from CTAN
+ archives in directory macros/latex/base/lppl.txt.
+
+ This work is "maintained" (as per LPPL maintenance status) by
+ Tobias Schlemmer <keinstein@users.sf.net>.
+
+ This work consists of the files
+   liederdefs.dtx and
+   liederdefs.ins
+
+ and the derived file
+   liederdefs.sty.
+
+\endpreamble
+
+\askforoverwritefalse
+\usedir{tex/latex/tsmusic}
+
+% \askforoverwritefalse
+\generate{\file{liederdefs.sty}{\from{liederdefs.dtx}{package}}}
+%</install>
+%<install>\endbatchfile
+%<*internal>
+\usedir{source/latex/tsmusic}
+\generate{
+  \file{\jobname.ins}{\from{\jobname.dtx}{install}}
+}
+\nopreamble\nopostamble
+\usedir{doc/latex/tsmusic}
+\generate{
+  \file{README-liederdefs.txt}{\from{\jobname.dtx}{readme}}
+}
+\ifx\fmtname\nameofplainTeX
+  \expandafter\endbatchfile
+\else
+  \expandafter\endgroup
+\fi
+%</internal>
+% \fi
+% \CheckSum{542}
+% \iffalse
+% ======================================================================
+% liederdefs.dtx 
+% Copyright (C) 2005 Tobias Schlemmer
+%
+% This file is a package to typeset songs a little bit more automatically
+%
+% This file can be redistributed and/or modified under the terms
+% of the LaTeX Project Public License Version 1.2 or later distributed 
+% together with this file. See LEGAL.TXT
+% ======================================================================
+%
+%<*package>
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%</package>
+% \fi
+% \iffalse
+%<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+%<*dtx> 
+\ProvidesFile{liederdefs.dtx}
+%</dtx>
+%<driver> \ProvidesFile{liederdefs.drv}
+%<*dtx> 
+%<*driver>
+[2005/02/12 v0.1 liederdefs
+%</driver>
+%</dtx>
+%<dtx> documented source]
+%<*driver>
+positioning of verses]
+\documentclass[10pt,a4paper]{ltxdoc}
+\usepackage{dtxdescribe}
+\usepackage{liederdefs}
+% \DisableCrossrefs
+\EnableCrossrefs
+\CodelineIndex
+% \OnlyDescription
+\RecordChanges
+\makeatother
+\begin{document}
+  \DocInput{liederdefs.dtx}
+\end{document}
+%</driver>
+% \fi
+% \GetFileInfo{liederdefs.dtx}
+% \title{The \texorpdfstring{|liederdefs.sty|}{liederdefs.sty} Package.\thanks{This file has version \fileversion{} dated
+% \filedate.}}
+% \author{Tobias Schlemmer}
+% \maketitle
+% \DoNotIndex{\!, \', \(, \), \,, \-, \., \:, \;, \?, \`}
+% \DoNotIndex{\@ifundefined, \@onlypreamble, \@tempb, \@tempcnta,
+% \@tempcntb, \@tfor}
+% \DoNotIndex{\A, \a, \addtocounter, \advance, \and, \AtBeginDocument}
+% \DoNotIndex{\bfseries, \B, \b, \boolean}
+% \DoNotIndex{\C, \c, \char, \csname, \CurrentOption}
+% \DoNotIndex{\D, \d, \DeclareOption, \def, \define@key, \divide, \do}
+% \DoNotIndex{\E, \e, \else, \endcsname, \endinput, \equal,
+% \expandafter}
+% \DoNotIndex{\F, \f, \fi, \font, \fontdimen, \fontencoding,
+% \fontfamily, \fontshape, \fontseries, \footnotesize, \f@encoding,
+% \f@shape, \f@series, \f@family}
+% \DoNotIndex{\G, \g, \gdef, \global}
+% \DoNotIndex{\H, \h, \hbox, \Huge, \huge}
+% \DoNotIndex{\I, \i, \ifcase, \IfFileExists, \InputIfFileExists,
+% \ifnum, \ifthenelse, \ifx, \input, \itshape}
+% \DoNotIndex{\J, \j}
+% \DoNotIndex{\K, \k, \KV@errx}
+% \DoNotIndex{\L, \l, \LARGE, \Large, \large, \let, \loop, \lpcode}
+% \DoNotIndex{\M, \m, \mdseries, \MessageBreak, \multiply}
+% \DoNotIndex{\N, \n, \NeedsTeXFormat, \newcommand, \newcounter,
+% \newboolean, \newif, \normalsize}
+% \DoNotIndex{\O, \o, \or}
+% \DoNotIndex{\P, \p, \PackageError, \PackageInfo, \PackageWarning,
+% \pdfoutput, \pdftexrevision, \pdftexversion, \ProcessOptions,
+% \protect,, \protected@edef, \protected@xdef, \pdfprotrudechars, \ProvidesPackage}
+% \DoNotIndex{\Q, \q, \quotedblbase}
+% \DoNotIndex{\R, \r, \relax, \renewcommand, \repeat, \RequirePackage,
+% \rmfamily, \rpcode}
+% \DoNotIndex{\S, \s, \scriptsize, \scshape, \selectfont, \setboolean,
+% \setbox, \setcounter, \setkeys, \sffamily, \slshape, \small, \space,
+% \stepcounter, \string}
+% \DoNotIndex{\T, \t, \textquotedblleft, \tiny}
+% \DoNotIndex{\U, \u, \undefined, \upshape, \usepackage}
+% \DoNotIndex{\V, \v, \value}
+% \DoNotIndex{\W, \w, \wd}
+% \DoNotIndex{\X, \x, \Y, \y, \Z, \z, \z@}
+% \abstract{This package was written to provide the ``normal''
+% \LaTeXe{} user an easy way to typeset song books. In particular it
+% meens that it provides a scheme automatically place song verses
+% depending on linewidth of current line and the lines of the verses}
+% \tableofcontents{}
+% \changes{1.0}{2005/02/12}{First usable Version with incomplete Documentation}
+% \section{Introduction}
+% As the abstract stated this package exists to provide a simple user
+% interface to typeset song booksr.
+%
+% \subsection{A bit of History}
+% Why did I write this package, so you can use it now? 
+% Well, I wanted to typeset a song book, but it was to me too anoying
+% to experiment with the placement of the verses. So I developed a
+% heuristics, how to place them and afterwards I implemented it here
+% in this file.
+%
+% \subsection{Provided Features}
+% This package provides a very simple interface to typeset song
+% verses. I invested some special time to make footnotes work also
+% inside the songs as if the verse would not have been inside a
+% |\parbox|. All songs have automagic verse numbering by using a
+% |enumerate| environment.
+%
+% Besides this it implements some simple repeat marks. Both in line
+% and |\marginpar| like.
+%
+% \section{Using this package.}
+%
+% First you have to invoke it with a |\usepackage{liederdefs}| in
+% the preamble of your document. 
+%
+% \subsection{Requirements}
+%
+% This package need just one package, which should be part of every
+% \LaTeXe{} distribution not too old: |calc.sty|. If it is not installed, get
+% it from |CTAN|.
+%
+% \subsection{Writing songs.}
+%
+% \DescribeEnv{lied}|\begin{lied}|\oarg{versenumber} [\dots] |\end{lied}|
+% Writing songs is as simple as I could make it. One Example
+% demonstrates is usage:
+%
+% \begin{dtxexample}{Song text with refrain}
+%   \begin{lied}[5]
+%     \strophe This is a verse\\
+%     \wdhln with repeat marks\wdhrn\\
+%     \strophe and here comes another verse
+%     with \wdhl\ repeat mark in the \wdhr\ text
+%     \strophe[Refrain:] and a refrain
+%     ;-)
+%   \end{lied}
+% \end{dtxexample}
+% 
+%
+% This small peace of code will print a small piece of the song. It
+% starts with number 5 for the first verse. If you leave out the
+% optional parameter, the verse numbering starts with 2(!). This is
+% not a bug, but a feature, because if you like to insert notes, so
+% you can write the first verse with packages like MusiX\TeX\ or
+% Opus\TeX or programs like LilyPond. Verse numbering in our
+% environment starts then with 2.
+%
+% The |lied| environment prasses its contents two times. The first pass
+% is needed to calculate the length of the longest line of the
+% song. Afterwards the placement of all verses is calculated in a very
+% simple manner: Put as many verses as possible in a horizontal line.
+% Break it and start a new line if necessary.  All lines are centered
+% by default, but this can be changed by redefining the corresponding
+% space macros.
+%
+% Inside the \env{lied} environment the following macros can be used:
+% \begin{description}
+%   \ItemDescribeMacro{\strophe}\oarg{label} starts a verse. The
+%   optional label is typeset instead of the verse number. Internally the
+%   |\strophe| macro calls |\item| and passes the label to it if it
+%   has been given.
+% \end{description}
+%
+% Additionally macros for repeat marks (German: Wiederholung) are defined:
+% \begin{description}
+%   \ItemDescribeMacro{\wdhl}
+%   typesets a left repeat mark as a normal character. It is useful in
+%   normal text and for repeats that start in the middle of a line.
+%   \ItemDescribeMacro{\wdhr}
+%   typesets a right repeat mark as a normal character. It is useful
+%   in normal text and for repeats that end in the middle of a line.
+%   \ItemDescribeMacro{\wdhln} typesets a left repeat mark shifted to
+%   the left and consuming no space. As it is typeset outside of the
+%   verse boundary, it is useful when the complete line belongs to the
+%   repeated text.
+%   \ItemDescribeMacro{\wdhrn} typesets a right repeat mark shifted to
+%   the right and consuming no space. As it is typeset outside of the
+%   verse boundary, it is useful when the complete line belongs to the
+%   repeated text.
+% \end{description}
+%
+% \subsection{Customising the Package}
+%
+%
+% \subsection{Other Commands and Options}
+%
+%
+% \section{Bugs and Caveats}
+%
+% Hopefully there're no bugs left, but only features |;->|. 
+%
+% \section{Contributing}
+%
+% Though it is only developed regarding to my needs almost any
+% contribution is welcome. 
+%
+% \section{Acknowledgements}
+%
+% \StopEventually{}
+% \appendix
+% \section{The Code Itself}
+% 
+% First some remarks: the documentation may be inaccurate in some
+% places, so look at the code and it'll be very likely that the
+% documentation is incomplete.
+%
+% The main attention writing this code
+% was turned on creating a good human readable code. So I decided to
+% use as much \LaTeXe{} control sequences as possible and as less
+% \TeX{} commands as needed. This may slow down the code, but I don't
+% think that's really important.
+%
+% \subsection{The Package}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% First the requirement of \LaTeXe{} and the
+% declaration of the package.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}[1994/12/01]
+\ProvidesPackage{liederdefs}[2005/02/12 v0.1 Definitions for song
+books] 
+%    \end{macrocode}
+% \subsection{Needed external packages}
+%    \begin{macrocode}
+\RequirePackage{calc}
+%    \end{macrocode}
+%
+% \subsection{some stolen code}
+%
+% The following code is stolen from the |amslatex| macro boundle.
+% I need it for scanning the environment twice.
+%
+% \begin{macro}{@emptytoks}
+% \begin{macro}{@nx}
+% \begin{macro}{@xp}
+% But let's start with some simple definistions
+%    \begin{macrocode} 
+\@ifundefined{@emptytoks}{\newtoks\@emptytoks}{}
+\@ifundefined{@nx}{\let\@nx\noexpand}{}
+\@ifundefined{@xp}{\let\@xp\expandafter}{}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \subsection{Scanning the environment's body}
+%
+%    Several of the math alignment macros must scan their body twice:
+%    once to determine how wide the columns are and then to actually
+%    typeset them. This means that we must collect all text in this body
+%    before calling the environment macros.
+%
+%    \begin{macro}{\@envbody}
+%    We start by defining a token register to contain the body.
+%    \begin{macrocode}
+\newtoks\ts@liedertoks
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macro}{\ts@addto@envbody}
+%    Then we define a macro to add something (i.e.\ its argument) to the
+%    token register \cs{@envbody}.
+%    \begin{macrocode}
+\long\def\ts@addto@envbody#1{\global\ts@liedertoks\@xp{\the\ts@liedertoks#1}}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ts@collect@body}
+%    The macro \cs{ts@collect@body} starts the scan for the |\end{...}|
+%    command of the current environment. It takes a macro name as
+%    argument. This macro is supposed to take the whole body of the
+%    environment as its argument. For example, |\begin{align}| would
+%    call |\ts@collect@body\@align| if |@align#1{...}| is the macro that
+%    sets the alignment with body |#1|.
+%
+%    \begin{macrocode}
+\long\def\ts@collect@body#1#2{%
+  \ts@liedertoks{\@xp#1\@xp{\the\ts@liedertoks}{#2}}%
+  \edef\ts@process@envbody{\the\ts@liedertoks\@nx\end{\@currenvir}}%
+  \ts@liedertoks\@emptytoks \def\ts@begin@stack{b}%
+%    \end{macrocode}
+%
+%    If we simply called \cs{ts@collect@@body} directly,
+%    the error message for a \cs{par} token (usually from a blank line)
+%    would be
+% \begin{verbatim}
+% ! Paragraph ended before \ts@collect@@body was complete.
+% \end{verbatim}
+%    But we use a little finesse to get a more intelligible error
+%    message:
+% \begin{verbatim}
+% ! Paragraph ended before \lied was complete.
+% \end{verbatim}
+%    In order to avoid using up csnames unnecessarily we use the actual
+%    environment name as the name of the temporary function that is
+%    \cs{let} to \cs{collect@@body}; but then in order to preserve the
+%    theoretical possibility of nesting for environments that use
+%    \cs{ts@collect@body} (not currently required by any |amsmath|
+%    environment [mjd,1999/06/23]), we do the \cs{let} inside a group.
+%    \begin{macrocode}
+  \begingroup
+  \@xp\let\csname\@currenvir\endcsname\ts@collect@@body
+%    \end{macrocode}
+%    This small twist eliminates the need for \cs{expandafter}'s in
+%    \cs{ts@collect@@body}.
+%    \begin{macrocode}
+  \edef\ts@process@envbody{\@xp\@nx\csname\@currenvir\endcsname}%
+  \ts@process@envbody
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\ts@push@begins}
+%    When adding a piece of the current environment's contents to
+%    \cs{@envbody}, we scan it to check for additional \cs{begin}
+%    tokens, and add a `b' to the stack for any that we find.
+%    \begin{macrocode}
+\long\def\ts@push@begins#1\begin#2{%
+  \ifx\end#2\else b\@xp\ts@push@begins\fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ts@collect@@body}
+%    \cs{collect@@body} takes two arguments: the first will consist of
+%    all text up to the next \cs{end} command, the second will be the
+%    \cs{end} command's argument. If there are any extra \cs{begin}
+%    commands in the body text, a marker is pushed onto a stack by the
+%    \cs{push@begins} function. Empty state for this stack means that we
+%    have reached the \cs{end} that matches our original \cs{begin}.
+%    Otherwise we need to include the \cs{end} and its argument in the
+%    material that we are adding to our environment body accumulator.
+%
+%    In a former implementation, the error messages resulting from a
+%    typo in the environment name were unsatisfactory, because it was
+%    matching of the environment name that was used to determine the end
+%    of our environment body, instead of counting begin-end pairs.
+%    Thanks to Lars Hellstr\"{o}m for a suggestion that led to this
+%    improvement. [mjd,1999/06/23]
+%    \begin{macrocode}
+\long\def\ts@collect@@body#1\end#2{%
+  \edef\ts@begin@stack{\ts@push@begins#1\begin\end \@xp\@gobble\ts@begin@stack}%
+  \ifx\@empty\ts@begin@stack
+    \endgroup%
+    \@checkend{#2}%
+    \ts@addto@envbody{#1}%
+  \else
+    \ts@addto@envbody{#1\end{#2}}%
+  \fi
+  \ts@process@envbody % A little tricky! Note the grouping
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{The lied environment}
+%
+% \subsection{The environment itself}
+%
+% At first we define the environment itself. At the beginning we just
+% collect the whole body (including |\end{lied}|) and feed it together
+% with the optional parameter to |\ts@next|.
+%
+% Fortunately the people at AMS programmed their parser so that
+% I can use the end part of the environment definition. There we save
+% our footnotes for further use and close the last open
+% minipage. Afterwards we close the actual line of verses and the
+% |enumerate| environment.  At the end we feed the footnotes to the
+% latex kernel.
+%
+% 
+%
+% \begin{macro}{lied}
+%    \begin{macrocode}
+\newenvironment{lied}[1][2]{%
+  \ignorespaces%
+  \ts@collect@body{\ts@next}{#1}%
+}
+{
+  \ts@save@insert\footins%
+  \end{minipage}%
+  \ts@strophen@zeilen@ende\par%
+  \end{enumerate}%
+  \egroup%
+  \ts@restore@insert\footins%
+}
+%     \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ts@strophen}
+% \begin{macro}{\ts@mybox}
+%
+% For calculations and for counting the verses in a horizontal line we
+% need two registers:
+%
+%    \begin{macrocode}
+\newcounter{ts@strophen}
+\newbox\ts@mybox
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ts@next}
+%
+% The macro |\ts@next| plays the role of |\lied| which is called at
+% the beginning of the |lied| environment. It gets two parameters:
+% The contents of the environment and the starting number for verse
+% numbers.
+%
+%    \begin{macrocode}
+\newcommand\ts@next[2]{%
+  \begingroup%
+    \let\strophe\relax%
+    \@tempdima0pt%
+%    \end{macrocode}
+%
+% While calculating the line lengths we want to have same and to avoid
+% some other side effects. e.\,g. we use |\par| for separating the
+% lines and comparing the actual line length with the maximal one. On
+% the other hand footnote numbers or verse numbers must not change.
+%
+%    \begin{macrocode}
+    \@setpar{%
+      \egroup%
+      \egroup%
+      \@tempdimb\wd\ts@mybox%
+      \ifnum\@tempdimb>\@tempdima\relax\@tempdima\@tempdimb\fi%
+      \setbox\ts@mybox\hbox\bgroup\bgroup}%
+    \let\cr\par%
+    \let\\\par%
+    \let\hrule\relax%
+    \let\newline\par%
+    \let\strophe\par%
+    \edef\ts@footnote@save@number{\the\c@footnote}
+    \renewcommand\@footnotetext[1]{}%
+    \setbox\ts@mybox\hbox\bgroup\bgroup#1\egroup\egroup%
+    \global\c@footnote\ts@footnote@save@number\relax
+    \@tempdimb\wd\ts@mybox%
+    \ifnum\@tempdimb>\@tempdima\relax\@tempdima\@tempdimb\fi%
+%    \end{macrocode}
+%
+% For debugging reasons we log our measures in the log file.
+%
+%    \begin{macrocode}
+    \PackageInfo{liederdefs}{A= \the\@tempdima}
+    \PackageInfo{liederdefs}{LW= \the\linewidth}
+    \@tempdimb\zwischen@strophen@h@platz
+    \PackageInfo{liederdefs}{h@platz= \the\@tempdimb}
+    \@tempdimb\strophen@l@rand
+    \PackageInfo{liederdefs}{l@rand= \the\@tempdimb}
+    \@tempdimb\strophen@r@rand
+    \PackageInfo{liederdefs}{r@rand= \the\@tempdimb}
+%    \end{macrocode}
+%
+% Now we calculate using the following formula:
+% \[ \#=\frac{\mbox{line width}-\mbox{left space}-\mbox{right space}+\mbox{inner
+%    space}}{\max \{\mbox{verse line width}\}+\mbox{inner space}}\]
+%
+% Further we save our results from the group and optionally issue a
+%    warning message
+%
+%    \begin{macrocode}
+    \xdef\@tempb{\the\@tempdima}%
+    \@tempdimb=\linewidth%
+    \advance\@tempdima\zwischen@strophen@h@platz%
+    \advance\@tempdimb\zwischen@strophen@h@platz%
+    \advance\@tempdimb-\strophen@l@rand%
+    \advance\@tempdimb-\strophen@r@rand%
+    \@tempcnta=0%
+    \ts@for@count\@tempdimb\@tempdima\@tempcnta\relax%
+    \ifnum\the\@tempcnta<1 \relax%
+      \PackageWarning{liederdefs}{Verse exceeds hbox}%
+      \@tempcnta=1 %
+    \fi%
+    \xdef\@tempa{\the\@tempcnta}%
+  \endgroup%
+  \PackageInfo{liederdefs}{\@tempa\space Strophen mit Breite \@tempb.}
+  \let\ts@strophen@anzahl=\@tempa%
+  \let\ts@strophen@breite=\@tempb%
+%    \end{macrocode}
+%
+%  Now we have all to start the real expansion of our environment
+%  data. For first verse we use a special version of |\strophe|, which
+%  doesn't close the leading verse (because it doesn't exist).
+%
+%  Though we are using the |enumerate| environment that spacing is not
+%  very useful for us. So we neutralize it. At the end we initialize
+%  our verse counters. The public enumerate counter and the internal
+%  for calulating the line breaks.
+%
+%    \begin{macrocode}
+  \let\strophe\strophe@anfang%
+  \bgroup%\@setpar{\\}
+  \parskip0pt\parindent0pt%
+  \listparindent0pt%
+  \leftmargin0pt\rightmargin0pt%
+  \edef\ts@linewidth{\the\linewidth}%
+  \edef\ts@leftmargin{\the\leftmargin}%
+  \@tempdima\linewidth%
+  \@tempdimb\leftmargin%
+  \@tempdimc\@totalleftmargin%
+  \par\noindent%
+  \begin{enumerate}%
+  \parskip0pt\parindent0pt%
+  \leftmargin\@tempdimb\linewidth\@tempdima%
+%neu
+  \leftskip\strophen@l@rand plus \ts@strophen@l@fill\relax
+  \rightskip\strophen@r@rand plus \ts@strophen@r@fill\relax
+%/neu
+  \@totalleftmargin\@tempdimc%
+  \@topsep 0pt\itemsep 0pt\itemindent 0pt%
+  \setcounter{\@enumctr}{#2}%
+  \addtocounter{\@enumctr}{-1}%
+  \setcounter{ts@strophen}{0}%
+  \parshape \@ne \@totalleftmargin \linewidth%
+  #1%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Verse management}
+%
+% \begin{macro}{\strophe@anfang}
+%
+% First verse: We have to redefine |\strophe| to use further the other
+% version, start a new line and initialize a verse.
+%
+%    \begin{macrocode}
+\newcommand\strophe@anfang{%
+  \let\strophe\strophe@normal%
+  \ts@strophen@zeilen@anfang%
+  \strophe@doit%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\strophe@normal}
+% Normal verse: stop verse (with eventually starting a new line) 
+% and initialize a new verse.
+%
+%    \begin{macrocode}
+\newcommand\strophe@normal{%
+  \ts@end@strophen%
+  \strophe@doit%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\strophe@doit}
+% Verse initialization: Save some macros for footnote generation,
+% start minipage and create |\item| of |enumerate| environment.
+%
+%    \begin{macrocode}
+\newcommand\strophe@doit{%
+  \stepcounter{ts@strophen}%
+  \let\strophe@mpfn\@mpfn
+  \let\strophe@thempfn\thempfn
+  \begin{minipage}[t]{\ts@strophen@breite}\@minipagefalse%
+    \raggedright%
+  \let\@mpfn\strophe@mpfn%
+  \let\thempfn\strophe@thempfn%
+  \let\@footnotetext\ts@footnote@text%
+  \item%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ts@end@strophe}
+%
+% Ending verses: Save footnotes, end |minipage| environment, restore
+% footnotes. If maximum verse number for this line is reached, stop
+% the current line and start a new one. Otherwise just insert some space.
+%
+%    \begin{macrocode}
+\newcommand\ts@end@strophen{%
+  \ts@save@insert\footins%
+  \end{minipage}%
+  \ts@restore@insert\footins%
+  \ifnum\c@ts@strophen=\ts@strophen@anzahl\relax%
+    \c@ts@strophen=0\relax%
+    \ts@strophen@zeilen@ende
+% neu
+    \nobreak\vadjust{\vskip\zwischen@strophen@v@platz}%
+    \hskip\linewidth plus 0pt minus\linewidth\relax
+% alt
+%    \par\vspace\zwischen@strophen@v@platz%
+% /neu
+    \xdef\ts@save@insert@command{}%
+    \ts@strophen@zeilen@anfang%
+  \else%
+    \nobreak%
+    \expandafter\hskip\zwischen@strophen@h@platz plus%
+    \ts@strophen@fill minus 0pt\relax\nobreak%
+%    \hskip 5em\nobreak
+  \fi%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ts@save@insert}
+% \begin{macro}{\ts@restore@insert}
+% 
+% Saving and restoring the footnotes over environment borders
+% 
+%    \begin{macrocode}
+\newcommand\ts@save@insert[1]{%
+  \xdef\ts@save@insert@command{%
+    \the\ts@footnote@toks}%
+}
+\newcommand\ts@restore@insert[1]{%
+%  \ts@footnote@toks=\expandafter{
+  \ts@save@insert@command%}%  
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\ts@strophen@zeilen@anfang}
+% \begin{macro}{\ts@strophen@zeilen@ende}
+%
+% Start and stop a line, adjust the verse (layout) counter and insert
+% some space at the corresponding margin.
+%
+%    \begin{macrocode}
+\newcommand\ts@strophen@zeilen@anfang{%
+% alt
+%  \hbox to \linewidth\bgroup%
+%  \hskip\strophen@l@rand plus \ts@strophen@l@fill%
+% /alt
+  \c@ts@strophen=0\relax%
+}
+
+\newcommand\ts@strophen@zeilen@ende{%
+%  \ts@save@insert\footins%
+%  \hskip\strophen@r@rand plus %
+%  \ts@strophen@r@fill\egroup%
+%  \ts@save@insert@command%
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \subsection{Utility functions}
+%
+% \begin{macro}{\ts@for@count}
+% Counting macro to calculate the lower Gaussian bracket for the
+% quotient of two dimensions.
+%
+%    \begin{macrocode}
+\newcommand\ts@for@count[3]{%
+  \ifnum#1>#2\relax%
+  \advance#3 by 1\relax%
+  \advance#1 by -#2\relax%
+  \ts@for@count{#1}{#2}{#3}%
+  \fi%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ts@footnote@toks}
+% \begin{macro}{\ts@footnote@text}
+%
+% Utitily function to save all footnote events, which occur inside
+% verses in a register for later use
+%
+%    \begin{macrocode}
+\newtoks\ts@footnote@toks
+\newcommand\ts@footnote@text[1]{%
+  \expandafter\edef\expandafter\@tempa{%
+    \noexpand\expandafter\noexpand\csname c@\noexpand\@mpfn\endcsname%
+    \expandafter\the\csname c@\@mpfn\endcsname}%
+  \expandafter\addto@hook\expandafter\ts@footnote@toks%
+  \expandafter{%
+    \@tempa\relax%
+  }%
+  \expandafter\addto@hook\expandafter\ts@footnote@toks\expandafter{%
+    \expandafter\protected@xdef\expandafter\@thefnmark\expandafter{\@thefnmark}%
+    \@footnotetext{#1}%
+  }%
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\ts@strophen@fill}
+% \begin{macro}{\ts@strophen@l@fill}
+% \begin{macro}{\ts@strophen@r@fill}
+% \begin{macro}{\zwischen@strophen@h@platz}
+% \begin{macro}{\zwischen@strophen@v@platz}
+% \begin{macro}{\strophen@l@rand}
+% \begin{macro}{\strophen@r@rand}
+% Dimensions of the margin and inter verse skips
+%
+%    \begin{macrocode}
+\newcommand\ts@strophen@fill{1fill}
+\newcommand\ts@strophen@l@fill{1fill}
+\newcommand\ts@strophen@r@fill{1fill}
+\newcommand\zwischen@strophen@h@platz{3em}
+\newcommand\zwischen@strophen@v@platz{\baselineskip}
+\newcommand\strophen@l@rand{2em}
+\newcommand\strophen@r@rand{1em}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \subsection{Repeats}
+%
+% \begin{macro}{\wdh}
+%
+% We repet the text
+%
+%    \begin{macrocode}
+\newcommand{\wdh}[1]{#1 #1}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\wdhl}
+% \begin{macro}{\wdhl}
+% In line repeat marks.
+% 
+%    \begin{macrocode}
+%\newcommand\wdhl{$\|$:}
+\newcommand\wdhl{%
+  \@tempdima1ex\relax
+  \@tempdimb1em\relax
+  \advance\@tempdimb -1ex\relax
+  \divide\@tempdimb by 2\relax
+  \advance\@tempdima\@tempdimb\relax
+  \vrule width 0.1em height \@tempdima depth \@tempdimb\relax%
+  \hskip 0.12em\relax
+  \vrule width 0.02em height \@tempdima depth \@tempdimb\relax%
+  $:$}
+\newcommand\wdhr{$:$\ignorespaces
+  \@tempdima1ex\relax
+  \@tempdimb1em\relax
+  \advance\@tempdimb -1ex\relax
+  \divide\@tempdimb by 2\relax
+  \advance\@tempdima\@tempdimb\relax
+  \vrule width 0.02em height \@tempdima depth \@tempdimb\relax%
+  \hskip 0.12em\relax
+  \vrule width 0.1em height \@tempdima depth \@tempdimb\relax%
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\wdhln}
+% \begin{macro}{\wdhln}
+% Repeat marks for left and right ends of verse line.
+% 
+%    \begin{macrocode}
+\newcommand\wdhln{\makebox[0pt][r]{\wdhl\ }}
+\newcommand\wdhrn{\makebox[0pt][l]{\protect\ \wdhr}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \Finale
+% \PrintIndex
+% \PrintChanges
+
