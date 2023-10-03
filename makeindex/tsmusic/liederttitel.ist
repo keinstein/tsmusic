@@ -1,0 +1,47 @@
+%%
+%% This is file `liederttitel.ist',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% liedertitel.dtx  (with options: `makeindex')
+%%  Copyright ℂ 2022 Tobias Schlemmer
+%% 
+%%  This program is provided under the terms of the
+%%  LaTeX Project Public License distributed from CTAN
+%%  archives in directory macros/latex/base/lppl.txt.
+%% 
+%%  This work is "maintained" (as per LPPL maintenance status) by
+%%  Tobias Schlemmer <keinstein@users.sf.net>.
+%% 
+%%  This work consists of the files
+%%    liedertitel.dtx and
+%%    liedertitel.ins
+%% 
+%%  and the derived file
+%%    liedertitel.sty.
+%% 
+preamble
+"\\begin{tsliedindex}"
+postamble
+"\\end{tsliedindex}"
+
+group_skip ""
+
+delim_0 ""
+delim_1 ""
+delim_2 ""
+quote '+'
+headings_flag 1
+heading_prefix "\n\\contentsline {chapter}{\\numberline {"
+heading_suffix "}}{}{}"
+item_0 "\n"
+item_1 "\n"
+item_2 "\n"
+item_01 "\n"
+item_x1 "\n"
+item_12 "\n"
+item_x2 "\n"
+\endinput
+%%
+%% End of file `liederttitel.ist'.

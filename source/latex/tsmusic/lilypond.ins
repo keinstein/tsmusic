@@ -1,0 +1,60 @@
+%%
+%% This is file `lilypond.ins',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% lilypond.dtx  (with options: `install')
+%%  Copyright ℂ 2022 Tobias Schlemmer
+%% 
+%%  This program is provided under the terms of the
+%%  LaTeX Project Public License distributed from CTAN
+%%  archives in directory macros/latex/base/lppl.txt.
+%% 
+%%  This work is "maintained" (as per LPPL maintenance status) by
+%%  Tobias Schlemmer <keinstein@users.sf.net>.
+%% 
+%%  This work consists of the files
+%%    tslilypond.dtx and
+%%    tslilypond.ins
+%% 
+%%  and the derived file
+%%    tslilypond.sty.
+%% 
+\input docstrip.tex
+\preamble
+ Copyright ℂ 2022 Tobias Schlemmer
+
+ This program is provided under the terms of the
+ LaTeX Project Public License distributed from CTAN
+ archives in directory macros/latex/base/lppl.txt.
+
+ This work is "maintained" (as per LPPL maintenance status) by
+ Tobias Schlemmer <keinstein@users.sf.net>.
+
+ This work consists of the files
+   tslilypond.dtx and
+   tslilypond.ins
+
+ and the derived file
+   tslilypond.sty.
+
+\endpreamble
+
+\askforoverwritefalse
+\usedir{tex/latex/tsmusic}
+
+\generate{\file{tslilypond.sty}{\from{lilypond.dtx}{package}}}
+
+\usedir{doc/latex/tsmusic}
+\generate{\file{steiger.ly}{\from{lilypond.dtx}{steiger}}}
+
+\nopreamble\nopostamble
+\usedir{doc/latex/tsmusic}
+\generate{\file{steiger.ly}{\from{lilypond.dtx}{steiger}}}
+\generate{\file{fullexample.ly}{\from{lilypond.dtx}{fullexample}}}
+\generate{\file{fragmentexample.ly}{\from{lilypond.dtx}{fragmentexample}}}
+\endbatchfile
+\endinput
+%%
+%% End of file `lilypond.ins'.

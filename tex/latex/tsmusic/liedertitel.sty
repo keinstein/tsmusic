@@ -1,0 +1,748 @@
+%%
+%% This is file `liedertitel.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% liedertitel.dtx  (with options: `package')
+%%  Copyright ℂ 2022 Tobias Schlemmer
+%% 
+%%  This program is provided under the terms of the
+%%  LaTeX Project Public License distributed from CTAN
+%%  archives in directory macros/latex/base/lppl.txt.
+%% 
+%%  This work is "maintained" (as per LPPL maintenance status) by
+%%  Tobias Schlemmer <keinstein@users.sf.net>.
+%% 
+%%  This work consists of the files
+%%    liedertitel.dtx and
+%%    liedertitel.ins
+%% 
+%%  and the derived file
+%%    liedertitel.sty.
+%% 
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\NeedsTeXFormat{LaTeX2e}[1994/12/01]
+\ProvidesPackage{liedertitel}[2005/02/12 v0.1 Titelei für
+Liederbücher]
+\newif\ifanfangtotoc
+\anfangtotocfalse
+\DeclareOption{anfangtotoc}{\anfangtotoctrue}
+\DeclareOption{noanfangtotoc}{\anfangtotocfalse}
+\newif\ifanfangtoidx
+\anfangtoidxtrue
+\DeclareOption{noanfangtoidx}{\anfangtoidxfalse}
+\DeclareOption{anfangtoidx}{\anfangtoidxtrue}
+\ProcessOptions\relax
+\RequirePackage{minitoc}
+\RequirePackage{makeidx}
+\RequirePackage[splitindex]{imakeidx}
+\newcommand{\nix}[1]{}%
+\let\nix\@gobble%
+\AtBeginDocument{\@ifundefined{texorpdfstring}{\let\texorpdfstring\@firstoftwo}{}}
+\newcommand\ts@hyperpage[1][\thecontentspage]{%
+  \edef\@tempa{page.\@firstofone #1}
+  \hyperlink{\@tempa}{%i-3}{a}%{
+    \contentspage[#1]}%
+}
+\newcounter{ts@toc@chapter}
+\newcounter{ts@toc@section}[ts@toc@chapter]
+\edef\ts@toc@widowlines{3}
+\edef\ts@toc@clublines{3}
+\def\ts@toc@numberline#1\,#2\ts@end@toc@numberline{#1\hfill #2\enspace\enspace}
+\newcommand*\ts@measure@toc[2][1]{%
+  \begingroup
+  \@tempdima=0pt
+  \@tempdimb=0pt
+  \@tempdimc=0pt
+  \xdef\ts@toc@sectionwidth{0pt}%
+  \xdef\ts@toc@labelwidth{0pt}%
+  \xdef\ts@toc@pagewidth{0pt}%
+  \def\ts@tempa{0pt}%
+  \setcounter{ts@toc@chapter}0
+  \setcounter{ts@toc@section}0
+  \def\l@section##1##2{%
+    \stepcounter{ts@toc@section}%
+    \def\numberline####1{%
+      \setbox\@tempboxa\hbox{%
+        \ts@toc@section@lab@font \expandafter\ts@toc@numberline####1\ts@end@toc@numberline
+      }%
+      \ifnum\wd\@tempboxa>\@tempdima\relax
+        \@tempdima\wd\@tempboxa\relax
+      \fi
+      \xdef\ts@tempa{\the\@tempdima}%
+    }%
+    \setbox\@tempboxb\hbox{\ts@toc@section@tit@font ##1}%
+    \ifnum\wd\@tempboxb>\@tempdimb\relax
+      \@tempdimb\wd\@tempboxb\relax
+    \fi
+    \@tempdima\ts@tempa\relax
+    \setbox\@tempboxb\hbox{\ts@toc@section@num@font ##2\enspace}%
+    \ifnum\wd\@tempboxb>\@tempdimc\relax
+      \@tempdimc\wd\@tempboxb\relax
+    \fi
+    \xdef\ts@toc@sectionwidth{\the\@tempdima}%
+    \xdef\ts@toc@labelwidth{\the\@tempdimb}%
+    \xdef\ts@toc@pagewidth{\the\@tempdimc}%
+  }%
+  \def\l@chapter##1##2{%
+    \expandafter\xdef%
+    \csname ts@toc@max@sect@\romannumeral\c@ts@toc@chapter\endcsname{%
+        \the\c@ts@toc@section}%
+    \stepcounter{ts@toc@chapter}%
+    \def\numberline####1{\ts@toc@chapter@lab@font ####1\enspace}%
+    \setbox\@tempboxb\hbox{\ts@toc@chapter@tit@font ##1}%
+    \xdef\ts@toc@sectionwidth{\the\@tempdima}%
+    \xdef\ts@toc@labelwidth{\the\@tempdimb}%
+    \xdef\ts@toc@pagewidth{\the\@tempdimc}%
+  }%
+  \def\l@part##1##2{\ignorespaces}%
+  \let\l@subsection\l@section
+  \let\leavevmode\relax
+  \@input{#2}%ö
+  \ifnum#1=0\relax
+    \xdef\ts@toc@pagewidth{0pt}%
+  \fi
+  \expandafter\xdef%
+  \csname ts@toc@max@sect@\romannumeral\c@ts@toc@chapter\endcsname{%
+      \the\c@ts@toc@section}%
+  \xdef\ts@toc@max@chap{\the\c@ts@toc@chapter}%
+  \@tempdima\ts@toc@sectionwidth\relax
+  \@tempdimb\ts@toc@labelwidth\relax
+  \@tempdimc\ts@toc@pagewidth\relax
+  \typeout{Masze:
+  \the\@tempdima\space-\space\the\@tempdimb\space-\space\the\@tempdimc}%
+  \advance\@tempdimb\@tempdima\relax
+  \advance\@tempdimb\@tempdimc\relax
+  \xdef\ts@toc@linewidth{\the\@tempdimb}%
+  \ifnum\@tempdimb>\linewidth\relax
+    \@tempdimb\linewidth\relax
+    \advance\@tempdimb-\ts@toc@sectionwidth\relax
+    \advance\@tempdimb-\ts@toc@pagewidth\relax
+    \xdef\ts@toc@labelwidth{\the\@tempdimb}%
+    \xdef\ts@toc@margin{0pt}%
+    \global\let\ts@toc@tot@leftmargin\ts@toc@sectionwidth
+    \global\let\ts@toc@tot@rightmargin\ts@toc@pagewidth
+  \else
+    \@tempdima\linewidth\relax
+    \advance\@tempdima-\@tempdimb\relax
+    \divide\@tempdima by 2\relax
+    \xdef\ts@toc@margin{\the\@tempdima}%
+    \advance\@tempdima\ts@toc@sectionwidth\relax
+    \xdef\ts@toc@tot@leftmargin{\the\@tempdima}%
+    \@tempdima\ts@toc@margin\relax
+    \advance\@tempdima \ts@toc@pagewidth\relax
+    \xdef\ts@toc@tot@rightmargin{\the\@tempdima}%
+  \fi
+  \endgroup
+}%
+\newcommand\ts@set@toc@margins{
+  \widowpenalties 6  \@M \@M \@highpenalty \@medpenalty \@lowpenalty 0
+  \clubpenalties 6 \@M \@M  \@highpenalty \@medpenalty \@lowpenalty 0
+  \rightskip \ts@toc@tot@rightmargin plus 1fil\relax
+  \leftskip \ts@toc@tot@leftmargin plus 1fil\relax
+  \parindent \z@ \relax\@afterindenttrue
+  \parskip \z@\relax
+}
+\def\ts@toc@numberline#1\,#2\ts@end@toc@numberline{#1\hfill #2\enspace\enspace}
+\newcommand*\ts@def@toc@sections{\ignorespaces
+  \@ifundefined{chapter}{}{%
+    \setcounter{ts@toc@chapter}0\relax
+  }
+  \setcounter{ts@toc@section}0\relax
+  \def\l@part##1##2{\par}%
+  \def\l@xpart##1##2{\par}%
+  \def\l@chapter##1##2{\ignorespaces%
+    %\ts@set@toc@margins
+    \par%
+    \@ifundefined{chapter}{}{\stepcounter{ts@toc@chapter}}%
+    \def\numberline####1{{\ts@toc@chapter@lab@font ####1\enspace}}%
+    \bigskip\pagebreak[3]%
+    \centerline{%
+      \parbox{\ts@toc@linewidth}{%
+        \centering%
+        \ts@toc@chapter@tit@font ##1%\\*[0.25em]%
+      }%
+    }\nobreak%
+    {%
+      \interlinepenalty\@M
+      % \nobreak
+      \vskip0.5\baselineskip
+      % \nobreak
+    }%
+    %\ts@set@toc@margins
+    {%
+      \interlinepenalty\@M
+      \leavevmode
+    }%
+    \raggedbottom%
+    \ignorespaces
+  }%
+  \def\l@section##1##2{%
+    \ifnum 1>\c@tocdepth \else
+      {%
+        \ifvmode\leavevmode\fi
+        \vadjust{\nobreak\vskip0.2em plus 0.2pt\relax\nobreak}%
+        \global\stepcounter{ts@toc@section}%
+        \def\@pnumwidth{0pt}%
+        \def\numberline####1{%
+          \makebox[0pt][r]{%
+            \parbox[t]{\ts@toc@sectionwidth}{%
+              \ts@toc@section@lab@font
+              \expandafter\ts@toc@numberline####1\ts@end@toc@numberline
+            }%
+          }%
+        }%
+        \parbox{\ts@toc@labelwidth}{
+          \ts@toc@section@tit@font ##1\nobreak
+          \leaders\hbox{$\m@th
+            \mkern \@dotsep mu\hbox{.}\mkern \@dotsep
+            mu$}\hfill
+          \nobreak
+          \makebox[0pt][l]{%
+            \hb@xt@\ts@toc@pagewidth{\hfil\ts@toc@section@num@font\normalcolor
+              \hyperpage{##2}%
+            }%
+          }%
+        }%\nobreak
+        % \expandafter\@tempcnta%
+        % \csname ts@toc@max@sect@\romannumeral\c@ts@toc@chapter\endcsname\relax
+        % \advance\@tempcnta-\c@ts@toc@section\relax
+        \par
+      }%
+    \fi
+    \ignorespaces
+  }%
+  \let\l@subsection\l@section
+  \let\chapterbegin\relax
+  \ignorespaces
+}
+\def\ts@toc@chapter@lab@font{\normalfont\large\bfseries}
+\def\ts@toc@chapter@tit@font{\normalfont\large\bfseries}
+\def\ts@toc@section@lab@font{\normalfont\normalsize}
+\def\ts@toc@section@tit@font{\normalfont\normalsize}
+\def\ts@toc@section@num@font{\normalfont\normalsize}
+\let\ts@tableofcontents\tableofcontents
+\def\ts@tableofcontents@par{\par}
+\def\tableofcontents{%
+  \begingroup%a
+    \ts@begin@liedindex{\jobname.toc}%
+    \pdfbookmark[0]{\contentsname}{inhalt}%
+     \if@twocolumn
+       \@restonecoltrue\onecolumn
+     \else
+       \@restonecolfalse
+     \fi
+    \@ifundefined{chapter}{%
+      \section*{\centering\contentsname}%
+      \@mkboth{\contentsname}{\contentsname}%
+    }{%
+      \chapter*{\centering\contentsname}%
+      \@mkboth{\contentsname}{\contentsname}%
+    }%
+    % \if@tocleft\before@starttoc{toc}\fi%
+    \raggedbottom
+    \ts@set@toc@margins
+    \@starttoc{toc}%
+    \ts@tableofcontents@par% mask the paragraph to make hypdoc happy
+    \@ifundefined{if@tocleft}{}{%
+      \if@tocleft\after@starttoc{toc}\fi%
+    }%
+    \if@restonecol\twocolumn\fi
+   \endgroup%
+ }
+\newcommand\ts@begin@liedindex[1]{
+  \begingroup
+  \renewenvironment{tsliedindex}{}{}%
+  \ts@measure@toc{#1}%
+  \endgroup
+  \ts@def@toc@sections
+  \ts@set@toc@margins
+  \@lowpenalty 0
+}
+\newenvironment{tsliedindex}
+{%
+  \ts@begin@liedindex{\jobname-liedtitles.ind}%
+  \par
+  \pdfbookmark[0]{\indexname}{alphinhalt}%
+  \@ifundefined{chapter}{%
+    \section*{\centering\indexname}\@mkboth{\indexname}{\indexname}%
+  }{%
+    \chapter*{\centering\indexname}\@mkboth{\indexname}{\indexname}%
+  }%
+  \ts@set@toc@margins
+}
+{\par\clearpage}
+\makeindex[name=liedtitles,options=-s liedertitel,intoc=true,columns=1]
+\newcommand\printliedindex{%
+  \printindex[liedtitles]%
+}
+\newcommand\ts@minitoc{%
+  \begingroup
+    \if@twocolumn
+      \@restonecoltrue\onecolumn
+    \else
+      \@restonecolfalse
+    \fi
+    \if@mtc@longext@
+      \def\@tocfile{\jobname.mtc\The@mtc}%  % UNIX
+    \else
+      \def\@tocfile{\jobname.M\The@mtc}%    % MS-DOS
+    \fi
+    \def\ts@toc@numberline##1\,##2\ts@end@toc@numberline{\hfill
+      ##2\enspace\enspace}%
+    \makeatletter
+    \ts@measure@toc[0]{\@tocfile}%
+    \ts@def@toc@sections
+    \ts@set@toc@margins
+    \par
+    {%
+      \interlinepenalty\@M
+      \leavevmode
+    }%
+    \ignorespaces
+    \def\ts@mtc@numberline##1\,##2\ts@end@mtc@numberline{\hfill ##2\enspace\enspace}%
+    \def\l@section##1##2{%
+      {%
+        \ifvmode
+          \leavevmode
+        \fi
+        %\ts@set@toc@margins
+        {\vadjust{\nobreak\vskip0.2em plus 0.2pt\relax\nobreak}}%
+        \def\@pnumwidth{0pt}%
+                                %      \vskip0.2em \@plus.2\p@
+        \def\numberline####1{%
+           \makebox[0pt][r]{%
+             \parbox[t]{\ts@toc@sectionwidth}{%
+               \ts@toc@section@lab@font
+               \expandafter\ts@mtc@numberline####1\ts@end@mtc@numberline
+             }%
+           }%
+         }
+        \parbox{\ts@toc@labelwidth}{%
+          {%
+            \ts@toc@section@tit@font%
+             ##1%
+          }\hfill%
+        }%
+      }%
+      \ignorespaces
+    }%
+    \let\l@subsection\l@section
+    \ignorespaces\makeatletter
+    \@input{\@tocfile}
+    \par
+  \endgroup
+}
+\iffalse
+\show\MTC@contentsline
+\def\MTC@contentsline#1#2#3#4{% %%HO/BJ: 4 instead of 3 parameters
+  \gdef\themtc{\arabic{mtc}}% %%HO: space removed
+  \expandafter\ifx\csname #1\endcsname\chapter
+    \stepcounter{mtc}% % the mtc counter simulates the chapter counter
+    \if@mtc@longext@
+      % \if@longextensions%
+      \mtcPackageInfo [I0033]{minitoc}{Writing\space \jobname .mtc\themtc \@gobble }%     % UNIX
+      \def\mtcname{\jobname.mtc\themtc}%              % UNIX
+    \else
+      \mtcPackageInfo [I0033]{minitoc}{Writing\space \jobname .M\themtc \@gobble }%       % MS-DOS
+      \def\mtcname{\jobname.M\themtc}%                % MS-DOS
+    \fi
+    \immediate\closeout\tf@mtc % close current .mtcN .mtc->.M on MS-DOS
+    \immediate\openout\tf@mtc=\mtcname % open next .mtcN (.mtc->.M if MS-DOS)
+  \fi
+  \mtc@toks{\noexpand \leavevmode #2}%
+  \expandafter\ifx\csname #1\endcsname\section
+    \MTC@WriteContentsline{#1}{mtcS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\coffee
+    \MTC@WriteCoffeeline{#1}{#3}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\subsection
+    \MTC@WriteContentsline{#1}{mtcSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\subsubsection
+    \MTC@WriteContentsline{#1}{mtcSSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\paragraph
+    \MTC@WriteContentsline{#1}{mtcP}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\subparagraph
+    \MTC@WriteContentsline{#1}{mtcSP}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starchapter
+    \stepcounter{mtc}% % the mtc counter simulates the chapter counter
+    \if@mtc@longext@
+      \mtcPackageInfo [I0033]{minitoc}{Writing\space \jobname .mtc\themtc \@gobble }%     % UNIX
+      \def\mtcname{\jobname.mtc\themtc}%              % UNIX
+    \else
+      \mtcPackageInfo [I0033]{minitoc}{Writing\space \jobname .M\themtc \@gobble }%       % MS-DOS
+      \def\mtcname{\jobname.M\themtc}%                % MS-DOS
+    \fi
+    \immediate\closeout\tf@mtc % close current .mtcN .mtc->.M on MS-DOS
+    \immediate\openout\tf@mtc=\mtcname % open next .mtcN (.mtc->.M if MS-DOS)
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsection
+    \MTC@WriteContentsline{#1}{mtcS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsubsection
+    \MTC@WriteContentsline{#1}{mtcSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsubsubsection
+    \MTC@WriteContentsline{#1}{mtcSSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starparagraph
+    \MTC@WriteContentsline{#1}{mtcP}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsubparagraph
+    \MTC@WriteContentsline{#1}{mtcSP}{#3}{#4}%
+  \fi
+}
+\show\MTC@WriteContentsline
+\def\MTC@WriteContentsline#1#2#3#4{%
+  % #1: #1 of \MTC@contentsline
+  % #2: font shorthand ==> \csname #2font\endcsname
+  % #3: #3 of \MTC@contentsline
+  % #4: #4 of \MTC@contentsline
+  \def\mtc@param{#4}%
+  \immediate\write\tf@mtc{%
+    {%
+ %     \string\reset@font
+ %     \expandafter\string\csname #2font\endcsname
+ \string\mtc@string
+      \string\contentsline{#1}%
+      {\the\mtc@toks}%
+      {%
+        \space #3%
+      }%
+      \ifx\mtc@dot\mtc@param
+      \else
+        {#4}% %%HO/BJ: #4 is hyperlink
+      \fi
+    }%
+  }%
+}
+\fi
+\def\MTC@contentsline#1#2#3#4{%
+  \gdef\themtc{\arabic{mtc}}%
+  \expandafter\ifx\csname #1\endcsname\chapter
+    \stepcounter{mtc}%
+    \if@mtc@longext@%
+      \mtcPackageInfo[I0033]{minitoc}%
+         {Writing\space\jobname.mtc\themtc\@gobble}%
+      \def\mtcname{\jobname.mtc\themtc}%
+    \else
+      \mtcPackageInfo[I0033]{minitoc}%
+         {Writing\space\jobname.M\themtc\@gobble}%
+      \def\mtcname{\jobname.M\themtc}%
+    \fi
+    \immediate\closeout\tf@mtc
+    \immediate\openout\tf@mtc=\mtcname
+  \fi
+  \expandafter\ifx\csname #1\endcsname\appendix
+    \stepcounter{mtc}%
+    \if@mtc@longext@%
+      \mtcPackageInfo[I0033]{minitoc}%
+         {Writing\space\jobname.mtc\themtc\@gobble}%
+      \def\mtcname{\jobname.mtc\themtc}%
+    \else
+      \mtcPackageInfo[I0033]{minitoc}%
+         {Writing\space\jobname.M\themtc\@gobble}%
+      \def\mtcname{\jobname.M\themtc}%
+    \fi
+    \immediate\closeout\tf@mtc
+    \immediate\openout\tf@mtc=\mtcname
+  \fi
+  \mtc@toks{#2}%
+  \expandafter\ifx\csname #1\endcsname\section
+    \MTC@WriteContentsline{#1}{mtcS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\subsection
+    \MTC@WriteContentsline{#1}{mtcSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\subsubsection
+    \MTC@WriteContentsline{#1}{mtcSSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\paragraph
+    \MTC@WriteContentsline{#1}{mtcP}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\subparagraph
+    \MTC@WriteContentsline{#1}{mtcSP}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\coffee
+    \MTC@WriteCoffeeline{#1}{#3}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starchapter
+    \stepcounter{mtc}%
+    \if@mtc@longext@
+      \mtcPackageInfo[I0033]{minitoc}%
+         {Writing\space\jobname.mtc\themtc\@gobble}%
+      \def\mtcname{\jobname.mtc\themtc}%
+    \else
+      \mtcPackageInfo[I0033]{minitoc}%
+         {Writing\space\jobname.M\themtc\@gobble}%
+      \def\mtcname{\jobname.M\themtc}%
+    \fi
+    \immediate\closeout\tf@mtc
+    \immediate\openout\tf@mtc=\mtcname
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsection
+    \MTC@WriteContentsline{#1}{mtcS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsubsection
+    \MTC@WriteContentsline{#1}{mtcSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsubsubsection
+    \MTC@WriteContentsline{#1}{mtcSSS}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starparagraph
+    \MTC@WriteContentsline{#1}{mtcP}{#3}{#4}%
+  \fi
+  \expandafter\ifx\csname #1\endcsname\starsubparagraph
+    \MTC@WriteContentsline{#1}{mtcSP}{#3}{#4}%
+  \fi
+}
+\def\MTC@WriteContentsline#1#2#3#4{%
+  \def\mtc@param{#4}%
+  \immediate\write\tf@mtc{%
+    \string\contentsline{#1}%
+    {\the\mtc@toks}%
+    {#3}%
+    \ifx\mtc@dot\mtc@param
+    \else
+      {#4}%
+    \fi
+  }%
+}
+\dominitoc
+\newcommand\tsnewsectionlabel[2]{%
+  \expandafter\xdef\csname ts@sect@page@#1\endcsname{#2}%
+}
+\newcommand\titel{\@dblarg{\@titel}}
+\newcommand{\@titel}[2][]{%
+  \@ifnextchar[{\@@titel[{#1}]{#2}}{\@@titel[{#1}]{#2}[{#1}]}%]
+}
+\newcommand\theonlypage{\the\c@page}
+\newcommand\@@titel{}
+\def\ts@hangsection#1#2{%
+  \noindent
+   \setbox\@tempboxa\hbox{#1}%
+   \ifnum#2<0\relax
+     \rightskip\wd\@tempboxa\relax
+     \leftskip0pt plus 1fil\relax
+     \@tempdima\linewidth\relax
+     \makebox[0pt][l]{\hb@xt@\linewidth{\hfill\box\@tempboxa}}\hfill%
+   \else
+     \leftskip\wd\@tempboxa\relax
+     \rightskip0pt plus 1fil\relax
+     \makebox[0pt][r]{\box\@tempboxa}%
+   \fi
+}
+
+\def\@@titel[#1]#2[#3]{%
+  \pagebreak[3]\par
+  \let\ts@sectcntformat\@seccntformat
+  \let\@seccntformat\@gobble%
+       \section[#1]{%
+   \expandafter\expandafter\expandafter\ifodd \expandafter0%
+     \csname
+     ts@sect@page@\the\c@chapter-\the\c@section\endcsname\relax
+%%      \@startsection {section}{1}{0pt}%
+%%        {3.5ex \@plus 1ex \@minus .2ex}%
+%%        {2.3ex \@plus .2ex}%
+%%        {\normalfont \Large \bfseries }%
+\raggedleft\ts@hangsection{\hskip\ts@sectionskip\relax\thesection}{-3}#2%   \show\@seccntformat
+   \else
+%%      \@startsection {section}{1}{\z@ }%
+%%        {3.5ex \@plus 1ex \@minus .2ex}%
+%%        {2.3ex \@plus .2ex}%
+%%        {\normalfont \Large \bfseries }%
+\raggedright\ts@hangsection{\thesection\hskip\ts@sectionskip\relax}{3}#2%   \show\@seccntformat
+\fi
+}%
+   \let\@seccntformat\ts@sectcntformat
+   \index[liedtitles]{#3@\protect\contentsline{section}{%
+       \protect\numberline{\thesection}#1}{\thepage}{\@currentHref}|nix}%
+   \nopagebreak%
+   \@bsphack
+     \protected@write\@auxout{\let\theonlypage\relax}{%
+       \string\tsnewsectionlabel{\the\c@chapter-\the\c@section}{\theonlypage}}%
+   \@esphack
+}
+\def\ts@sectionskip{2ex}
+\newcommand\liedanfang{}
+\def\liedanfang{\@ifnextchar[\lied@nfang\lied@nf@ng}%]
+\newcommand{\lied@nf@ng}[1]{%
+  \lied@nfang[#1]{#1}
+}
+\newcommand\lied@nfang{}
+\def\lied@nfang[#1]#2{%
+  \ifanfangtoidx
+    \index[liedtitles]{#1@\protect\contentsline{section}{%
+        \protect\numberline{\thesection}#2}{\thepage}{\@currentHref}|nix}%
+  \fi
+  \ifanfangtotoc
+    \addcontentsline{toc}{section}{\protect\numberline{\thesection}#2}%
+  \fi
+  \lied@after@anfang
+}
+\newcommand\lied@after@anfang{}
+\newcommand\lied@after@anfang@totoc{%
+  \anfangtotocfalse
+  \let\lied@after@anfang\relax
+}
+\newcommand\tocliedanfang{
+  \anfangtotoctrue
+  \let\lied@after@anfang\lied@after@anfang@totoc
+  \liedanfang
+}
+\newcommand{\abschnitt}{}
+\def\abschnitt{
+  \raggedbottom
+  \@ifnextchar[\@bschnitt\@abschnitt%
+}%]
+\long\def\@bschnitt[#1]#2{%
+   \refstepcounter{chapter}%
+   \stepcounter{mtc}%
+   \chapter*{\centering\chaptername\ \thechapter.\\ #2}%
+   \chaptermark{#1}%
+   \addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}#1}%
+   \@tempcnta=\c@page\relax
+   \advance\@tempcnta-1\relax
+   \xdef\ts@save@sectionpage{\the\@tempcnta}%
+   \setcounter{tsrelpage}1
+   \@ifundefined{minitoc}{}{%
+     %\minitoc
+     \ts@minitoc
+   }%
+  \cleardoublepage
+}
+\long\def\@abschnitt#1{%
+  \@bschnitt[{#1}]{#1}%
+}
+\newcommand*\includekapitel[1]{
+  \def\input@path{{#1/}}
+  \setlilypondinputpath{{#1/}}
+  \include{#1}
+}
+\newcommand\ts@nw@textname{Text: }
+\newcommand\ts@nw@melodiename{Melodie: }
+\newcommand\ts@nw@textundmelodiename{Text und Melodie: }
+\newcommand\ts@nw@text{}
+\let\ts@nw@text\@empty
+\newcommand\ts@nw@melodie{}
+\let\ts@nw@melodie\@empty
+\newcommand\ts@nw@textundmelodie{}
+\let\ts@nw@textundmelodie\@empty
+\newcommand\liedautor[1]{\edef\ts@nw@text{#1}}
+\newcommand\liedkomponist[1]{\edef\ts@nw@melodie{#1}}
+\newcommand\liedautorundkomponist[1]{\edef\ts@nw@textundmelodie{#1}}
+\newcommand\liedaltesbuch[1]{%
+  \def\ts@nw@altbuch{#1}%
+}
+\let\ts@nw@altbuch\@empty%
+\newcommand\liedaltenummer[1]{%
+  \edef\ts@nw@altnummer{#1}
+}
+\let\ts@nw@altnummer\@empty
+\newcommand\nachweis{%
+  {\footnotesize\selectfont\parskip0pt\parindent0pt%
+    \ifx\ts@nw@altnummer\@empty%
+    \else
+      \@@line{%
+        \hfill\ts@nw@altbuch: \ts@nw@altnummer%
+      }\nopagebreak
+    \fi
+    \ifx\ts@nw@textundmelodie\@empty%
+    \else%
+      \@@line{%
+        \hfill\ts@nw@textundmelodiename\ts@nw@textundmelodie%
+      }\nopagebreak%
+    \fi%
+    \ifcase 0%
+      \ifx\ts@nw@text\@empty\else 1\fi%
+      \ifx\ts@ne@melodie\@empty\else 1\fi%
+    \relax
+    \else
+      \settowidth\@tempdima{\ts@nw@textname\ts@nw@text}%
+      \settowidth\@tempdimb{\ts@nw@melodiename\ts@nw@melodie}%
+      \@tempdimc\@tempdima
+      \advance\@tempdimc\@tempdimb%
+      \advance\@tempdimc 1em%
+      \ifnum\@tempdimc<\linewidth\relax
+        \@@line{
+          \ifx\ts@nw@text\@empty%
+          \else%
+            \settowidth\@tempdima{\ts@nw@text}%
+            \ts@nw@textname\parbox[t]{\@tempdima}{\ts@nw@text}%
+          \fi%
+          \hfill%
+          \ifx\ts@nw@melodie\@empty%
+          \else%
+            \settowidth\@tempdima{\ts@nw@melodie}%
+            \ts@nw@melodiename\parbox[t]\@tempdima\ts@nw@melodie
+          \fi%
+        }%
+      \else%
+        \begin{raggedleft}%
+        \ifx\ts@nw@text\@empty%
+        \else\ts@nw@textname\ts@nw@text\\*%
+        \fi%
+        \ifx\ts@nw@melodie\@empty%
+        \else\ts@nw@melodiename\ts@nw@melodie\\*%
+        \fi%
+        \end{raggedleft}%
+      \fi%
+    \fi%
+    \nopagebreak\medskip\nopagebreak%
+  }%
+  \let\ts@nw@text\@empty%
+  \let\ts@nw@melodie\@empty%
+  \let\ts@nw@textundmelodie\@empty%
+  \let\ts@nw@altnummer\@empty%
+}
+\newcommand\liedfile{}
+\def\liedfile{%
+  \nachweis\lilypondfile
+}
+\AtEndDocument{\cleardoublepage}
+\parindent0pt
+\pagestyle{empty}
+\@ifundefined{@tempboxb}{\newbox\@tempboxb}{}%
+\@ifundefined{chapter}{}{%
+  \newcounter{tsrelpage}
+  \@addtoreset{tsrelpage}{chapter}
+  \renewcommand{\thechapter}{\Alph{chapter}}
+  \renewcommand{\thesection}{\thechapter\texorpdfstring{\,}{ }\arabic{section}}
+  \renewcommand{\thepage}{%
+    \roman{chapter}-\thetsrelpage%
+  }
+  \AtBeginDvi{%
+    \global\setcounter{tsrelpage}{\value{page}}%
+  }
+  \global\let\ts@outputpage\@outputpage
+  \gdef\@outputpage{%
+    \ts@outputpage%
+    \global\c@tsrelpage\the\c@page\relax%
+    \global\advance\c@tsrelpage-\ts@save@sectionpage\relax%
+  }%
+}
+\xdef\ts@save@sectionpage{0}
+\endinput
+%%
+%% End of file `liedertitel.sty'.

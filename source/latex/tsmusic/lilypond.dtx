@@ -68,6 +68,8 @@ This package contains some macros thet help to arrange songs on pages.
 \nopreamble\nopostamble
 \usedir{doc/latex/tsmusic}
 \generate{\file{steiger.ly}{\from{lilypond.dtx}{steiger}}}
+\generate{\file{fullexample.ly}{\from{lilypond.dtx}{fullexample}}}
+\generate{\file{fragmentexample.ly}{\from{lilypond.dtx}{fragmentexample}}}
 %</install>
 %<*internal>
 \usedir{doc/latex/tsmusic}
@@ -117,21 +119,40 @@ This package contains some macros thet help to arrange songs on pages.
 % \iffalse
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<*dtx> 
-\ProvidesFile{lilypond.dtx}
+\ProvidesFile{lilypond.dtx}%
 %</dtx>
-%<driver> \ProvidesFile{lilypond.drv}
-%<*dtx> 
-%<*driver>
-[2005/02/12 v0.1 lilypond
-%</driver>
-%</dtx>
+%<driver>\ProvidesFile{lilypond.drv}%
+%<package>\ProvidesPackage{tslilypond}%
+%<*package|dtx|driver>
+[2023/09/06 v0.1  lilypond-book
+inside latex%
+%</package|dtx|driver>
 %<dtx> documented source]
+%<package>]
 %<*driver>
  bundle]
 \documentclass[10pt,a4paper]{ltxdoc}
 \usepackage[a4paper,BCOR20mm,DIV12]{typearea}
 \usepackage{dtxdescribe}
+\newcommand\PGF{\acro{PGF}}
 \usepackage{tslilypond}
+% lilypond snippets contain at least one comment (`% eof')
+% So we save the original catcode here and
+% restore it at the beginning of each lilypond snippet.
+% After the snippet the catcode is restored that was in charge before
+% the snippet. Nested \edefs  need nested \noexpands ;-)
+\edef\tspercentcomments{%
+  \noexpand\edef\noexpand\tsendpercentcomments{%
+    \noexpand\noexpand\noexpand\catcode`\noexpand\noexpand\%=\noexpand\the\noexpand\catcode`\noexpand\%%
+  }%
+  \noexpand\catcode`\noexpand\%=\the\catcode`\%
+}
+\newcommand\preLilyPondExample{%
+  \tspercentcomments
+}
+\newcommand\postLilyPondExample{%
+  \tsendpercentcomments
+}
 %\usepackage[activate=normal]{pdfcprot}
 %\usepackage{array,tabularx}
 %\DisableCrossrefs
@@ -191,7 +212,7 @@ This package contains some macros thet help to arrange songs on pages.
 % \DoNotIndex{\W, \w, \wd}
 % \DoNotIndex{\X, \x, \Y, \y, \Z, \z, \z@}
 % \makeatother
-% \title{The \texttt{lilypond.sty} Package.\thanks{This file has version \fileversion{} dated
+% \title{The \texttt{tslilypond.sty} Package.\thanks{This file has version \fileversion{} dated
 % \filedate.}}
 % \author{Tobias Schlemmer}
 % \maketitle
@@ -273,17 +294,15 @@ This package contains some macros thet help to arrange songs on pages.
 % |linewidth|, |raggedbottom|, |topmargin| and |leftmargin|. The
 % latter two are set to 0 to not compromise the \TeX\ formatting.
 %
-% \begin{dtxexample}{Including LilyPond files}
+% \begin{dtxexample}*{Including LilyPond files}
 %   Steiger:
 %
-%   \hrule
-%   \lilypondfile{steiger}
-%   \hrule
+% \lilypondfile{steiger}
 % \end{dtxexample}
 %
 % \subsection{Customising the Package}
 %
-% \DescribeMacro{\lilypondcommandline}
+% \DescribeMacro{\lilypondcommandline}\\
 % It is likely that this package refuses to call LilyPond for you. For
 % this case the package has defined a macro |\ly@prog|, which provides
 % the LilyPond command line. It can be set using
@@ -295,8 +314,9 @@ This package contains some macros thet help to arrange songs on pages.
 % lilypond-snapshot-bin -I`pwd` --output=#2 --tex #3
 % \end{verbatim}
 %
-% \DescribeMacro{\setlilypondinputpath}\DescribeMacro{\appendtolilypondinputpath}
-% \DescribeMacro{\prependtolilypondinputpath}
+% \DescribeMacro{\setlilypondinputpath}\\
+% \DescribeMacro{\appendtolilypondinputpath}\\
+% \DescribeMacro{\prependtolilypondinputpath}\\
 % Another problem arises, if the file cannot be found by LilyPond or
 % the \TeX\ program. Then you can try to set the search path for
 % LilyPond source files. The path can be set using
@@ -306,9 +326,140 @@ This package contains some macros thet help to arrange songs on pages.
 % |\appendtolilypondinputpath| or |\prependtolilypondinputpath|. These
 % macros can also deal with multiple colon seperated directories.
 %
-% \subsection{Other Commands and Options}
+% \DescribeMacro{\preLilyPondExample}\\
+% \DescribeMacro{\betweenLilyPondSystem}\marg{number}\\
+% \DescribeMacro{\postLilyPondExample}\\
 %
-% see source.
+% The score inclusion can be modified by the three macros
+% \cs{preLilyPondExample}, \cs{betweenLilyPondSystem} and \cs{postLilyPondExample}
+%
+% \subsection{Keys and values}
+%
+% The configuration can be done using the \texttt{pgfkeys} of the
+% \PGF\ bundle. all values use the prefix `\optn{lilypond}'.
+% 
+% \DescribeMacro{\lilypondset}\marg{options} All configuration options can be easily
+% set using the macro \cs{lilypondset}. The options are given in a key
+% value style. As \texttt{pgfkeys} allows styles to be defined and
+% modified easily, these possibilities can be used also in \cs{lilypondset}.
+%
+% It has an abbreviated version – 
+% \DescribeMacro{\lyset}\cs{lyset}\marg{options}.
+%
+% The following options are defined:
+% \begin{description}
+% \ItemDescribeOption{defaults} This style is applied to every
+% lilypond snippet. Packages options are stored, here. It can be
+% changed with the \cs{lilyponddefaults} macro.
+% \ItemDescribeOption{staffsize} Set the staff size in points.
+% \begin{dtxexample}*{Usage of \optn{staffsize}}
+%   \lilypondfile[staffsize=26]{fullexample}
+% \end{dtxexample}
+% \ItemDescribeOption{ragged-right} (boolean)
+% \ItemDescribeOption{noragged-right} Select whether the LilyPond
+% snippet shall be ragged or stretched to the right margin.
+% \begin{dtxexample}*{Usage of \optn{ragged-right}}
+%   \lilypondfile[ragged-right]{fullexample}
+% \end{dtxexample}
+% \begin{dtxexample}*{Usage of \optn{noragged-right}}
+%   \lilypondfile[noragged-right]{fullexample}
+% \end{dtxexample}
+% \ItemDescribeOption{line-width} Set the width of the score
+% lines. Default: \cs{linewidth}.
+% \begin{dtxexample}*{Usage of \optn{line-width}}
+%   \lilypondfile[line-width=5cm]{fullexample}
+% \end{dtxexample}
+% \ItemDescribeOption{paper-size} set the LilyPond paper size. This
+% option is not set by default. Instead the measures from the \LaTeX{}
+% paper settings are used.
+% \begin{dtxexample}*{Usage of \optn{paper-size}}
+%   \lilypondfile[paper-size=a6]{fullexample}
+% \end{dtxexample}
+% \ItemDescribeOption{time} (boolean) 
+% \ItemDescribeOption{notime} Show bar numbers or not.
+% \begin{dtxexample}*{Usage of \optn{time}}
+%   \lilypondfile[time]{fullexample}
+% \end{dtxexample}
+% \begin{dtxexample}*{Usage of \optn{notime}}
+%   \lilypondfile[notime]{fullexample}
+% \end{dtxexample}
+% \ItemDescribeOption{fragment} (boolean)
+% \ItemDescribeOption{nofragment} If the option \optn{fragment} is
+% given, just the notes have to be written.
+% \begin{dtxexample}*{Usage of \optn{fragment}}
+%   \lilypondfile[fragment]{fragmentexample}
+% \end{dtxexample}
+% \begin{dtxexample}*{Usage of \optn{nofragment}}
+%   \lilypondfile[nofragment]{fullexample}
+% \end{dtxexample}
+% \ItemDescribeOption{indent}
+% \ItemDescribeOption{noindent} Indent the first score line or
+% not. Default: \optn{noindent}, which is the same as |indent=0pt|
+% \begin{dtxexample}*{Usage of \optn{indent}}
+%   \lilypondfile[indent=2cm]{fullexample}
+% \end{dtxexample}
+% \begin{dtxexample}*{Usage of \optn{noindent}}
+%   \lilypondfile[noindent]{fullexample}
+% \end{dtxexample}
+% \ItemDescribeOption{quote} (boolean) Put the entire snippet into a
+% \env{quote} environment:
+% \begin{dtxexample}*{Usage of \optn{quote}}
+%   \begin{quote}
+%     \lilypondfile{fullexample}
+%   \end{quote}
+%   \lilypondfile[quote]{fullexample}
+% \end{dtxexample}
+% \begin{dtxexample}*{Usage of \optn{noquote}}
+%   \lilypondfile[noquote]{fullexample}
+% \end{dtxexample}
+%
+% \ItemDescribeOption{relative} Adds a \cs{relative} directive to the
+% generated code of the \optn{fragment} option. Default is |c'|. This
+% option activates also \optn{fragment}.
+% \begin{dtxexample}*{Usage of \optn{relative}}
+%   \lilypondfile[relative=c'']{fragmentexample}
+%   \lilypondfile[relative=c'',norelative]{fragmentexample}
+%   \lilypondfile[relative=c'',nofragment]{fullexample}
+%   \lilypondfile[norelative]{fullexample}
+% \end{dtxexample}
+% \end{description}
+% Additionally the following options are recognised:
+% \begin{description}
+%   \ItemDescribeOption{output} The directory that is passed to
+%   the |--output| parameter of LilyPond.
+%   \begin{dtxexample}*{Usage of \optn{output}}
+%     \lilypondfile[output=./test/]{fullexample}
+%   \end{dtxexample}
+%   \ItemDescribeOption{loglevel} The option loglevel sets the log
+%   level of LilyPond. The default is `\optn{ERROR}' which supresses
+%   all output except error messages. Allowed loglevel 
+%   \begin{dtxexample}*{Usage of \optn{loglevel}}
+%     \lilypondfile[loglevel=DEBUG]{fullexample}
+%   \end{dtxexample}
+%   \ItemDescribeOption{extra source} As running LilyPond can take a long time, a snippet is
+%   processed by LilyPond only, when it has changed. If the snippet
+%   includes other source files, \LaTeX{} cannot detect them and may
+%   skip rebuilding of the score even when it has changed. the opiton
+%   \optn{extra source} takes one parameter, a list of file names
+%   separated by spaces. File names containing spaces can be quoted
+%   with |"| or |'| or the spaces can be escaped according to the
+%   rules of the current system shell. The parmameter is parsed using
+%   as normal \LaTeX{} code. So special characters like umlauts or
+%   backslash must be handled with special care.
+% \end{description}
+%
+% \DescribeMacro{lilyponddefaults}\marg{options} set the default style
+% for all LilyPond snippets.
+%
+% The following options are not yet implemented:
+% \begin{description}
+%   \ItemDescribeOption{verbatim}
+%   \ItemDescribeOption{texidoc}
+%   \ItemDescribeOption{doctitle}
+%   \ItemDescribeOption{nogettext}
+%   \ItemDescribeOption{intertext}
+%   \ItemDescribeOption{printfilename}
+% \end{description}
 %
 % \section{Bugs and Caveats}
 %
@@ -342,18 +493,13 @@ This package contains some macros thet help to arrange songs on pages.
 % places, so look at the code and it'll be very likely that the
 % documentation is incomplete.
 %
-% \subsection{The Package}
+% \subsection{The Package preamble}
 %
 %    \begin{macrocode}
 %<*package>
 %    \end{macrocode}
 %
-% First the requirement of \LaTeXe{} and the
-% declaration of the package.
-%    \begin{macrocode}
-\ProvidesPackage{tslilypond}[2003/10/17 v0.1 lilypond-book-technology
-from within latex (cs)]
-%    \end{macrocode}
+% \subsubsection{Necessary packages}
 %
 % We need \cs{includegraphics}.
 %
@@ -369,6 +515,120 @@ from within latex (cs)]
 %    \end{macrocode}
 % \end{macro}
 %
+% \subsubsection{Configuration}
+%
+% The package \texttt{pgfkeys} is part of the \PGF bundle.
+%
+%    \begin{macrocode}
+\RequirePackage{pgfkeys}
+%    \end{macrocode}
+% 
+% \DescribeMacro{\lilypondset}\marg{options} Set options.x
+% All keys use the same namespace, namely `\optn{lilypond}'
+%    \begin{macrocode}
+\newcommand\lilypondset{%
+  \pgfqkeys{/lilypond}%
+}
+\let\lyset\lilypondset
+%    \end{macrocode}
+%
+% Define the default style
+%    \begin{macrocode}
+\lilypondset{default/.style={}}
+%    \end{macrocode}
+%
+% Process packages options
+%    \begin{macrocode}
+\def\ly@append@default#1{\lilypondset{default/.append style={#1}}}
+\DeclareOption*{\expandafter\ly@append@default\expandafter{\CurrentOption}}
+\ProcessOptions\relax
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+
+\newlength{\ly@opt@indent}
+\setlength{\ly@opt@indent}{0pt}
+\newlength{\ly@opt@exampleindent}
+\setlength{\ly@opt@exampleindent}{0.4in}
+\newlength{\ly@opt@left@padding}
+\setlength{\ly@opt@left@padding}{0pt}
+
+\newcommand\ly@make@lilypond@bool[2]{%
+  \expandafter\def\csname ly@opt@#1true\endcsname{%
+    \AddToHookNext{paper}{\ly@writebool{ #2}t}%
+  }%
+  \expandafter\def\csname ly@opt@#1false\endcsname{%
+    \AddToHookNext{paper}{\ly@writebool{ #2}f}%
+  }%
+  \lilypondset{#2/.is if={ly@opt@#1},#2/.default=true,no#2/.style={#2=false}}%
+}
+\newif\ifly@opt@time
+\ly@opt@timetrue
+\newif\ifly@opt@printtime
+\ly@opt@printtimefalse
+\newif\ifly@opt@fragment
+\ly@opt@fragmentfalse
+\newif\ifly@opt@quote
+\ly@opt@quotefalse
+\newif\ifly@opt@relative
+\ly@opt@relativefalse
+
+\ly@make@lilypond@bool{ragged@right}{ragged-right}
+
+\lilypondset{
+  extra source/.code={%
+    \expandafter\def\expandafter\lilypondlyinputfiles\expandafter{\lilypondlyinputfiles\space#1}%
+  },
+  staffsize/.code={%
+    \AddToHookNext{beforepaper}{\ly@lilypond@writelisp{set-global-staff-size #1}}%
+  },
+  % line-width/.initial=\linewidth,
+  line-width/.code={%
+    \AddToHookNext{paper}{\ly@lilypond@writelength{ line-width}{#1}}%
+  },
+  paper-size/.code={%
+    \AddToHookNext{beginpaper}{\ly@lilypond@writelisp{set-paper-size "#1"}}%
+  },,
+  time/.is if=ly@opt@time,
+  time/.append code={%
+    \ly@opt@printtimetrue
+    \AddToHookNext{layout}{\ly@lilypond@write@time}%
+  },
+  notime/.style={time=false},
+  fragment/.is if=ly@opt@fragment,
+  nofragment/.style={fragment=false},
+  fragment/.append code={%
+    \AddToHookNext{beforesnippet}{%
+      \ifly@opt@relative
+        \ly@lilypond@write@fragment@code{\string\relative \space\pgfkeysvalueof{/lilypond/relative}}%
+      \fi
+      \ly@lilypond@write@fragment@code{\ly@openbrace}%
+      \ly@opt@fragmentfalse
+    }%
+    \AddToHookNext{aftersnippet}{%
+      \ly@lilypond@write@fragment@code{\ly@closebrace}%
+      \ly@opt@fragmentfalse
+    }%
+  },
+  indent/.code={\setlength\ly@opt@indent{#1}},
+  noindent/.style={indent=0pt},
+  quote/.is if=ly@opt@quote,
+  noquote/.style={quote=false},
+  relative/.initial=c',
+  relative/.default=c',
+  relative/.code={%
+    \lilypondset{fragment}%
+    \ly@opt@relativetrue
+    \pgfkeyssetvalue{/lilypond/relative}{#1}%
+  },
+  norelative/.code={%
+    \ly@opt@relativefalse
+  },
+  output/.code={\def\lilypondoutput{#1}},
+  left-padding/.code={\setlength\ly@opt@left@padding{#1}},
+  loglevel/.initial=ERROR,
+}
+%    \end{macrocode}
 % \subsection{Changes according to \texttt{lilyponddefs.sty}}
 %
 % \begin{macro}{\ly@lilypond@start}
@@ -426,8 +686,19 @@ from within latex (cs)]
 % Percent sign as text for writing into the |.lini| file
 % 
 %    \begin{macrocode}
-{\catcode`\%=11\gdef\ly@percent{%}}
-{\catcode`\$=11\gdef\ly@dollar{$}}%$
+\begingroup%
+\catcode`\?=14
+\catcode`\%=11\gdef\ly@percent{%?
+}
+\catcode`\$=11\gdef\ly@dollar{$?$
+}
+\catcode`\[=1\relax
+  \catcode`\]=2\relax
+\catcode`\{=11
+\catcode`\}=11
+\gdef\ly@openbrace[{]
+  \gdef\ly@closebrace[}]
+\endgroup
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -490,7 +761,9 @@ from within latex (cs)]
   %-dread-file-list -dno-strip-output-dir
   %"/home/tobias/uni/Documents/latex/pakete/tsmusic/doc/latex/tsmusic/snippet-names-daa4e3fbc9d2c3936a049546f8518073.ly"
   %lilypond -I`pwd` --output=\lilypondoutput\space --tex \lilypondtex
-  lilypond -I`pwd` -daux-files  -dseparate-page-formats=pdf  --verbose
+  lilypond -I`pwd` -daux-files  -dseparate-page-formats=pdf
+  --output=\lilypondoutput\space
+  --loglevel=\pgfkeysvalueof{/lilypond/loglevel}
   %-dread-file-list
   -dno-strip-output-dir \lilypondtex
 }
@@ -507,10 +780,9 @@ from within latex (cs)]
   \def\ly@script{#1}%
 }
 \def\ly@script{%
-  export lyfile="\ly@file@lysource" ; 
-  if ! md5sum -c \ly@dollar lyfile.md5 ;
+  if ! md5sum -c \lilypondlymdfivefile ;
   then   \ly@prog &&
-  md5sum \ly@dollar lyfile \ly@dollar {lyfile\ly@percent.ly}.tex  \ly@file@name.lini >\ly@dollar lyfile.md5 ;
+  md5sum \lilypondlyinputfiles >\lilypondlymdfivefile ;
   fi
 }%{$lyfile}; echo '{${lyfile\ly@percent.ly}}{\ly@file@name.lini}'
 %    \end{macrocode}
@@ -547,6 +819,123 @@ from within latex (cs)]
 %    \end{macrocode}
 % \end{macro}
 %
+% \subsection{File handling}
+%
+% We need a file name for the glue code or snippet data. This code
+% generates the file name and returns it.
+%
+%    \begin{macrocode}
+\newcounter{ly@snippet}
+\setcounter{ly@snippet}{0}
+\newcommand{\ly@newsnippet}{%
+  \stepcounter{ly@snippet}%
+}
+\newcommand{\ly@snippetfilename}{%
+  \jobname-ly\arabic{ly@snippet}%
+}
+%    \end{macrocode}
+%
+% Write a comment to a lilypond file
+%
+%    \begin{macrocode}
+\def\ly@lilypond@writecomment#1{%
+  \immediate\write\ly@ini@file{%
+    \ly@percent#1%
+  }%
+}%
+%    \end{macrocode}
+%
+% Write lisp code into a lilypond file.
+%
+%    \begin{macrocode}
+\def\ly@lilypond@writelisp#1{%
+  \immediate\write\ly@ini@file{%
+    \string##(#1)^^J%
+  }%
+}%
+%
+% Write a parameter code into a lilypond file.
+%
+%    \begin{macrocode}
+\def\ly@lilypond@writeparam#1#2{%
+  \immediate\write\ly@ini@file{%
+    #1 = \string###2^^J%
+  }%
+}%
+%    \end{macrocode}
+%
+% Write a length as LilyPond code.
+%
+%    \begin{macrocode}
+\def\ly@lilypond@writelength#1#2{%
+  \@tempdima=\dimexpr#2\relax
+  \immediate\write\ly@ini@file{%
+    \string#1\space=\space\ly@strip@pt\@tempdima \string\pt%
+  }%
+}
+%    \end{macrocode}
+%
+% Write a boolean as LilyPond code.
+%
+%    \begin{macrocode}
+\def\ly@writebool#1#2{%
+  \immediate\write\ly@ini@file{%
+    #1\space=\space\string##\string###2%
+  }%
+  \ignorespaces
+}
+%    \end{macrocode}
+%
+% Remove the Time signature if requested.
+%    \begin{macrocode}
+\def\ly@lilypond@write@time{
+  \ifly@opt@printtime
+    \ifly@opt@time
+    \else
+      \immediate\write\ly@ini@file{%
+        \space\string\context \ly@openbrace^^J%
+        \space\space\string\Score%
+      }%
+      \ly@writebool{\space\space\space timing}f%
+      \immediate\write\ly@ini@file{%
+        \space\ly@closebrace^^J%
+        \space\string\context \ly@openbrace^^J%
+        \space\space\string\Staff^^J%
+        \space\space\space\string\remove\space Time_signature_engraver^^J%
+        \space\ly@closebrace
+      }%
+    \fi
+  \fi
+  \ly@opt@printtimefalse
+}
+%    \end{macrocode}
+%
+% Write code only, if the contained code is a fragment.
+%    \begin{macrocode}
+\def\ly@lilypond@write@fragment@code#1{
+  \ifly@opt@fragment
+    \immediate\write\ly@ini@file{#1}%
+  \fi
+}
+%    \end{macrocode}
+% 
+% The name of the preamble file, that is included at the beginning of
+% each lilypond snippet.
+%
+%    \begin{macrocode}
+\def\ly@file@lypreamble{lilypond-book-preamble.ly}
+%    \end{macrocode}
+%
+% \subsection{The macros that are only active in lilypond snippets}
+%
+%    \begin{macrocode}
+\def\ly@lilypond@startsnippet{%
+  \def\pt{pt}%
+  \def\mm{mm}%
+  \def\cm{cm}%
+  \def\in{in}%
+}
+%    \end{macrocode}
 % \subsection{The \texttt{lilypond-book} macros}
 %
 % \begin{macro}{\lilypondfile}
@@ -556,7 +945,7 @@ from within latex (cs)]
 % load a lilypond file into parser
 %
 %    \begin{macrocode}
-\def\lilypondfile{\ignorespaces%
+\def\lilypondfile{%
 %    \end{macrocode}
 % decide, if optional parameters are used
 %    \begin{macrocode}
@@ -567,32 +956,17 @@ from within latex (cs)]
 % with optional parameters
 %
 %    \begin{macrocode}
-\def\ly@lilypond@writelisp#1{%
-  \string##( #1 )^^J%
-}%
-\def\ly@writelength#1#2{%
-  #1\space=\space\ly@strip@pt#2 \space \string\pt^^J%
-}
-\def\ly@writebool#1#2{%
-  #1\space=\space\string##\string###2^^J%
-}
-\def\ly@file@lypreamble{lilypond-book-preamble.ly}
-\long\def\ly@lilypondfile@writefile#1#2{%
-  \immediate\openout\ly@ini@file=#1
-  \immediate\write\ly@ini@file{%
-    % \ly@lilypond@writelisp{set! toplevel-score-handler ly:parser-print-score}%
-    % \ly@lilypond@writelisp{set! toplevel-music-handler (lambda (p m)
-    % (ly:parser-print-score p (ly:music-scorify m p)))}%
-    \string\include\space "\ly@file@lypreamble"^^J%
-    #2^^J%
-    \string\include\space "\ly@file@lysource"^^J%
-  }%  
-}
+\NewHook{beforefile}
+\NewHook{afterfile}
+\NewHook{beforepaper}
+\NewHook{beginpaper}
+\NewHook{paper}
+\NewHook{afterpaper}
+\NewHook{layout}
+\NewHook{beforesnippet}
+\NewHook{aftersnippet}
+\def\ly@pgfkeysnovalue{\pgfkeysnovalue}
 \def\ly@lilypondfile@[#1]#2{%
-  \begingroup
-  \def\lilypondlyfile{\ly@dollar lyfile}%
-  \def\lilypondoutput{\ly@dollar {lyfile\ly@percent.ly}}%
-  \def\lilypondtex{\ly@file@name.lini}%
   \let\input@path\ly@input@path
   \@iffileonpath{#2}{}{%
     \@iffileonpath{#2.ly}{}
@@ -601,63 +975,161 @@ from within latex (cs)]
   \expandafter\expandafter\expandafter\filename@parse\expandafter\ly@strip@space\@filef@und
   \edef\ly@file@lysource{%
     \filename@area\filename@base\@ifundefined{filename@ext}{}{.\filename@ext}%
-  }
-  \edef\ly@file@name{\filename@area\filename@base}%
+  }%
   \ifx\ly@remove@ext@cmpa\filename@ext
   \else
-  \ly@lilypondfile@split@ext\filename@ext
+    \ly@lilypondfile@split@ext\filename@ext
   \fi
-  {%
+  \ly@lilypondsnippet@[extra source={'\ly@file@lysource'},#1]{%
+    \string\include\space "\ly@file@lysource"^^J%
+  }%    
+}
+\def\ly@lilypondsnippet@[#1]#2{%
+  \ly@newsnippet
+  \begingroup
+  \ly@lilypond@startsnippet
+  \edef\lilypondoutput{\ly@snippetfilename}%
+  \edef\lilypondtex{\ly@snippetfilename.ly}%
+  \edef\lilypondlymdfivefile{\ly@snippetfilename.md5}%
+  \edef\lilypondlyinputfiles{\lilypondtex}%
+  \edef\ly@file@name{\filename@area\filename@base}%
+  \lilypondset{#1}%
+  \ifly@opt@quote
+    \begin{quote}%
+    \fi
     \edef\ly@quoted@source{"\ly@file@lysource"}%
-    \@tempdima0pt\relax
-    \ly@lilypondfile@writefile\lilypondtex{%
-      \ly@lilypond@writelisp{set-global-staff-size 18}%
-      \string\paper \string{ ^^J%
-        \ly@lilypond@writelisp{define dump-extents \string##t}%
-        \ly@writelength{paper-height}\textheight
-        \ly@writelength{paper-width}\linewidth
-        \ly@writelength{line-width}\linewidth
-        \ly@writelength{top-margin}\@tempdima
-        \ly@writelength{bottom-margin}\@tempdima
-        \ly@writelength{left-margin}\@tempdima
-        \ly@writelength{right-margin}\@tempdima
-        %
-        \ly@writebool{ragged-bottom}t%
-        \ly@writebool{ragged-last-bottom}t%
-        \ly@writebool{ragged-right}f%
-        \ly@writebool{ragged-last}f%
-        \ly@writebool{two-sided}f% managed by LaTeX
-        %
-        \ly@writebool{annotate-spacing}t%
-        %
-        % \ly@writelength{hsize}\paperwidth
-        % \string\pt\space\ly@percent\space\the\paperwidth^^J\space\space
-        % \ly@writelength{vsize}\paperheight
-        % \ly@writelength{betweensystempadding}\paperheight
-        % \ly@writelength{topmargin}\@tempdima
-        % \ly@writelength{leftmargin}\@tempdima
-        \ly@writelength{horizontal-shift}\@tempdima
-        \ly@writelength{short-indent}\@tempdima
-        \ly@writelength{indent}\@tempdima        
-        \string} ^^J%
+    \pgfkeysgetvalue{/lilypond/staffsize}{\@ly@staffsize}%
+    \UseHook{beforefile}%
+    \immediate\openout\ly@ini@file=\lilypondtex
+    \ly@lilypond@writecomment{\ly@percent\ly@percent\space Generated by tslilypond.sty}%
+    \ly@lilypond@writecomment{\ly@percent\ly@percent\space Options: [#1]}%
+    \immediate\write\ly@ini@file{%
+      % \ly@lilypond@writelisp{set! toplevel-score-handler ly:parser-print-score}%
+      % \ly@lilypond@writelisp{set! toplevel-music-handler (lambda (p m)
+      % (ly:parser-print-score p (ly:music-scorify m p)))}%
+      \string\include\space "\ly@file@lypreamble"^^J%
     }%
+    \ly@lilypond@writecomment{ ****************************************************************}%
+    \ly@lilypond@writecomment{ Start cut-&-pastable-section}%
+    \ly@lilypond@writecomment{ ****************************************************************}%
+    \ly@lilypond@writelisp{ly:set-option 'eps-box-padding 3.000000}%
+    \UseHook{beforepaper}%
+    \immediate\write\ly@ini@file{%
+      \string\paper \ly@openbrace% \}
+    }
+    \UseHook{beginpaper}%
+% \ly@lilypond@writelisp{define dump-extents \string##t}%
+%    \end{macrocode}
+%   
+%   These settings are always written into the LilyPond file.
+%   
+%    \begin{macrocode}
+    \ly@lilypond@writelength{ indent}{\ly@opt@indent}%
+    \ly@lilypond@writelength{ line-width}\linewidth
+    \immediate\write\ly@ini@file{%
+      \space\string line-width = \string##(- line-width (* mm 3.000000) (* mm 1))}%
+    \UseHook{paper}%
+%    \end{macrocode}
+%   
+%   Settings that are optional
+%   
+%    \begin{macrocode}
+    \iffalse
+      \ly@lilypond@writelength{paper-height}\paperheight
+      \ly@lilypond@writelength{paper-width}\paperwidth
+      \ly@lilypond@writelength{top-margin}{\topmargin + 1 in}%
+      \@tempdima=\dimexpr\paperheight-\topmargin-\textheight\relax
+      \ly@lilypond@writelength{bottom-margin}{\paperheight-\topmargin -
+        1in - \textheight}
+      \ly@lilypond@writelength{left-margin}{\leftmargin}%
+      \ly@lilypond@writelength{right-margin}{\paperwidth-1in-\leftmargin-\textwidth}%
+      % 
+      \ly@writebool{ragged-bottom}t%
+      \ly@writebool{ragged-last-bottom}t%
+      \ly@writebool{ragged-last}f%
+      \ly@writebool{two-sided}f% managed by LaTeX
+      % 
+      \ly@writebool{annotate-spacing}t%
+      % 
+      % \ly@lilypond@writelength{hsize}\paperwidth
+      % \string\pt\space\ly@percent\space\the\paperwidth^^J\space\space
+      % \ly@lilypond@writelength{vsize}\paperheight
+      % \ly@lilypond@writelength{betweensystempadding}\paperheight
+      % \ly@lilypond@writelength{topmargin}\@tempdima
+      % \ly@lilypond@writelength{leftmargin}\@tempdima
+      % 
+      \ly@writebool{oddFooterMarkup}f
+      \ly@writebool{oddHeaderMarkup}f
+      \ly@writebool{bookTitleMarkup}f
+      \ly@writebool{scoreTitleMarkup}f
+      % 
+      \ly@lilypond@writelength{horizontal-shift}\@tempdima
+      \ly@lilypond@writelength{short-indent}\@tempdima
+    \fi
+    \immediate\write\ly@ini@file{%
+      \ly@closebrace^^J%
+    }
+    \UseHook{afterpaper}%
+    % 
+    \immediate\write\ly@ini@file{%
+      \string\layout \ly@openbrace%
+    }%
+    \UseHook{layout}%
+    \immediate\write\ly@ini@file{%
+      \ly@closebrace^^J%
+    }%
+    \begingroup
+    \UseHook{beforesnippet}%
+    \endgroup
+    \ly@lilypond@writecomment{ ****************************************************************}%
+    \ly@lilypond@writecomment{ ly snipppet:}%
+    \ly@lilypond@writecomment{ ****************************************************************}%
+    \immediate\write\ly@ini@file{%
+      \string\sourcefilename \space"\CurrentFile\space LilyPond\space snippet"^^J%
+      \string\sourcefileline \space\the\inputlineno^^J%
+      #2%
+    }%
+    \ly@lilypond@writecomment{ ****************************************************************}%
+    \ly@lilypond@writecomment{ end ly snipppet}%
+    \ly@lilypond@writecomment{
+      ****************************************************************}%
+    \begingroup
+    \UseHook{aftersnippet}%
+    \endgroup
     \immediate\closeout\ly@ini@file
-  }%
-  \immediate\write18{\ly@script}%
-  \noindent
-  \let\ly@includegraphics\includegraphics
-  \def\includegraphics##1{%
-    \typeout{including `##1'}%
-    \fboxsep0pt
-    \fbox{\ly@includegraphics{##1}}%
-  }%
-  \InputIfFileExists{\ly@file@name-systems.tex}{}{%
-    \PackageWarning{lilypond}{%
-      could not load \ly@file@name.tex\MessageBreak
-      perhaps you didn't specify  ``--shell-escape'' or \MessageBreak
-      used multiple dots in filenames%
+    \UseHook{afterfile}%
+    \immediate\write18{\ly@script}%
+    \noindent
+    \let\ly@includegraphics\includegraphics
+    \def\includegraphics##1{%
+      \typeout{including `##1'}%
+      \fbox{##1}\par
+      \fboxsep0pt
+      \fbox{\ly@includegraphics{##1}}%
     }%
-  }%
+    \parindent 0pt
+    \noindent
+    \ifx\preLilyPondExample \undefined
+    \else
+      \expandafter\preLilyPondExample
+    \fi
+    \def\lilypondbook{}%
+    \InputIfFileExists{\ly@snippetfilename-systems.tex}{}{%
+      \PackageWarning{lilypond}{%
+        could not load \ly@snippetfilename-systems.tex\MessageBreak
+        perhaps you didn't specify  ``--shell-escape'' or \MessageBreak
+        used multiple dots in filenames%
+      }%
+    }%
+    \ifx\postLilyPondExample \undefined
+    \else
+      \expandafter\postLilyPondExample
+    \fi
+    \hrule
+    End of file
+    \ifly@opt@quote
+    \end{quote}%
+  \fi
   \endgroup
 }
 %    \end{macrocode}
@@ -727,6 +1199,64 @@ accompaniment = \chordmode {
 }
 %    \end{macrocode}
 %</steiger>
+%<*fullexample>
+%    \begin{macrocode}
+\version "2.4.0"
+\include "deutsch.ly"
+
+\header {
+        title = "Full Example"
+        composer = "Nobody"
+}
+
+melody =  \relative f' {
+        \key f \major
+        f1 e1 a1 e1 f1 e1 a1 e1 f1 e1 a1 e1
+        \bar "|."
+}
+
+text = \lyricmode {
+  \set stanza = "1."
+  Full Ex -- amp -- le.
+  \set stanza = "2."
+  Full Ex -- amp -- le.
+  \set stanza = "3."
+  Full Ex -- amp -- le.
+}
+
+accompaniment = \chordmode {
+  f1 c1:7 f1 c1:7
+  f1 c1:7 f1 c1:7
+  f1 c1:7 f1 c1:7
+}
+
+\score { 
+  \simultaneous {
+    \context ChordNames \accompaniment
+    \context Staff = "mel" {
+      \time 4/4
+      \context Voice="melodie" {
+        <<
+        \melody 
+        \addlyrics \text
+        >>
+      }
+    }
+  }
+  \layout { }
+  \midi {
+    \tempo 4 = 120 
+  }
+}
+%    \end{macrocode}
+%</fullexample>
+%<*fragmentexample>
+%    \begin{macrocode}
+\key f \major
+c1^"Fragment" d1 e1 f1 g1 c1 d1 e1 f1 g1 c1 d1
+\bar "|."
+%    \end{macrocode}
+%</fragmentexample>
 % Local Variables:
 % mode: doctex
 % TeX-master: t

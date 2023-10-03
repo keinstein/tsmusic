@@ -1,0 +1,260 @@
+%%
+%% This is file `liederdefs.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% liederdefs.dtx  (with options: `package')
+%%  Copyright ℂ 2022 Tobias Schlemmer
+%% 
+%%  This program is provided under the terms of the
+%%  LaTeX Project Public License distributed from CTAN
+%%  archives in directory macros/latex/base/lppl.txt.
+%% 
+%%  This work is "maintained" (as per LPPL maintenance status) by
+%%  Tobias Schlemmer <keinstein@users.sf.net>.
+%% 
+%%  This work consists of the files
+%%    liederdefs.dtx and
+%%    liederdefs.ins
+%% 
+%%  and the derived file
+%%    liederdefs.sty.
+%% 
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\NeedsTeXFormat{LaTeX2e}[1994/12/01]
+\ProvidesPackage{liederdefs}[2005/02/12 v0.1 Definitions for song
+books]
+\RequirePackage{calc}
+\@ifundefined{@emptytoks}{\newtoks\@emptytoks}{}
+\@ifundefined{@nx}{\let\@nx\noexpand}{}
+\@ifundefined{@xp}{\let\@xp\expandafter}{}
+\newtoks\ts@liedertoks
+\long\def\ts@addto@envbody#1{\global\ts@liedertoks\@xp{\the\ts@liedertoks#1}}
+\long\def\ts@collect@body#1#2{%
+  \ts@liedertoks{\@xp#1\@xp{\the\ts@liedertoks}{#2}}%
+  \edef\ts@process@envbody{\the\ts@liedertoks\@nx\end{\@currenvir}}%
+  \ts@liedertoks\@emptytoks \def\ts@begin@stack{b}%
+  \begingroup
+  \@xp\let\csname\@currenvir\endcsname\ts@collect@@body
+  \edef\ts@process@envbody{\@xp\@nx\csname\@currenvir\endcsname}%
+  \ts@process@envbody
+}
+\long\def\ts@push@begins#1\begin#2{%
+  \ifx\end#2\else b\@xp\ts@push@begins\fi
+}
+\long\def\ts@collect@@body#1\end#2{%
+  \edef\ts@begin@stack{\ts@push@begins#1\begin\end \@xp\@gobble\ts@begin@stack}%
+  \ifx\@empty\ts@begin@stack
+    \endgroup%
+    \@checkend{#2}%
+    \ts@addto@envbody{#1}%
+  \else
+    \ts@addto@envbody{#1\end{#2}}%
+  \fi
+  \ts@process@envbody % A little tricky! Note the grouping
+}
+\newenvironment{lied}[1][2]{%
+  \ignorespaces%
+  \ts@collect@body{\ts@next}{#1}%
+}
+{
+  \ts@save@insert\footins%
+  \end{minipage}%
+  \ts@strophen@zeilen@ende\par%
+  \end{enumerate}%
+  \egroup%
+  \ts@restore@insert\footins%
+}
+\newcounter{ts@strophen}
+\newbox\ts@mybox
+\newcommand\ts@next[2]{%
+  \begingroup%
+    \let\strophe\relax%
+    \@tempdima0pt%
+    \@setpar{%
+      \egroup%
+      \egroup%
+      \@tempdimb\wd\ts@mybox%
+      \ifnum\@tempdimb>\@tempdima\relax\@tempdima\@tempdimb\fi%
+      \setbox\ts@mybox\hbox\bgroup\bgroup}%
+    \let\cr\par%
+    \let\\\par%
+    \let\hrule\relax%
+    \let\newline\par%
+    \let\strophe\par%
+    \edef\ts@footnote@save@number{\the\c@footnote}
+    \renewcommand\@footnotetext[1]{}%
+    \setbox\ts@mybox\hbox\bgroup\bgroup#1\egroup\egroup%
+    \global\c@footnote\ts@footnote@save@number\relax
+    \@tempdimb\wd\ts@mybox%
+    \ifnum\@tempdimb>\@tempdima\relax\@tempdima\@tempdimb\fi%
+    \PackageInfo{liederdefs}{A= \the\@tempdima}
+    \PackageInfo{liederdefs}{LW= \the\linewidth}
+    \@tempdimb\zwischen@strophen@h@platz
+    \PackageInfo{liederdefs}{h@platz= \the\@tempdimb}
+    \@tempdimb\strophen@l@rand
+    \PackageInfo{liederdefs}{l@rand= \the\@tempdimb}
+    \@tempdimb\strophen@r@rand
+    \PackageInfo{liederdefs}{r@rand= \the\@tempdimb}
+    \xdef\@tempb{\the\@tempdima}%
+    \@tempdimb=\linewidth%
+    \advance\@tempdima\zwischen@strophen@h@platz%
+    \advance\@tempdimb\zwischen@strophen@h@platz%
+    \advance\@tempdimb-\strophen@l@rand%
+    \advance\@tempdimb-\strophen@r@rand%
+    \@tempcnta=0%
+    \ts@for@count\@tempdimb\@tempdima\@tempcnta\relax%
+    \ifnum\the\@tempcnta<1 \relax%
+      \PackageWarning{liederdefs}{Verse exceeds hbox}%
+      \@tempcnta=1 %
+    \fi%
+    \xdef\@tempa{\the\@tempcnta}%
+  \endgroup%
+  \PackageInfo{liederdefs}{\@tempa\space Strophen mit Breite \@tempb.}
+  \let\ts@strophen@anzahl=\@tempa%
+  \let\ts@strophen@breite=\@tempb%
+  \let\strophe\strophe@anfang%
+  \bgroup%\@setpar{\\}
+  \parskip0pt\parindent0pt%
+  \listparindent0pt%
+  \leftmargin0pt\rightmargin0pt%
+  \edef\ts@linewidth{\the\linewidth}%
+  \edef\ts@leftmargin{\the\leftmargin}%
+  \@tempdima\linewidth%
+  \@tempdimb\leftmargin%
+  \@tempdimc\@totalleftmargin%
+  \par\noindent%
+  \begin{enumerate}%
+  \parskip0pt\parindent0pt%
+  \leftmargin\@tempdimb\linewidth\@tempdima%
+  \leftskip\strophen@l@rand plus \ts@strophen@l@fill\relax
+  \rightskip\strophen@r@rand plus \ts@strophen@r@fill\relax
+  \@totalleftmargin\@tempdimc%
+  \@topsep 0pt\itemsep 0pt\itemindent 0pt%
+  \setcounter{\@enumctr}{#2}%
+  \addtocounter{\@enumctr}{-1}%
+  \setcounter{ts@strophen}{0}%
+  \parshape \@ne \@totalleftmargin \linewidth%
+  #1%
+}
+\newcommand\strophe@anfang{%
+  \let\strophe\strophe@normal%
+  \ts@strophen@zeilen@anfang%
+  \strophe@doit%
+}
+\newcommand\strophe@normal{%
+  \ts@end@strophen%
+  \strophe@doit%
+}
+\newcommand\strophe@doit{%
+  \stepcounter{ts@strophen}%
+  \let\strophe@mpfn\@mpfn
+  \let\strophe@thempfn\thempfn
+  \begin{minipage}[t]{\ts@strophen@breite}\@minipagefalse%
+    \raggedright%
+  \let\@mpfn\strophe@mpfn%
+  \let\thempfn\strophe@thempfn%
+  \let\@footnotetext\ts@footnote@text%
+  \item%
+}
+\newcommand\ts@end@strophen{%
+  \ts@save@insert\footins%
+  \end{minipage}%
+  \ts@restore@insert\footins%
+  \ifnum\c@ts@strophen=\ts@strophen@anzahl\relax%
+    \c@ts@strophen=0\relax%
+    \ts@strophen@zeilen@ende
+    \nobreak\vadjust{\vskip\zwischen@strophen@v@platz}%
+    \hskip\linewidth plus 0pt minus\linewidth\relax
+    \xdef\ts@save@insert@command{}%
+    \ts@strophen@zeilen@anfang%
+  \else%
+    \nobreak%
+    \expandafter\hskip\zwischen@strophen@h@platz plus%
+    \ts@strophen@fill minus 0pt\relax\nobreak%
+  \fi%
+}
+\newcommand\ts@save@insert[1]{%
+  \xdef\ts@save@insert@command{%
+    \the\ts@footnote@toks}%
+}
+\newcommand\ts@restore@insert[1]{%
+  \ts@save@insert@command%}%
+}
+\newcommand\ts@strophen@zeilen@anfang{%
+  \c@ts@strophen=0\relax%
+}
+
+\newcommand\ts@strophen@zeilen@ende{%
+}
+\newcommand\ts@for@count[3]{%
+  \ifnum#1>#2\relax%
+  \advance#3 by 1\relax%
+  \advance#1 by -#2\relax%
+  \ts@for@count{#1}{#2}{#3}%
+  \fi%
+}
+\newtoks\ts@footnote@toks
+\newcommand\ts@footnote@text[1]{%
+  \expandafter\edef\expandafter\@tempa{%
+    \noexpand\expandafter\noexpand\csname c@\noexpand\@mpfn\endcsname%
+    \expandafter\the\csname c@\@mpfn\endcsname}%
+  \expandafter\addto@hook\expandafter\ts@footnote@toks%
+  \expandafter{%
+    \@tempa\relax%
+  }%
+  \expandafter\addto@hook\expandafter\ts@footnote@toks\expandafter{%
+    \expandafter\protected@xdef\expandafter\@thefnmark\expandafter{\@thefnmark}%
+    \@footnotetext{#1}%
+  }%
+}
+\newcommand\ts@strophen@fill{1fill}
+\newcommand\ts@strophen@l@fill{1fill}
+\newcommand\ts@strophen@r@fill{1fill}
+\newcommand\zwischen@strophen@h@platz{3em}
+\newcommand\zwischen@strophen@v@platz{\baselineskip}
+\newcommand\strophen@l@rand{2em}
+\newcommand\strophen@r@rand{1em}
+\newcommand{\wdh}[1]{#1 #1}%
+\newcommand\wdhl{%
+  \@tempdima1ex\relax
+  \@tempdimb1em\relax
+  \advance\@tempdimb -1ex\relax
+  \divide\@tempdimb by 2\relax
+  \advance\@tempdima\@tempdimb\relax
+  \vrule width 0.1em height \@tempdima depth \@tempdimb\relax%
+  \hskip 0.12em\relax
+  \vrule width 0.02em height \@tempdima depth \@tempdimb\relax%
+  $:$}
+\newcommand\wdhr{$:$\ignorespaces
+  \@tempdima1ex\relax
+  \@tempdimb1em\relax
+  \advance\@tempdimb -1ex\relax
+  \divide\@tempdimb by 2\relax
+  \advance\@tempdima\@tempdimb\relax
+  \vrule width 0.02em height \@tempdima depth \@tempdimb\relax%
+  \hskip 0.12em\relax
+  \vrule width 0.1em height \@tempdima depth \@tempdimb\relax%
+}
+\newcommand\wdhln{\makebox[0pt][r]{\wdhl\ }}
+\newcommand\wdhrn{\makebox[0pt][l]{\protect\ \wdhr}}
+
+\endinput
+%%
+%% End of file `liederdefs.sty'.

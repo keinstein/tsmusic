@@ -1,0 +1,21 @@
+preamble
+"\\begin{tsliedindex}"
+postamble
+"\\end{tsliedindex}"
+
+group_skip ""
+
+delim_0 ""
+delim_1 ""
+delim_2 ""
+quote '+'
+headings_flag 1
+heading_prefix "\n\\contentsline {chapter}{\\numberline {"
+heading_suffix "}}{}{}"
+item_0 "\n"
+item_1 "\n"
+item_2 "\n"
+item_01 "\n"
+item_x1 "\n"
+item_12 "\n"
+item_x2 "\n"
