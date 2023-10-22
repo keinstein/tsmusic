@@ -724,7 +724,56 @@ inside latex%
 % \iffalse
 %</lilypondsnippetsdoc>
 % \fi
+%
+% \subsection{Interaction with \texttt{pgfkeys}}
+%
+% In this section some hints are given how |tslilypond| uses
+% |pgfkeys|. The latter package is described in detail in the `\TikZ\
+% \& \PGF\ Manual for Version 3.1.10' or any newer version. In the
+% mentioned version the section about |pgfkeys| is called `87 Key
+% Managepment' and is located in Part VII `Utilities'
 % 
+% All packages that use \texttt{pgfkeys} have their options organised
+% in a structure that is similar to a file system tree. An option is
+% separated by slashes (|/|) into a folders. Many pakages have such
+% folders. For example PGF uses the folder `\optn{/pgf/}' or
+% \TikZ\ uses `\optn{/tikz/}'. All options of |tslilypond| are prefixed
+% by `\optn{/lilypond/}'.
+%
+% \section{Compatibility with \texttt{lilypond-book}}
+%
+% As of writing this document, |tslilypond| can handle all documented
+% features of |lilypond-book| regarding the source code. That means
+% that most documents can be processed just by adding
+%
+% |\usepackage{tslilypond}|
+%
+% to the document preamble. Some features are not supported that are
+% mainly used to explain lilypond or don't make sense in combination
+% with \LaTeX{}. See \autoref{sec:Customising} for details.
+%
+% The remaining set of documents cannot be compiled because some
+% environments have their options given before the environment
+% name. This is not supported by \LaTeX{} and changing so essential
+% parts like |\begin| is IMHO not recommended.
+%
+% 
+% However, an undocumented macro can enable this very experimental
+% feature.
+% \DescribeMacro{\lilypondredefinebegin} The macro
+% |\lilypondredefinebegin| can be added somewhere between
+% |\begin{document}| and |\end{document}| and all subsequent
+% environments can have optional arguments before the environment
+% name as in the following example:
+%
+% \begin{sourceverb}
+%   \begingroup
+%   \lilypondredefinebegin
+%   \begin[fragment]{lilypond}
+%     a'
+%   \end{lilypond}
+%   \endgroup
+% \end{sourceverb}
 %
 % \section{Bugs and Caveats}
 %
@@ -1237,6 +1286,57 @@ inside latex%
 %    \end{macrocode}
 % \end{macro}
 %
+% It is not hard to support options before the environment name, but
+% is it reliable? It's probably a bad idea to mess with standard
+% \LaTeX{} environments. Nevertheless we can create an error message.
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \@ifundefined{end[}{%]
+    \AddToHook{env/[/before}%]
+    {\PackageError{tslilypond}{Forbidden optional argument before an
+        environment name.}{LaTeX does not allow optional arguments to^^J
+        environments to be written before the environment^^J
+        name. Please, change your document to be LaTeX conformant.^^J
+      }%
+    }%
+  }{}%
+}
+%    \end{macrocode}
+%
+% \begin{macro}{\lilypondredefinebegin}
+%    \begin{macrocode}
+\let\ly@saved@begin\relax
+\def\ly@lilypondredefinebegin{%
+  \ifx\ly@saved@begin\relax
+    \let\ly@saved@begin\begin\iffalse\end\fi
+    \def\ly@begin{%
+      \@ifnextchar[%]
+        {\ly@begin@}{\ly@saved@begin}%
+    }%
+    \def\ly@begin@[##1]##2{\ly@saved@begin{##2}[{##1}]}
+    \PackageWarning{%
+      tslilypond%
+    }{%
+      \string\begin\space has been redefined using
+        \string\lilypondredefinebegin\iffalse\end\fi^^J^^J%
+      Expect strange behaviour. You have been warned!!!^^J^^J
+    }%
+    \let\begin\ly@begin
+  \else
+    \PackageError{%
+      tslilypond%
+    }{%
+      \string\begin\space has already been redefined\iffalse\end\fi%
+    }{%
+      It is not possible to redefine \string\begin\space\iffalse\end\fi twice%
+    }%
+  \fi
+}
+\AtBeginDocument{%
+  \let\lilypondredefinebegin\ly@lilypondredefinebegin
+}
+%    \end{macrocode}
+% \end{macro}
 % \subsection{File handling}
 %
 % We need a file name for the glue code or snippet data. This code
