@@ -105,10 +105,10 @@ inside latex%
 
 \newcommand\ly@make@lilypond@bool[2]{%
   \expandafter\def\csname ly@opt@#1true\endcsname{%
-    \AddToHookNext{paper}{\ly@writebool{ #2}t}%
+    \AddToHookNext{lilypond/snippet/paper/end}{\ly@writebool{ #2}t}%
   }%
   \expandafter\def\csname ly@opt@#1false\endcsname{%
-    \AddToHookNext{paper}{\ly@writebool{ #2}f}%
+    \AddToHookNext{lilypond/snippet/paper/end}{\ly@writebool{ #2}f}%
   }%
   \lilypondset{%
     #2/.is if={ly@opt@#1},%
@@ -132,27 +132,27 @@ inside latex%
 
 \lilypondset{
   staffsize/.code={%
-    \AddToHookNext{beforepaper}{%
+    \AddToHookNext{lilypond/snippet/paper/before}{%
       \ly@lilypond@writelisp{set-global-staff-size #1}%
     }%
   },
   % line-width/.initial=\linewidth,
   line-width/.code={%
-    \AddToHookNext{paper}{\ly@lilypond@writelength{ line-width}{#1}}%
+    \AddToHookNext{lilypond/snippet/paper/end}{\ly@lilypond@writelength{ line-width}{#1}}%
   },
   paper-size/.code={%
-    \AddToHookNext{beginpaper}{\ly@lilypond@writelisp{set-paper-size "#1"}}%
+    \AddToHookNext{lilypond/snippet/paper/start}{\ly@lilypond@writelisp{set-paper-size "#1"}}%
   },,
   time/.is if=ly@opt@time,
   time/.append code={%
     \ly@opt@printtimetrue
-    \AddToHookNext{layout}{\ly@lilypond@write@time}%
+    \AddToHookNext{lilypond/snippet/layout/end}{\ly@lilypond@write@time}%
   },
   notime/.style={time=false},
   fragment/.is if=ly@opt@fragment,
   nofragment/.style={fragment=false},
   fragment/.append code={%
-    \AddToHookNext{beforesnippet}{%
+    \AddToHookNext{lilypond/snippet/content/before}{%
       \ifly@opt@relative
         \ly@lilypond@write@fragment@code{%
           \string\relative \space\pgfkeysvalueof{/lilypond/relative}%
@@ -161,7 +161,7 @@ inside latex%
       \ly@lilypond@write@fragment@code{\lyopenbrace}%
       \ly@opt@fragmentfalse
     }%
-    \AddToHookNext{aftersnippet}{%
+    \AddToHookNext{lilypond/snippet/content/after}{%
       \ly@lilypond@write@fragment@code{\lyclosebrace}%
       \ly@opt@fragmentfalse
     }%
@@ -286,7 +286,8 @@ inside latex%
     \edef\lilypondsnippetfilename{#1}%
   \fi
   \edef\lilypondlymdfivefile{\lilypondoutputbase.md5}%
-  \edef\lilypondoutput{\lilypondoutputbase.pdf}%
+  % lilypond appends -2.pdf, -systems.tex or whatever convenient
+  \edef\lilypondoutput{\lilypondoutputbase}%
 }
 \def\ly@lilypondfile@normalised@ext#1#2#3{%
   \let\ly@save@input@path\input@path
@@ -312,6 +313,47 @@ inside latex%
   \edef#1{\filename@area\filename@base}%
 }
 \newcommand\afterlilypondskip{\baselineskip}
+\AtBeginDocument{%
+  \@ifundefined{end[}{%]
+    \AddToHook{env/[/before}%]
+    {\PackageError{tslilypond}{Forbidden optional argument before an
+        environment name.}{LaTeX does not allow optional arguments to^^J
+        environments to be written before the environment^^J
+        name. Please, change your document to be LaTeX conformant.^^J
+      }%
+    }%
+  }{}%
+}
+\let\ly@saved@begin\relax
+\def\ly@lilypondredefinebegin{%
+  \ifx\ly@saved@begin\relax
+    \let\ly@saved@begin\begin\iffalse\end\fi
+    \def\ly@begin{%
+      \@ifnextchar[%]
+        {\ly@begin@}{\ly@saved@begin}%
+    }%
+    \def\ly@begin@[##1]##2{\ly@saved@begin{##2}[{##1}]}
+    \PackageWarning{%
+      tslilypond%
+    }{%
+      \string\begin\space has been redefined using
+        \string\lilypondredefinebegin\iffalse\end\fi^^J^^J%
+      Expect strange behaviour. You have been warned!!!^^J^^J
+    }%
+    \let\begin\ly@begin
+  \else
+    \PackageError{%
+      tslilypond%
+    }{%
+      \string\begin\space has already been redefined\iffalse\end\fi%
+    }{%
+      It is not possible to redefine \string\begin\space\iffalse\end\fi twice%
+    }%
+  \fi
+}
+\AtBeginDocument{%
+  \let\lilypondredefinebegin\ly@lilypondredefinebegin
+}
 \def\lilypondaddcode{\immediate\write\ly@ini@file}
 \newcounter{ly@snippet}
 \setcounter{ly@snippet}{0}
@@ -397,34 +439,27 @@ inside latex%
   }%
   \ly@clearhooksnext
 }
+\def\ly@clearhooksnext{}
 \def\ly@NewHook#1{%
   \NewHook{#1}%
   \lilypondset{%
+    hook #1/.clear/.code=\ClearHookNext{#1},
     hook #1/.code=\AddToHookNext{#1}{##1},
-    hook #1/.append=\AddToHookNext{#1}{##1},
-    hook #1/.prepend
+  }%
+  \expandafter\def\expandafter\ly@clearhooksnext\expandafter{%
+    \ly@clearhooksnext
+    \ClearHookNext{#1}%
   }%
 }
-\NewHook{beforefile}
-\NewHook{afterfile}
-\NewHook{beforepaper}
-\NewHook{beginpaper}
-\NewHook{paper}
-\NewHook{afterpaper}
-\NewHook{layout}
-\NewHook{beforesnippet}
-\NewHook{aftersnippet}
-\def\ly@clearhooksnext{%
-  \ClearHookNext{beforefile}
-  \ClearHookNext{afterfile}
-  \ClearHookNext{beforepaper}
-  \ClearHookNext{beginpaper}
-  \ClearHookNext{paper}
-  \ClearHookNext{afterpaper}
-  \ClearHookNext{layout}
-  \ClearHookNext{beforesnippet}
-  \ClearHookNext{aftersnippet}
-}%
+\ly@NewHook{lilypond/snippetfile/before}
+\ly@NewHook{lilypond/snippetfile/after}
+\ly@NewHook{lilypond/snippet/paper/before}
+\ly@NewHook{lilypond/snippet/paper/start}
+\ly@NewHook{lilypond/snippet/paper/end}
+\ly@NewHook{lilypond/snippet/paper/after}
+\ly@NewHook{lilypond/snippet/layout/end}
+\ly@NewHook{lilypond/snippet/content/before}
+\ly@NewHook{lilypond/snippet/content/after}
 \def\ly@pgfkeysnovalue{\pgfkeysnovalue}
 \long\def\ly@lilypondsnippet@[#1]#2{%
   \ly@newsnippet
@@ -439,7 +474,7 @@ inside latex%
     \begin{quote}%
     \fi
     \pgfkeysgetvalue{/lilypond/staffsize}{\@ly@staffsize}%
-    \UseHook{beforefile}%
+    \UseHook{lilypond/snippetfile/before}%
     \immediate\openout\ly@ini@file=\lilypondsnippetfilename
     \ly@lilypond@writecomment{%
       \lypercent\lypercent\space Generated by tslilypond.sty%
@@ -464,28 +499,28 @@ inside latex%
       ly:set-option 'eps-box-padding %
       \lilypondconvertto{\ly@opt@left@padding}{mm}%
     }%
-    \UseHook{beforepaper}%
+    \UseHook{lilypond/snippet/paper/before}%
     \lilypondaddcode{%
       \string\paper \lyopenbrace% \}
     }%
-    \UseHook{beginpaper}%
+    \UseHook{lilypond/snippet/paper/start}%
     \ly@lilypond@writelength{ indent}{\ly@opt@indent}%
     \ly@lilypond@writelength{ line-width}\linewidth
-    \UseHook{paper}%
+    \UseHook{lilypond/snippet/paper/end}%
     \lilypondaddcode{%
       \lyclosebrace^^J%
     }%
-    \UseHook{afterpaper}%
+    \UseHook{lilypond/snippet/paper/after}%
     %
     \lilypondaddcode{%
       \string\layout \lyopenbrace%
     }%
-    \UseHook{layout}%
+    \UseHook{lilypond/snippet/layout/end}%
     \lilypondaddcode{%
       \lyclosebrace^^J%
     }%
     \begingroup
-    \UseHook{beforesnippet}%
+    \UseHook{lilypond/snippet/content/before}%
     \endgroup
     \ly@lilypond@writecomment{%
       ****************************************************************%
@@ -509,10 +544,10 @@ inside latex%
       ****************************************************************%
     }%
     \begingroup
-    \UseHook{aftersnippet}%
+    \UseHook{lilypond/snippet/content/after}%
     \endgroup
     \immediate\closeout\ly@ini@file
-    \UseHook{afterfile}%
+    \UseHook{lilypond/snippetfile/after}%
     \ShellEscape{\ly@script}%
     \unless\ifly@opt@inline\par\fi
     \parindent 0pt\parskip 0pt
