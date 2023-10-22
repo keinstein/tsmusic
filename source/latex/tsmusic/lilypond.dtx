@@ -1175,7 +1175,8 @@ inside latex%
     \edef\lilypondsnippetfilename{#1}%
   \fi
   \edef\lilypondlymdfivefile{\lilypondoutputbase.md5}%
-  \edef\lilypondoutput{\lilypondoutputbase.pdf}%
+  % lilypond appends -2.pdf, -systems.tex or whatever convenient
+  \edef\lilypondoutput{\lilypondoutputbase}%
 }
 %    \end{macrocode}
 % \end{macro}
