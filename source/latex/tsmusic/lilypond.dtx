@@ -624,39 +624,51 @@ inside latex%
 %
 % \subsection{Hooks}\label{sec:hooks}
 %
-% The code is configured by adding code to hooks. The following hoos
-% are availlable:
+% The generation of LilyPond code is configured by adding code to
+% hooks using the \LaTeX3\ macro \cs{AddToHookNext}. This code is
+% executed during the generation of the next LilyPond input file.
+% Alternatively, also the common option and style system of the
+% |pgfkeys| package can be used. For each hook \meta{/lilypond/\dots}
+% a key \optn{hook \meta{/lilypond/\dots}} is defined for adding code
+% (see example \ref{ex:hooks}). An additional option \optn{hook
+% \meta{/lilypond/\dots/.clear}} removes all code that has been added
+% during the generation of the corresponding code file. At the end of
+% the code generation all hooks are cleared and can be used anew for
+% the next LilyPond file. If code should be added to many generated
+% files, the style system of the |pgfkeys| package is recommended.
+%
+% The following hooks are availlable:
 %
 % \begin{description}
-%   \ItemDescribeOption[hook]{beforefile} This hook is executed
+%   \item{lilypond/snippetfile/before} This hook is executed
 %   immediately before the snippet file is opened for writing.
 %
-%   \ItemDescribeOption[hook]{afterfile} This hook is executed
+%   \item{lilypond/snippetfile/after} This hook is executed
 %   immediately after the snippet file is closed and written.
 %
-%   \ItemDescribeOption[hook]{beforepaper} This hook is executed after
+%   \item{lilypond/snippet/paper/before} This hook is executed after
 %   the |lilypond-book| preamble has been included and before the
 %   |\paper| block is written.
 %
-%   \ItemDescribeOption[hook]{beginpaper} This hook is executed
+%   \item{lilypond/snippet/paper/start} This hook is executed
 %   immediately after the |\paper| block has been opened.
 %
-%   \ItemDescribeOption[hook]{paper} This hook is executed after the
+%   \item{lilypond/snippet/paper/end} This hook is executed after the
 %   default settings have been written to the |\paper| block and
 %   before that block is closed. It is used to write additional
 %   paper settings.
 %
-%   \ItemDescribeOption[hook]{afterpaper} This hook is executed
+%   \item{lilypond/snippet/paper/after} This hook is executed
 %   immediately after the |\paper| block is closed.
 %
-%   \ItemDescribeOption[hook]{layout} This hook is used to write the
+%   \item{lilypond/snippet/layout/end} This hook is used to write the
 %   contents of the |\layout| block. If it is empy the layout block is
 %   empty, too.
 %   
-%   \ItemDescribeOption[hook]{beforesnippet} This hook is executed
+%   \item{lilypond/snippet/content/before} This hook is executed
 %   before the content.
 %
-%   \ItemDescribeOption[hook]{aftersnippet} This hook is executed
+%   \item{lilypond/snippet/content/after} This hook is executed
 %   after the content.
 % \end{description}
 %
@@ -664,26 +676,26 @@ inside latex%
 % Inside the hooks the macro \cs{lilypondaddcode} can be used to add
 % contents to the LilyPond snippet file.
 %
-% \begin{dtxexample}*{Hooks and custom lilypond code}
-%   \AddToHookNext{beforefile}{This generates the file \lilypondsnippetfilename:\hrule}
-%   \AddToHookNext{beforepaper}{%
+% \begin{dtxexample}*[\label{ex:hooks}]{Hooks and custom lilypond code}
+%   \AddToHookNext{lilypond/snippetfile/before}{This generates the file \lilypondsnippetfilename:\hrule}
+%   \AddToHookNext{lilypond/snippet/paper/before}{%
 %   \lilypondaddcode{%
 %   \lypercent\space compiled at \today^^J
 %   \lypercent\space from job named \jobname^^J
-%   \lypercent\space added by hook: beforepaper}}
-%   \AddToHookNext{afterpaper}{\lilypondaddcode{%
-%   \lypercent\space added by hook: afterpaper}}
-%   \AddToHookNext{beginpaper}{\lilypondaddcode{%
-%   \lypercent\space added by hook: beginpaper}}
-%   \AddToHookNext{paper}{\lilypondaddcode{%
-%   \lypercent\space added by hook: paper}}
-%   \AddToHookNext{layout}{\lilypondaddcode{%
-%   \lypercent\space added by hook: layout}}
-%   \AddToHookNext{beforesnippet}{\lilypondaddcode{%
-%   \lypercent\space added by hook: beforesnippet}}
-%   \AddToHookNext{aftersnippet}{\lilypondaddcode{%
-%   \lypercent\space added by hook: aftersnippet}}
-%   \AddToHookNext{afterfile}{%
+%   \lypercent\space added by hook: lilypond/snippet/paper/before}}
+%   \AddToHookNext{lilypond/snippet/paper/after}{\lilypondaddcode{%
+%   \lypercent\space added by hook: lilypond/snippet/paper/after}}
+%   \AddToHookNext{lilypond/snippet/paper/start}{\lilypondaddcode{%
+%   \lypercent\space added by hook: lilypond/snippet/paper/start}}
+%   \AddToHookNext{lilypond/snippet/paper/end}{\lilypondaddcode{%
+%   \lypercent\space added by hook: lilypond/snippet/paper/end}}
+%   \AddToHookNext{lilypond/snippet/layout/end}{\lilypondaddcode{%
+%   \lypercent\space added by hook: lilypond/snippet/layout/end}}
+%   \AddToHookNext{lilypond/snippet/content/before}{\lilypondaddcode{%
+%   \lypercent\space added by hook: lilypond/snippet/content/before}}
+%   \AddToHookNext{lilypond/snippet/content/after}{\lilypondaddcode{%
+%   \lypercent\space added by hook: lilypond/snippet/content/after}}
+%   \AddToHookNext{lilypond/snippetfile/after}{%
 %   \verbatiminput{\lilypondsnippetfilename}%
 %   \hrule
 %   End of \lilypondsnippetfilename
@@ -888,10 +900,10 @@ inside latex%
 
 \newcommand\ly@make@lilypond@bool[2]{%
   \expandafter\def\csname ly@opt@#1true\endcsname{%
-    \AddToHookNext{paper}{\ly@writebool{ #2}t}%
+    \AddToHookNext{lilypond/snippet/paper/end}{\ly@writebool{ #2}t}%
   }%
   \expandafter\def\csname ly@opt@#1false\endcsname{%
-    \AddToHookNext{paper}{\ly@writebool{ #2}f}%
+    \AddToHookNext{lilypond/snippet/paper/end}{\ly@writebool{ #2}f}%
   }%
   \lilypondset{%
     #2/.is if={ly@opt@#1},%
@@ -915,27 +927,27 @@ inside latex%
 
 \lilypondset{
   staffsize/.code={%
-    \AddToHookNext{beforepaper}{%
+    \AddToHookNext{lilypond/snippet/paper/before}{%
       \ly@lilypond@writelisp{set-global-staff-size #1}%
     }%
   },
   % line-width/.initial=\linewidth,
   line-width/.code={%
-    \AddToHookNext{paper}{\ly@lilypond@writelength{ line-width}{#1}}%
+    \AddToHookNext{lilypond/snippet/paper/end}{\ly@lilypond@writelength{ line-width}{#1}}%
   },
   paper-size/.code={%
-    \AddToHookNext{beginpaper}{\ly@lilypond@writelisp{set-paper-size "#1"}}%
+    \AddToHookNext{lilypond/snippet/paper/start}{\ly@lilypond@writelisp{set-paper-size "#1"}}%
   },,
   time/.is if=ly@opt@time,
   time/.append code={%
     \ly@opt@printtimetrue
-    \AddToHookNext{layout}{\ly@lilypond@write@time}%
+    \AddToHookNext{lilypond/snippet/layout/end}{\ly@lilypond@write@time}%
   },
   notime/.style={time=false},
   fragment/.is if=ly@opt@fragment,
   nofragment/.style={fragment=false},
   fragment/.append code={%
-    \AddToHookNext{beforesnippet}{%
+    \AddToHookNext{lilypond/snippet/content/before}{%
       \ifly@opt@relative
         \ly@lilypond@write@fragment@code{%
           \string\relative \space\pgfkeysvalueof{/lilypond/relative}%
@@ -944,7 +956,7 @@ inside latex%
       \ly@lilypond@write@fragment@code{\lyopenbrace}%
       \ly@opt@fragmentfalse
     }%
-    \AddToHookNext{aftersnippet}{%
+    \AddToHookNext{lilypond/snippet/content/after}{%
       \ly@lilypond@write@fragment@code{\lyclosebrace}%
       \ly@opt@fragmentfalse
     }%
@@ -1397,26 +1409,27 @@ inside latex%
 % Hook handling
 %
 %    \begin{macrocode}
-\NewHook{beforefile}
-\NewHook{afterfile}
-\NewHook{beforepaper}
-\NewHook{beginpaper}
-\NewHook{paper}
-\NewHook{afterpaper}
-\NewHook{layout}
-\NewHook{beforesnippet}
-\NewHook{aftersnippet}
-\def\ly@clearhooksnext{%
-  \ClearHookNext{beforefile}
-  \ClearHookNext{afterfile}
-  \ClearHookNext{beforepaper}
-  \ClearHookNext{beginpaper}
-  \ClearHookNext{paper}
-  \ClearHookNext{afterpaper}
-  \ClearHookNext{layout}
-  \ClearHookNext{beforesnippet}
-  \ClearHookNext{aftersnippet}
-}%
+\def\ly@clearhooksnext{}
+\def\ly@NewHook#1{%
+  \NewHook{#1}%
+  \lilypondset{%
+    hook #1/.clear/.code=\ClearHookNext{#1},
+    hook #1/.code=\AddToHookNext{#1}{##1},
+  }%
+  \expandafter\def\expandafter\ly@clearhooksnext\expandafter{%
+    \ly@clearhooksnext
+    \ClearHookNext{#1}%
+  }%
+}
+\ly@NewHook{lilypond/snippetfile/before}
+\ly@NewHook{lilypond/snippetfile/after}
+\ly@NewHook{lilypond/snippet/paper/before}
+\ly@NewHook{lilypond/snippet/paper/start}
+\ly@NewHook{lilypond/snippet/paper/end}
+\ly@NewHook{lilypond/snippet/paper/after}
+\ly@NewHook{lilypond/snippet/layout/end}
+\ly@NewHook{lilypond/snippet/content/before}
+\ly@NewHook{lilypond/snippet/content/after}
 %    \end{macrocode}
 \def\ly@pgfkeysnovalue{\pgfkeysnovalue}
 %
@@ -1435,7 +1448,7 @@ inside latex%
     \begin{quote}%
     \fi
     \pgfkeysgetvalue{/lilypond/staffsize}{\@ly@staffsize}%
-    \UseHook{beforefile}%
+    \UseHook{lilypond/snippetfile/before}%
     \immediate\openout\ly@ini@file=\lilypondsnippetfilename
     \ly@lilypond@writecomment{%
       \lypercent\lypercent\space Generated by tslilypond.sty%
@@ -1460,11 +1473,11 @@ inside latex%
       ly:set-option 'eps-box-padding %
       \lilypondconvertto{\ly@opt@left@padding}{mm}%
     }%
-    \UseHook{beforepaper}%
+    \UseHook{lilypond/snippet/paper/before}%
     \lilypondaddcode{%
       \string\paper \lyopenbrace% \}
     }%
-    \UseHook{beginpaper}%
+    \UseHook{lilypond/snippet/paper/start}%
 % \ly@lilypond@writelisp{define dump-extents \string##t}%
 %    \end{macrocode}
 %   
@@ -1475,21 +1488,21 @@ inside latex%
     \ly@lilypond@writelength{ line-width}\linewidth
 %    \lilypondaddcode{%
 %      \space\string line-width = \string##(- line-width (* mm 3.000000) (* mm 1))}%
-    \UseHook{paper}%
+    \UseHook{lilypond/snippet/paper/end}%
     \lilypondaddcode{%
       \lyclosebrace^^J%
     }%
-    \UseHook{afterpaper}%
+    \UseHook{lilypond/snippet/paper/after}%
     % 
     \lilypondaddcode{%
       \string\layout \lyopenbrace%
     }%
-    \UseHook{layout}%
+    \UseHook{lilypond/snippet/layout/end}%
     \lilypondaddcode{%
       \lyclosebrace^^J%
     }%
     \begingroup
-    \UseHook{beforesnippet}%
+    \UseHook{lilypond/snippet/content/before}%
     \endgroup
     \ly@lilypond@writecomment{%
       ****************************************************************%
@@ -1513,10 +1526,10 @@ inside latex%
       ****************************************************************%
     }%
     \begingroup
-    \UseHook{aftersnippet}%
+    \UseHook{lilypond/snippet/content/after}%
     \endgroup
     \immediate\closeout\ly@ini@file
-    \UseHook{afterfile}%
+    \UseHook{lilypond/snippetfile/after}%
     \ShellEscape{\ly@script}%
     \unless\ifly@opt@inline\par\fi
     \parindent 0pt\parskip 0pt
