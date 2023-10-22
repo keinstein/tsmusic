@@ -84,7 +84,7 @@ This package contains some macros thet help to arrange songs on pages.
 %</internal>
 %<install>\endbatchfile
 % \fi
-% \CheckSum{869}
+% \CheckSum{924}
 % \iffalse
 %
 % ======================================================================
@@ -224,6 +224,8 @@ inside latex%
 % easily be fooled.}
 % \tableofcontents{}
 % \changes{0.1}{2005/02/12}{First usable Version with incomplete Documentation}
+% \changes{0.9}{2023/10/22}{Rewrite to support new LilyPond command
+% line features and the full syntax of |lilypond-book|}
 % \section{Introduction}
 % As the abstract stated this package exists to provide the
 % functionality, which was provided by the |lilypond-book| program.
@@ -245,26 +247,17 @@ inside latex%
 % looked at the project, but my font problems weren't solved. Only at
 % the beginning of 2005, I realized the version 2.4.2 with the new
 % font selection scheme. So I started the project again to collect all
-% my song files in one document and with the help of my \LaTeX\
-% knowledge I wrote this package.
+% my song files in one document wrote this package.
+%
+% Since the first version of the package mauch has changed in the
+% LilyPond world. Now, as I had to touch my old LilyPond files again,
+% the package had to be updated in 2023 to the current behaviour.
 %
 % It is planned to try to replace all \TeX\ modi of
 % |lilypond-book|. But I started at first with \LaTeX\ because there
 % are more helper macros availlable and because I use it for my
 % personal conversation.
 %
-% \subsection{Provided Features}
-%
-% At the moment the package is very incomplete. Unfortunately my
-% LilyPond documentation does not contain the |lilypond-book|
-% docs. And I didn't have the time to implement everything, which I
-% could have used up to now. 
-%
-% At the moment the package provides a macro to insert an external
-% lilypond score.
-%
-% The documentation may be incomplete so go on reading this document
-% and look at the source if there are other useful macros for you, please.
 %
 % \section{Using this package.}
 %
@@ -294,16 +287,22 @@ inside latex%
 % |linewidth|, |raggedbottom|, |topmargin| and |leftmargin|. The
 % latter two are set to 0 to not compromise the \TeX\ formatting.
 %
+% The given file must be reachable via the current lilypond input path
+% (see \autoref{sec:Customising} how it can be modified. The package
+% checks if the given file can be read. If this is not the case the
+% extension |.ly| is tried, and if that fails, an error is issued as
+% the package may not work properly in that case.
+%
 % \begin{dtxexample}*{Including LilyPond files}
 %   Steiger:
-%
-% \lilypondfile{steiger}
+%   \lilypondfile{steiger}
 % \end{dtxexample}
+%
 % \begin{dtxexample}*{Including LilyPond files with extension}
 %   Steiger:
-%
-% \lilypondfile{fullexample.ly}
+%   \lilypondfile{fullexample.ly}
 % \end{dtxexample}
+% \strut\par\bigskip
 %
 % \DescribeEnv{lilypond}\oarg{settings}
 % A lilypond snippet can be included using the lilypond
@@ -332,6 +331,7 @@ inside latex%
 %     c8 b a g f e d c
 %   \end{lilypond}
 % \end{dtxexample}
+% \strut\par\bigskip
 % 
 % \DescribeMacro{\lilypond}\oarg{settings}\marg{snippet}
 % can be used for short snippets. For example
@@ -397,7 +397,9 @@ inside latex%
 %   \lilypondtex[fragment]{\UseLilypondSource{mysnippet}}
 % \end{dtxexample}
 %
-% \subsection{Customising the Package}
+%
+%
+% \subsection{Customising the Package}\label{sec:Customising}
 %
 % \DescribeMacro{\lilypondcommandline}\\
 % It is likely that this package refuses to call LilyPond for you. For
@@ -421,7 +423,10 @@ inside latex%
 % argument. The path is a colon separated list of directories. If you
 % want to append or to prepend another directory, just use
 % |\appendtolilypondinputpath| or |\prependtolilypondinputpath|. These
-% macros can also deal with multiple colon seperated directories.
+% macros can also deal with multiple colon seperated
+% directories. Currently the lilypond input path is not synchronised
+% between LilyPond and |tslilypond.sty|. So both must be kept in sync
+% by hand if needed.
 %
 % \DescribeMacro{\preLilyPondExample}\\
 % \DescribeMacro{\betweenLilyPondSystem}\marg{number}\\
@@ -436,13 +441,54 @@ inside latex%
 %
 % \subsection{Keys and values}\label{sec:keys-and-values}
 %
-% The configuration can be done using the \texttt{pgfkeys} of the
-% \PGF\ bundle. all values use the prefix `\optn{lilypond}'.
+% The configuration can be done using the package \texttt{pgfkeys} of
+% the \PGF\ bundle. While \texttt{pgfkeys} is very powerful, only a
+% very small part of its posibillities must be known in order to use
+% \texttt{tslilypond}.
+%
+% This means an option consists usually of a key –
+% the name of the option – and a value – something that can modify the
+% behaviour of the option.  A valid construction would be
+% \begin{dtxexample}*{Demonstration of the key value syntax}
+%   \lilypondset{relative=c'}
+% \end{dtxexample}
+% Here, |relative| is the key, while |c'| is the value. A list of all
+% predefined keys and their allowed options is given below.
 % 
-% \DescribeMacro{\lilypondset}\marg{options} All configuration options can be easily
-% set using the macro \cs{lilypondset}. The options are given in a key
-% value style. As \texttt{pgfkeys} allows styles to be defined and
-% modified easily, these possibilities can be used also in \cs{lilypondset}.
+% \DescribeMacro{\lilypondset}\marg{options} All configuration options
+% can be set using the macro \cs{lilypondset}. The options are given
+% in a key value style. As \texttt{pgfkeys} allows styles to be
+% defined and modified easily, these possibilities can be used also in
+% \cs{lilypondset}. However most of these settings don't have an
+% effect when set outside of a \cs{lilypond}, or \cs{lilypondfile}
+% macro and outside of the \env{lilypond} environment.
+%
+% To solve this problem, so called styles can be defined. A style is
+% an named option that executes a predefined list of options. It can
+% be defined using
+% \cs{lilypondset}|{mystyle/.style={font-size=11,line-width=5cm}}|. Now,
+% whenever |\lilypondfile[mystyle]{somefilename.ly}| is found, the
+% option \optn{mystyle} is repleaced by the contents of the style
+% definition above.
+%
+% \begin{dtxexample}*{Definition and usage of the style \optn{mystyle}}
+%   \lilypondset{mystyle/.style={relative=c',staffsize=11,line-width=5cm}}
+%   \begin{lilypond}[mystyle]
+%     <c f a>
+%   \end{lilypond}
+% \end{dtxexample}
+%
+% \bigskip Styles are exacuted one option afer another like a computer
+% program. This makes them very powerful so that several styles can
+% call each other and later settings often overwrite previous ones.
+%
+% \begin{dtxexample}*{Calling styles and overwriting values}
+%   \lilypondset{bass/.style={mystyle,relative=c'',relative=c}}
+%   \begin{lilypond}[bass,line-width=6cm]
+%     \clef bass <c f a>
+%   \end{lilypond}
+% \end{dtxexample}
+% 
 %
 % It has an abbreviated version – 
 % \DescribeMacro{\lyset}\cs{lyset}\marg{options}.
@@ -607,6 +653,11 @@ inside latex%
 %   passed from \LaTeX{} to LilyPond together with the given code. In
 %   this stage the command sequence |\lilypondfile| is handled as a
 %   LilyPond |\include| command.
+%
+%   If the file name does not contain an extension the file extension
+%   |.ly| is added. Otherwise \TeX{} would add its own extension
+%   (|.tex|) which would be misleading. If the file name ends with a
+%   dot this is considered to be an existing but empty file extension.
 % \end{description}
 %
 % \DescribeMacro{lilyponddefaults}\marg{options} set the default style
