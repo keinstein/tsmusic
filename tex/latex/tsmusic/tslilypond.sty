@@ -42,6 +42,12 @@
 inside latex%
 ]
 \RequirePackage{graphics,verbatim}
+\IfFileExists{shellesc.sty}
+ {\RequirePackage{shellesc}
+  \@ifpackagelater{shellesc}{2016/04/29}
+   {}
+   {\protected\def\ShellEscape{\immediate\write18 }}}
+ {\protected\def\ShellEscape{\immediate\write18 }}
 \newwrite\ly@ini@file
 \RequirePackage{pgfkeys}
 \newcommand\lilypondset{%
@@ -63,13 +69,13 @@ inside latex%
 
 \newcommand\ly@unimplemented@option{%
   \ifly@opt@error@unimplemented
-    \let\@tempa\ly@error@PackageWarning
-  \else
     \let\@tempa\PackageError
+  \else
+    \let\@tempa\ly@error@PackageWarning
   \fi
-  \@tempa{tslilypond}{The lilypond-book option \pgfcurrentkey\space is
+  \@tempa{tslilypond}{The lilypond-book option \pgfkeyscurrentkey\space is
     not implemented.}{The current file uses the option
-    \pgfcurrentkey\space that is defined by by lilypond-book, but has
+    \pgfkeyscurrentkey\space that is defined by by lilypond-book, but has
     no effect in tslilypond.sty.^^J^^J
     Usually this is just a warning. It is treated as an error because
     `error on undefined' has been set somewhere either directly or
@@ -125,11 +131,6 @@ inside latex%
 \ly@make@lilypond@bool{ragged@right}{ragged-right}
 
 \lilypondset{
-  extra source/.code={%
-    \expandafter\def\expandafter\lilypondlyinputfiles\expandafter{%
-      \lilypondlyinputfiles\space#1%
-    }%
-  },
   staffsize/.code={%
     \AddToHookNext{beforepaper}{%
       \ly@lilypond@writelisp{set-global-staff-size #1}%
@@ -186,6 +187,12 @@ inside latex%
   noinline/.style={inline=false},
   output/.code={\def\lilypondoutput{#1}},
   loglevel/.initial=ERROR,
+  extra source/.code={%
+    \expandafter\def\expandafter\lilypondlyinputfiles\expandafter{%
+      \lilypondlyinputfiles\space#1%
+    }%
+  },
+  snippet file name/.code=\ly@snippetfilename@set{#1},
 }
 \let\ly@lilypond@start\lilypondstart
 \def\lilypondstart{
@@ -219,14 +226,6 @@ inside latex%
 \gdef\lyopenbrace[{]
   \gdef\lyclosebrace[}]
 \endgroup
-\def\ly@lilypondfile@split@ext#1{
-  \filename@parse{#1}%
-  \edef\ly@file@name{\ly@file@name.\filename@base}%
-  \ifx\ly@remove@ext@cmpa\filename@ext
-  \else
-  \@ifundefined{filename@ext}{}{\ly@lilypondfile@split@ext\filename@ext}%
-  \fi
-}
 \ExplSyntaxOn
 \def\lilypondconvertto#1#2%
 {
@@ -249,7 +248,8 @@ inside latex%
   --output=\lilypondoutput\space
   --loglevel=\pgfkeysvalueof{/lilypond/loglevel}
   %-dread-file-list
-  -dno-strip-output-dir \lilypondsnippetfilename
+  -dno-strip-output-dir
+  \lilypondsnippetfilename
 }
 \newcommand\lilypondscript[1]{%
   \def\ly@script{#1}%
@@ -260,7 +260,7 @@ inside latex%
   md5sum \lilypondlyinputfiles >\lilypondlymdfivefile ;
   fi
 }%{$lyfile}; echo '{${lyfile\lypercent.ly}}{\ly@file@name.lini}'
-\let\ly@input@path\@empty
+\def\ly@input@path{{}}%
 \def\appendtolilypondinputpath#1{%
   \expandafter\edef\expandafter\ly@input@path\expandafter{%
     \ly@input@path:#1%
@@ -273,6 +273,43 @@ inside latex%
 }
 \def\setlilypondinputpath#1{%
   \edef\ly@input@path{#1}%
+}
+\def\ly@lilypondfile@set#1{%
+  \ly@lilypondfile@normalised@ext\ly@file@lysource{#1}{.ly}%
+}
+\def\ly@snippetfilename@set#1{%
+  \ly@lilypondfile@parse@name\lilypondoutputbase{#1}%
+  \ifx\filename@ext\relax
+    \def\filename@ext{ly}%
+    \edef\lilypondsnippetfilename{#1.ly}%
+  \else
+    \edef\lilypondsnippetfilename{#1}%
+  \fi
+  \edef\lilypondlymdfivefile{\lilypondoutputbase.md5}%
+  \edef\lilypondoutput{\lilypondoutputbase.pdf}%
+}
+\def\ly@lilypondfile@normalised@ext#1#2#3{%
+  \let\ly@save@input@path\input@path
+  \let\input@path\ly@input@path
+  %
+  \@iffileonpath{#2}{}{%
+    \@iffileonpath{#2#3}{}{%
+      \PackageError{tslilypond}{%
+        The requested file `#2' could not be found in the lilypond input path^^J
+        `\input@path'}{%  nothing found, users get what they deserve
+        The LilyPond input path can be set and extended with the
+        macros \string\setlilypondinputpath,
+        \string\appendtolilypondinputpath\ and \string\prependtolilypondinputpath.}%
+      \edef\@filef@und{"#2" }%
+    }%
+  }%
+  \edef#1{\expandafter\unqu@tefilef@und\@filef@und\@nil}%
+  \let\input@path\ly@save@nput@path
+}
+\def\ly@lilypondfile@parse@name#1#2{%
+  \edef\@tempa{#2}%
+  \expandafter\filename@parse{\@tempa}%
+  \edef#1{\filename@area\filename@base}%
 }
 \newcommand\afterlilypondskip{\baselineskip}
 \def\lilypondaddcode{\immediate\write\ly@ini@file}
@@ -346,8 +383,27 @@ inside latex%
 \def\lilypondfile{%
   \@ifnextchar[\ly@lilypondfile@\ly@lilypondfile@b%]
 }
-\def\ly@lilypondfile@b#1{
-  \ly@lilypondfile@[]{#1}
+\def\ly@lilypondfile@b#1{%
+  \ly@lilypondfile@[]{#1}%
+}
+\def\ly@lilypondfile@[#1]#2{%
+  \ly@lilypondfile@normalised@ext\ly@file@lysource{#2}{.ly}%
+  %
+  \ly@lilypondsnippet@[{
+    every file/.try,
+    extra source={'\ly@file@lysource'},
+    #1}]{%
+    \string\include\space "\ly@file@lysource"^^J%
+  }%
+  \ly@clearhooksnext
+}
+\def\ly@NewHook#1{%
+  \NewHook{#1}%
+  \lilypondset{%
+    hook #1/.code=\AddToHookNext{#1}{##1},
+    hook #1/.append=\AddToHookNext{#1}{##1},
+    hook #1/.prepend
+  }%
 }
 \NewHook{beforefile}
 \NewHook{afterfile}
@@ -370,44 +426,18 @@ inside latex%
   \ClearHookNext{aftersnippet}
 }%
 \def\ly@pgfkeysnovalue{\pgfkeysnovalue}
-\def\ly@lilypondfile@[#1]#2{%
-  \let\input@path\ly@input@path
-  \@iffileonpath{#2}{}{%
-    \@iffileonpath{#2.ly}{}
-    {\edef\@filef@und{#2.ly }}%
-  }%
-  \expandafter\expandafter\expandafter\filename@parse%
-  \expandafter\ly@strip@space\@filef@und
-  \edef\ly@file@lysource{%
-    \filename@area\filename@base\@ifundefined{filename@ext}%
-    {}{.\filename@ext}%
-  }%
-  \ifx\ly@remove@ext@cmpa\filename@ext
-  \else
-    \ly@lilypondfile@split@ext\filename@ext
-  \fi
-  \ly@lilypondsnippet@[{
-    every file/.try,
-    extra source={'\ly@file@lysource'},
-    #1}]{%
-    \string\include\space "\ly@file@lysource"^^J%
-  }%
-  \ly@clearhooksnext
-}
 \long\def\ly@lilypondsnippet@[#1]#2{%
   \ly@newsnippet
   \begingroup
   \ly@lilypond@startsnippet
-  \edef\lilypondoutput{\ly@snippetfilename}%
-  \edef\lilypondsnippetfilename{\ly@snippetfilename.ly}%
-  \edef\lilypondlymdfivefile{\ly@snippetfilename.md5}%
-  \edef\lilypondlyinputfiles{\lilypondsnippetfilename}%
-  \edef\ly@file@name{\filename@area\filename@base}%
+  \ly@snippetfilename@set{\ly@snippetfilename}%
+  \def\lilypondlyinputfiles{\lilypondsnippetfilename}%
+
+  %\edef\ly@file@name{\filename@area\filename@base}%
   \lilypondset{defaults/.try,#1}%
   \ifly@opt@quote
     \begin{quote}%
     \fi
-    \edef\ly@quoted@source{"\ly@file@lysource"}%
     \pgfkeysgetvalue{/lilypond/staffsize}{\@ly@staffsize}%
     \UseHook{beforefile}%
     \immediate\openout\ly@ini@file=\lilypondsnippetfilename
@@ -483,7 +513,7 @@ inside latex%
     \endgroup
     \immediate\closeout\ly@ini@file
     \UseHook{afterfile}%
-    \immediate\write18{\ly@script}%
+    \ShellEscape{\ly@script}%
     \unless\ifly@opt@inline\par\fi
     \parindent 0pt\parskip 0pt
     \noindent
