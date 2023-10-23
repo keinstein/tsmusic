@@ -305,7 +305,7 @@ inside latex%
     }%
   }%
   \edef#1{\expandafter\unqu@tefilef@und\@filef@und\@nil}%
-  \let\input@path\ly@save@nput@path
+  \let\input@path\ly@save@input@path
 }
 \def\ly@lilypondfile@parse@name#1#2{%
   \edef\@tempa{#2}%
@@ -574,7 +574,7 @@ inside latex%
         used multiple dots in filenames%
       }%
     }%
-    \ifx\postLilyPondExample \undefined
+    \ifx\postLilyPondExample\undefined
     \else
       \expandafter\postLilyPondExample
     \fi
