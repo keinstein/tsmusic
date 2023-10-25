@@ -269,6 +269,7 @@ Liederbücher]
 \newcommand\ts@begin@liedindex[1]{
   \begingroup
   \renewenvironment{tsliedindex}{}{}%
+  \makeatletter
   \ts@measure@toc{#1}%
   \endgroup
   \ts@def@toc@sections
@@ -344,8 +345,9 @@ Liederbücher]
       \ignorespaces
     }%
     \let\l@subsection\l@section
-    \ignorespaces\makeatletter
-    \@input{\@tocfile}
+    \makeatletter
+    \ignorespaces
+    \@input{\@tocfile}%
     \par
   \endgroup
 }
