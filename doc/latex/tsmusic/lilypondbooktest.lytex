@@ -1,0 +1,247 @@
+\documentclass{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage{moreverb}
+\usepackage{tslilypond}
+
+\def\endparselilypondfilesnippet{\endparselilypondfilesnippet}%
+%\def\parselilypondfilesnippet#1-systems.tex\endparselilypondfilesnippet{#1.ly}%
+\def\parselilypondfilesnippet#1-systems.tex{#1.ly}%
+\newcommand\inputlilypondfilelisting[1]{%
+  \edef\@tempa{
+    \noexpand\verbatiminput{%
+      \expandafter\parselilypondfilesnippet#1%
+    }%
+  }%
+  \@tempa
+}
+\begingroup
+\catcode`-=\the\catcode`a\relax
+\gdef\parselilypondfilesnippet#1-systems.tex{#1.ly}%
+\endgroup
+
+\def\ttsinput{%
+  \fbox{start ttsinput}
+  \begingroup
+  \begingroup
+  \catcode`-=\the\catcode`a\relax
+  \tsinput{defparselilypondsnippet.tex}%
+  \inputhelper
+}
+\def\inputhelper#1{
+  \endgroup
+  \let\input\tsinput
+  \tsinput{#1}%
+  \par
+  \inputlilypondfilelisting{#1}%
+  \endgroup
+  \fbox{endttsinput}
+}
+\begin{document}
+\lilypondredefinebegin
+%\def\parselilypondfilesnippet#1-systems.tex\endparselilypondfilesnippet{#1.ly}%
+\let\tsinput\input
+\let\input\ttsinput
+
+Dokumente für \verb+lilypond-book+ können Musik und Text nach Belieben
+kombinieren. Zum Beispiel:
+
+\def\parselilypondfilesnippet#1-systems.tex{#1.ly}%
+\begin{lilypond}
+\relative {
+  c'2 e2 \tuplet 3/2 { f8 a b } a2 e4
+}
+\end{lilypond}
+
+Optionen für \verb+lilypond+ werden dabei in eckige Klammern gesetzt.
+
+% \begin{lilypond}[fragment,quote,staffsize=26,verbatim]
+\begin{lilypond}[fragment,quote,staffsize=26,verbatim]
+  c'4 f16
+\end{lilypond}
+
+Größere Beispiele können auch in einer eigenständigen Datei gespeichert
+und dann mit \verb+\lilypondfile+ eingebunden werden.
+
+\lilypondfile[quote,noindent]{steiger1.ly}
+
+(Falls nötig kann \texttt{steiger.ly} durch eine beliebige andere
+\texttt{.ly}-Datei im selben Verzeichnis wie diese Datei ersetzt werden.)
+
+
+\lilypondfile{steiger.ly}
+
+\subsection{nix}
+
+\begin{lilypond}
+  % inhalt
+{ c1 d1 }
+\end{lilypond}
+
+\subsection{staffsize=26}
+
+\begin[staffsize=26]{lilypond}
+  % inhalt
+{ c1 d1 }
+\end{lilypond}
+
+
+\end{document}
+
+\subsection{ragged-right}
+
+\begin[ragged-right]{lilypond}
+  % inhalt
+{ c1 d1 }
+\end{lilypond}
+
+\subsection{noragged-right}
+
+\begin[noragged-right]{lilypond}
+  % inhalt
+{ c1 d1 }
+\end{lilypond}
+
+\subsection{line-width=100\textbackslash pt}
+
+\begin[line-width=100\pt]{lilypond}
+  % inhalt
+{ c1 d1 }
+\end{lilypond}
+
+\subsection{papersize=a3}
+
+\begin[papersize=a3]{lilypond}
+  % inhalt
+{ c1 d1 }
+\end{lilypond}
+
+\subsection{time}
+
+\begin[time]{lilypond}
+  % inhalt
+{ c1 d1 }
+\end{lilypond}
+
+\subsection{notime}
+
+\begin[notime]{lilypond}
+  % inhalt
+{ c1 d1 }
+\end{lilypond}
+
+\subsection{fragment}
+
+\begin[fragment]{lilypond}
+  % inhalt
+c1 d1
+\end{lilypond}
+
+\subsection{nofragment}
+
+\begin[nofragment]{lilypond}
+  % inhalt
+{ c1 d1 }
+\end{lilypond}
+
+\subsection{indent=2\textbackslash cm}
+
+\begin[indent=2\cm]{lilypond}
+  % inhalt
+{ c1 d1 }
+\end{lilypond}
+
+\subsection{noindent}
+
+\begin[noindent]{lilypond}
+  % inhalt
+{ c1 d1 }
+\end{lilypond}
+
+\subsection{quote}
+
+\begin[quote]{lilypond}
+  % inhalt
+{ c1 d1 }
+\end{lilypond}
+
+\subsection{relative=15}
+
+\begin[relative=15]{lilypond}
+  % inhalt
+{ c1 d1 }
+\end{lilypond}
+
+\subsection{norelative}
+
+\begin[norelative]{lilypond}
+  % inhalt
+{ c1 d1 }
+\end{lilypond}
+
+\subsection{output-dir=testoutput}
+
+\begin[output-dir=testoutput]{lilypond}
+  % inhalt
+{ c1 d1 }
+\end{lilypond}
+
+\subsection{left-padding=3cm}
+
+\begin[left-padding=3cm]{lilypond}
+  % inhalt
+{ c1 d1 }
+\end{lilypond}
+
+\subsection{verbatim}
+
+\begin[verbatim]{lilypond}
+  % inhalt
+  { c1 d1 }
+\end{lilypond}
+
+\subsection{texidoc}
+
+\begin[texidoc]{lilypond}
+  % inhalt
+  { c1 d1 }
+\end{lilypond}
+
+\subsection{doctitle}
+
+\begin[doctitle]{lilypond}
+  % inhalt
+  { c1 d1 }
+\end{lilypond}
+\subsection{nogettext}
+
+\begin[nogettext]{lilypond}
+  % inhalt
+  { c1 d1 }
+\end{lilypond}
+\subsection{intertext}
+
+\begin[intertext]{lilypond}
+  % inhalt
+  { c1 d1 }
+\end{lilypond}
+\subsection{printfilename}
+
+\begin[printfilename]{lilypond}
+  % inhalt
+  { c1 d1 }
+\end{lilypond}
+
+\subsection{inline}
+
+A|\lilypond[inline]{{ c1 d1 }}|B
+\let\input\tsinput
+nochmal A|\lilypond[inline]{{ c1 d1 }}|B
+
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% mode: auto-revert
+%%% TeX-master: t
+%%% End:
