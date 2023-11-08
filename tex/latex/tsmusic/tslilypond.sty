@@ -467,7 +467,7 @@ inside latex%
   \ly@lilypond@startsnippet
   \ly@snippetfilename@set{\ly@snippetfilename}%
   \def\lilypondlyinputfiles{\lilypondsnippetfilename}%
-
+  %
   %\edef\ly@file@name{\filename@area\filename@base}%
   \lilypondset{defaults/.try,#1}%
   \ifly@opt@quote
@@ -549,7 +549,10 @@ inside latex%
     \immediate\closeout\ly@ini@file
     \UseHook{lilypond/snippetfile/after}%
     \ShellEscape{\ly@script}%
-    \unless\ifly@opt@inline\par\fi
+    \ifly@opt@inline
+    \else
+      \par
+    \fi
     \parindent 0pt\parskip 0pt
     \noindent
     \providecommand\betweenLilyPondSystem[1]{\par}%
