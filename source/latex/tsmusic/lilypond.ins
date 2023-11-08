@@ -18,10 +18,14 @@
 %%    tslilypond.dtx and
 %%    tslilypond.ins
 %% 
-%%  and the derived file
-%%    tslilypond.sty.
+%%  and the derived files
+%%    tslilypond.sty
+%%    tslilypond.lua
+%% 
 %% 
 \input docstrip.tex
+\let\tsMetaPrefix\MetaPrefix
+\def\MetaPrefix{\noexpand\tsMetaPrefix}
 \preamble
  Copyright ℂ 2022 Tobias Schlemmer
 
@@ -36,10 +40,14 @@
    tslilypond.dtx and
    tslilypond.ins
 
- and the derived file
-   tslilypond.sty.
+ and the derived files
+   tslilypond.sty
+   tslilypond.lua
 
 \endpreamble
+\postamble
+
+\endpostamble
 
 \askforoverwritefalse
 \usedir{tex/latex/tsmusic}
@@ -49,12 +57,17 @@
 \usedir{doc/latex/tsmusic}
 \generate{\file{steiger.ly}{\from{lilypond.dtx}{steiger}}}
 
+\begingroup
+\def\tsMetaPrefix{--}
+\usedir{tex/latex/tsmusic}
+\generate{\file{tslilypond.lua}{\from{lilypond.dtx}{lua}}}
+\endgroup
 \nopreamble\nopostamble
 \usedir{doc/latex/tsmusic}
 \generate{\file{steiger.ly}{\from{lilypond.dtx}{steiger}}}
 \generate{\file{fullexample.ly}{\from{lilypond.dtx}{fullexample}}}
 \generate{\file{fragmentexample.ly}{\from{lilypond.dtx}{fragmentexample}}}
 \endbatchfile
-\endinput
+%% 
 %%
 %% End of file `lilypond.ins'.

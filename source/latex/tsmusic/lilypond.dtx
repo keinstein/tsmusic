@@ -29,6 +29,8 @@ This package contains some macros thet help to arrange songs on pages.
 %</internal>
 %<*install>
 \input docstrip.tex
+\let\tsMetaPrefix\MetaPrefix
+\def\MetaPrefix{\noexpand\tsMetaPrefix}
 \preamble
  Copyright ℂ 2022 Tobias Schlemmer
  
@@ -43,10 +45,15 @@ This package contains some macros thet help to arrange songs on pages.
    tslilypond.dtx and
    tslilypond.ins
 
- and the derived file
-   tslilypond.sty.
+ and the derived files
+   tslilypond.sty
+   tslilypond.lua
+ 
 
 \endpreamble
+\postamble
+
+\endpostamble
 
 \askforoverwritefalse
 \usedir{tex/latex/tsmusic}
@@ -65,6 +72,11 @@ This package contains some macros thet help to arrange songs on pages.
 }
 %</internal>
 %<*install>
+\begingroup
+\def\tsMetaPrefix{--}
+\usedir{tex/latex/tsmusic}
+\generate{\file{tslilypond.lua}{\from{lilypond.dtx}{lua}}}
+\endgroup
 \nopreamble\nopostamble
 \usedir{doc/latex/tsmusic}
 \generate{\file{steiger.ly}{\from{lilypond.dtx}{steiger}}}
@@ -84,7 +96,7 @@ This package contains some macros thet help to arrange songs on pages.
 %</internal>
 %<install>\endbatchfile
 % \fi
-% \CheckSum{924}
+% \CheckSum{985}
 % \iffalse
 %
 % ======================================================================
@@ -502,6 +514,42 @@ inside latex%
 % \begin{dtxexample}*{Usage of \optn{staffsize}}
 %   \lilypondfile[staffsize=26]{fullexample}
 % \end{dtxexample}
+%
+% \ItemDescribeOption{calculate staffsize=magstep} Calculate the staff size from
+% the current font size and the given magstep or 4 if it is
+% omitted. As LaTeX cannot guess your idea about the natural staff
+% size, you have to provide the magnification step. The default value
+% is set to be 4, which matches the default lyrics size at the time of
+% writing this documentation.
+%
+% Advanced users might want to calculate the exact size. A good
+% starting point for the examination of the magnification is
+% |engraver-init.ly| or any of the other |.ly| files in your LilyPond
+% installation.
+% 
+% \begin{dtxexample}*{Usage of \optn{calculate staffsize}}
+%   \vrule ABCgjpq
+%   \lilypondfile[calculate staffsize]{fullexample}
+%
+%   A\hbox{\vrule ABCgjpq\vrule}
+%   \lilypondfile[calculate staffsize=0,inline,fragment,left-padding=0pt]{fragmentexample}%
+%   \rlap{\vrule ABCgjpq}
+% \end{dtxexample}
+%
+% \ItemDescribeOption{luatexfonts}
+% If the option \optn{luatexfonts} is given, and if the source is
+% processed with \LuaLaTeX{}, current font settings are exported to
+% LilyPond. This includes the fonts that are active immediately after
+% \cs{rmfamily}, \cs{sffamily} or \cs{ttfamily} have been used. For
+% each of the given fonts the folder of the corresponding file is
+% added to the LilyPond font search path.
+%
+% If the file is processed with a \TeX{} engine other than \LuaTeX{},
+% a warning is issued and no font settings are made.
+% \begin{dtxexample}*{Usage of \optn{luatexfonts}}
+%   \lilypondfile[luatexfonts]{fullexample}
+% \end{dtxexample}
+% 
 % \ItemDescribeOption{ragged-right} (boolean)
 % \ItemDescribeOption{noragged-right} Select whether the LilyPond
 % snippet shall be ragged or stretched to the right margin.
@@ -882,6 +930,8 @@ inside latex%
 % places, so look at the code and it'll be very likely that the
 % documentation is incomplete.
 %
+% \subsection{Starting the lua package}
+%<lua>local lilypond={}
 % \subsection{The Package preamble}
 %
 %    \begin{macrocode}
@@ -895,7 +945,7 @@ inside latex%
 %
 %
 %    \begin{macrocode}
-\RequirePackage{graphics,verbatim}
+\RequirePackage{graphics,verbatim,iftex}
 %    \end{macrocode}
 %
 % As we want to execute some shell commands, we need \cs{ShellEscape}
@@ -908,8 +958,13 @@ inside latex%
    {\protected\def\ShellEscape{\immediate\write18 }}}
  {\protected\def\ShellEscape{\immediate\write18 }}
 %    \end{macrocode}
+% For \LuaLaTeX{} we must load some lua code.
+%
+%    \begin{macrocode}
+\directlua{lilypond = require("tslilypond")}
+%    \end{macrocode}
 % \begin{macro}{\ly@ini@file}
-% File descriptor for writing |.lini| files.
+% File descriptor for writing LilyPond files.
 %
 %    \begin{macrocode}
 \newwrite\ly@ini@file
@@ -1031,6 +1086,10 @@ inside latex%
       \ly@lilypond@writelisp{set-global-staff-size #1}%
     }%
   },
+  calculate staffsize/.style={%
+    staffsize=(* \f@size\space (magstep #1))
+  },
+  calculate staffsize/.default=4,
   % line-width/.initial=\linewidth,
   line-width/.code={%
     \AddToHookNext{lilypond/snippet/paper/end}{\ly@lilypond@writelength{ line-width}{#1}}%
@@ -1089,6 +1148,110 @@ inside latex%
   },
   snippet file name/.code=\ly@snippetfilename@set{#1},
 }
+%    \end{macrocode}
+%
+% \subsection{Font handling}
+%
+%    \begin{macrocode}
+%    \end{macrocode}
+%</package>
+% The font can be retrievd using Lua.
+%<*lua>
+%    \begin{macrocode}
+lilypond['get_font_name'] = function (id)
+  local fnt = font.getfont(id)
+  local metadata = fnt.shared and fnt.shared.rawdata and
+  fnt.shared.rawdata.metadata
+  if not metadata then
+    return ""
+  end
+  return metadata["familyname"]
+end
+lilypond['get_current_font_name'] =  function  ()
+  return lilypond.get_font_name (font.current())
+end
+lilypond['get_font_file'] =  function (id)
+  local fnt = font.getfont(id)
+  return fnt.resources.filename
+end
+lilypond['get_current_font_file'] =  function ()
+  return lilypond.get_font_file (font.current())
+end
+lilypond['get_font_dir'] =  function (id)
+  local parts
+  local filename = lilypond.get_font_file (id)
+  parts = string.match(filename, "(.-)([^\\/]-)$")--$
+  return parts
+end
+lilypond['get_current_font_dir'] =  function ()
+  return lilypond.get_font_dir (font.current())
+end
+%    \end{macrocode}
+%</lua>      
+%<*package> 
+%    \begin{macrocode}
+\ifluatex
+
+\def \lyshowfontname {%
+  \directlua {tex.sprint(lilypond.get_current_font_name())}%
+}
+\def \lyshowfontfile {%
+  \directlua {tex.sprint(lilypond.get_current_font_file())}%
+}
+\def \lyshowfontdir {%
+  \directlua {tex.sprint(lilypond.get_current_font_dir())}%
+}
+\newcommand\ly@save@fontdata[1]{%
+  \expandafter\xdef\csname ly@font@dir@#1\endcsname{%
+    \lyshowfontdir
+  }%
+  \expandafter\xdef\csname ly@font@name@#1\endcsname{%
+    \lyshowfontname
+  }%
+}
+
+\newcommand\ly@savefontdata{%
+  \begingroup
+  \rmfamily\ly@save@fontdata{rm}%
+  \sffamily\ly@save@fontdata{sf}%
+  \ttfamily\ly@save@fontdata{tt}%
+  \endgroup
+}
+\newcommand\ly@writefontdirs{%
+  \ly@lilypond@writelisp{ly:font-config-add-directory "\ly@font@dir@rm"}
+  \ly@lilypond@writelisp{ly:font-config-add-directory "\ly@font@dir@sf"}
+  \ly@lilypond@writelisp{ly:font-config-add-directory "\ly@font@dir@tt"}
+}
+\newcommand\ly@writefontdata{%
+  \ly@lilypond@writelisp{define fonts
+    (make-pango-font-tree
+    "\ly@font@name@rm"
+    "\ly@font@name@sf"
+    "\ly@font@name@tt"
+    (/ staff-height pt 20))}
+}
+\lilypondset{%
+  luatexfonts/.code={%
+    \ly@savefontdata
+    \AddToHookNext{lilypond/snippet/paper/before}{\ly@writefontdirs}%
+    \AddToHookNext{lilypond/snippet/paper/start}{\ly@writefontdata}%
+  }%
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\else
+%    \end{macrocode}
+%    \begin{macrocode}
+\lilypondset{%
+  luatexfonts/.code={%
+    \PackageWarning{tslilypond}
+    {Fonts cannot be exported to LilyPond. You should use LuaLaTeX
+      instead.}
+  }%
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\fi
 %    \end{macrocode}
 % \subsection{Changes according to \texttt{lilyponddefs.sty}}
 %
@@ -1928,6 +2091,7 @@ inside latex%
 % \PrintIndex
 % \PrintChanges
 %</package>
+%<lua> return lilypond
 %<*steiger>
 %    \begin{macrocode}
 \version "2.4.0"
@@ -2036,7 +2200,8 @@ c1^"Fragment" d1 e1 f1 g1 c1 d1 e1 f1 g1 c1 d1
 \bar "|."
 %    \end{macrocode}
 %</fragmentexample>
+%
 % Local Variables:
 % mode: doctex
-% TeX-master: t
+% TeX-master: "lilypond"
 % End:

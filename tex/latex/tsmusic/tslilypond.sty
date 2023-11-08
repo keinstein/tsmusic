@@ -18,8 +18,10 @@
 %%    tslilypond.dtx and
 %%    tslilypond.ins
 %% 
-%%  and the derived file
-%%    tslilypond.sty.
+%%  and the derived files
+%%    tslilypond.sty
+%%    tslilypond.lua
+%% 
 %% 
 %% \CharacterTable
 %%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -41,13 +43,14 @@
 [2023/09/06 v0.1  lilypond-book
 inside latex%
 ]
-\RequirePackage{graphics,verbatim}
+\RequirePackage{graphics,verbatim,iftex}
 \IfFileExists{shellesc.sty}
  {\RequirePackage{shellesc}
   \@ifpackagelater{shellesc}{2016/04/29}
    {}
    {\protected\def\ShellEscape{\immediate\write18 }}}
  {\protected\def\ShellEscape{\immediate\write18 }}
+\directlua{lilypond = require("tslilypond")}
 \newwrite\ly@ini@file
 \RequirePackage{pgfkeys}
 \newcommand\lilypondset{%
@@ -136,6 +139,10 @@ inside latex%
       \ly@lilypond@writelisp{set-global-staff-size #1}%
     }%
   },
+  calculate staffsize/.style={%
+    staffsize=(* \f@size\space (magstep #1))
+  },
+  calculate staffsize/.default=4,
   % line-width/.initial=\linewidth,
   line-width/.code={%
     \AddToHookNext{lilypond/snippet/paper/end}{\ly@lilypond@writelength{ line-width}{#1}}%
@@ -194,6 +201,62 @@ inside latex%
   },
   snippet file name/.code=\ly@snippetfilename@set{#1},
 }
+\ifluatex
+
+\def \lyshowfontname {%
+  \directlua {tex.sprint(lilypond.get_current_font_name())}%
+}
+\def \lyshowfontfile {%
+  \directlua {tex.sprint(lilypond.get_current_font_file())}%
+}
+\def \lyshowfontdir {%
+  \directlua {tex.sprint(lilypond.get_current_font_dir())}%
+}
+\newcommand\ly@save@fontdata[1]{%
+  \expandafter\xdef\csname ly@font@dir@#1\endcsname{%
+    \lyshowfontdir
+  }%
+  \expandafter\xdef\csname ly@font@name@#1\endcsname{%
+    \lyshowfontname
+  }%
+}
+
+\newcommand\ly@savefontdata{%
+  \begingroup
+  \rmfamily\ly@save@fontdata{rm}%
+  \sffamily\ly@save@fontdata{sf}%
+  \ttfamily\ly@save@fontdata{tt}%
+  \endgroup
+}
+\newcommand\ly@writefontdirs{%
+  \ly@lilypond@writelisp{ly:font-config-add-directory "\ly@font@dir@rm"}
+  \ly@lilypond@writelisp{ly:font-config-add-directory "\ly@font@dir@sf"}
+  \ly@lilypond@writelisp{ly:font-config-add-directory "\ly@font@dir@tt"}
+}
+\newcommand\ly@writefontdata{%
+  \ly@lilypond@writelisp{define fonts
+    (make-pango-font-tree
+    "\ly@font@name@rm"
+    "\ly@font@name@sf"
+    "\ly@font@name@tt"
+    (/ staff-height pt 20))}
+}
+\lilypondset{%
+  luatexfonts/.code={%
+    \ly@savefontdata
+    \AddToHookNext{lilypond/snippet/paper/before}{\ly@writefontdirs}%
+    \AddToHookNext{lilypond/snippet/paper/start}{\ly@writefontdata}%
+  }%
+}
+\else
+\lilypondset{%
+  luatexfonts/.code={%
+    \PackageWarning{tslilypond}
+    {Fonts cannot be exported to LilyPond. You should use LuaLaTeX
+      instead.}
+  }%
+}
+\fi
 \let\ly@lilypond@start\lilypondstart
 \def\lilypondstart{
   \ly@lilypond@start
@@ -717,6 +780,6 @@ inside latex%
 \def\UseLilypondSource#1{%
   \csname ly@source@#1\endcsname
 }
-\endinput
+%% 
 %%
 %% End of file `tslilypond.sty'.
